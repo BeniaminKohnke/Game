@@ -15,13 +15,13 @@ namespace Game.GameCore
             {
                 var name = folder.Replace($@"{rootDirectory}\", string.Empty);
                 var folderId = (TexturesTypes)int.Parse(name);
-                Textures.Add(folderId, new Dictionary<States, Texture>());
+                Textures.Add(folderId, new());
 
                 foreach (var file in Directory.GetFiles(folder))
                 {
                     name = file.Replace($@"{folder}\", string.Empty).Replace(".png", string.Empty);
                     var fileId = (States)int.Parse(name);
-                    Textures[folderId][fileId] = new Texture(file);
+                    Textures[folderId][fileId] = new(file);
                 }
             }
         }

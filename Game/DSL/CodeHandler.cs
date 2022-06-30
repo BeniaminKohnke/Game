@@ -39,7 +39,7 @@ namespace Game.DSL
             foreach (var csFile in Directory.GetFiles(CodeBuilder.ScriptsFolderPath).Where(f => f.Contains(".cs")))
             {
                 var dllFileName = $"{csFile.Replace($@"{CodeBuilder.ScriptsFolderPath}\", string.Empty).Replace(".cs", string.Empty)}";
-                var compilation  = CSharpCompilation.Create(dllFileName, new[] { SyntaxFactory.ParseSyntaxTree(File.ReadAllText(csFile), null, string.Empty) }, _references, _compilationOptions);
+                var compilation = CSharpCompilation.Create(dllFileName, new[] { SyntaxFactory.ParseSyntaxTree(File.ReadAllText(csFile), null, string.Empty) }, _references, _compilationOptions);
 
                 using var dllStream = new MemoryStream();
                 using var pdbStream = new MemoryStream();

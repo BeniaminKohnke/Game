@@ -1,4 +1,5 @@
-﻿using GameAPI;
+﻿using Game.DSL;
+using GameAPI;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -14,6 +15,7 @@ namespace Game.GameCore
         private readonly Parameters _parameters = new();
         private readonly GameWorld _gameWorld = new();
         private readonly GameWorldController _gameWorldController;
+        private readonly CodeHandler _codeHandler = new();
         private Time _updateTime;
         private Time _renderTime;
         private Time _updateFrameTime;
@@ -27,13 +29,14 @@ namespace Game.GameCore
 
         private void Update()
         {
-
+            _gameWorldController.Update(_gameWorld);
+            _codeHandler.InvokePlayerScripts(_gameWorld, _parameters);
         }
 
         private void Render()
         {
             _window.Clear();
-            _gameWorldController.Draw(_window, 1200);
+            _gameWorldController.Draw(_window, 1200, _gameWorld);
             _window.Display();
         }
 
@@ -42,12 +45,11 @@ namespace Game.GameCore
 
         }
 
-        public void Run()
+        public bool Run()
         {
-            while(_window.IsOpen)
-            {
-                Render();
-            }
+            Update();
+            Render();
+            return _window.IsOpen;
         }
     }
 }
