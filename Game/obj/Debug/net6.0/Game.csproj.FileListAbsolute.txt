@@ -78,3 +78,11 @@ C:\Users\benia\Documents\GitHub\Thesis\Game\obj\Debug\net6.0\refint\Game.dll
 C:\Users\benia\Documents\GitHub\Thesis\Game\obj\Debug\net6.0\Game.pdb
 C:\Users\benia\Documents\GitHub\Thesis\Game\obj\Debug\net6.0\Game.genruntimeconfig.cache
 C:\Users\benia\Documents\GitHub\Thesis\Game\obj\Debug\net6.0\ref\Game.dll
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.csproj.AssemblyReference.cache
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.AssemblyInfoInputs.cache
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.AssemblyInfo.cs
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.csproj.CoreCompileInputs.cache
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.dll
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\refint\Game.dll
+C:\Users\benia\Documents\GitHub\Game\Game\obj\Debug\net6.0\Game.pdb

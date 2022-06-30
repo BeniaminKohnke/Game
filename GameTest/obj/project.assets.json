@@ -6713,11 +6713,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameTest\\GameTest.csproj",
+      "projectUniqueName": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameTest\\GameTest.csproj",
       "projectName": "GameTest",
-      "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameTest\\GameTest.csproj",
+      "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameTest\\GameTest.csproj",
       "packagesPath": "C:\\Users\\benia\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameTest\\obj\\",
+      "outputPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameTest\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -6738,8 +6738,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj": {
-              "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj"
+            "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Game.csproj": {
+              "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Game.csproj"
             }
           }
         }

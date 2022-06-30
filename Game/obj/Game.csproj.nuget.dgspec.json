@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj": {}
+    "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Game.csproj": {}
   },
   "projects": {
-    "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\GameAPI.csproj": {
+    "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\GameAPI.csproj",
+        "projectUniqueName": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj",
         "projectName": "GameAPI",
-        "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\GameAPI.csproj",
+        "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj",
         "packagesPath": "C:\\Users\\benia\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\obj\\",
+        "outputPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -62,14 +62,14 @@
         }
       }
     },
-    "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj": {
+    "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Game.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj",
+        "projectUniqueName": "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Game.csproj",
         "projectName": "Game",
-        "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj",
+        "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Game.csproj",
         "packagesPath": "C:\\Users\\benia\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\obj\\",
+        "outputPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -90,8 +90,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\GameAPI.csproj": {
-                "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\GameAPI.csproj"
+              "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj": {
+                "projectPath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj"
               }
             }
           }

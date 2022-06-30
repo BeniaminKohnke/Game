@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xDtZ+VOMHvN1BBl6mHVQ53PwlkxBXLSMbYxST4TafY+LgNN5g9mXf5guOH92uiFzqfbVAnNUc8ROKdauuvIAjw==",
+  "dgSpecHash": "FuubHWjREiKk0g79V/hN8E8Iz72tS4JVMKDYkJTs3Z8jm4kRIemh9KO/5r3zwaa/1QTf7Pxsz+1FKUpc7WJPfw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\GameAPI\\GameAPI.csproj",
+  "projectFilePath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
