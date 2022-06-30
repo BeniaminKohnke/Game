@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "AQRe51nfFpSUqwDVUIpK640LzUi0U+4jqyl535y3+u0CDGcruMSJ+qJzkL6PTmZWjepXMH3PVuvr8mYkDPvpTg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\benia\\Documents\\GitHub\\Thesis\\Game\\Game.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\benia\\.nuget\\packages\\csfml\\2.5.0\\csfml.2.5.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\sfml.audio\\2.5.0\\sfml.audio.2.5.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\sfml.graphics\\2.5.0\\sfml.graphics.2.5.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\sfml.net\\2.5.0\\sfml.net.2.5.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\sfml.system\\2.5.0\\sfml.system.2.5.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\sfml.window\\2.5.0\\sfml.window.2.5.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
