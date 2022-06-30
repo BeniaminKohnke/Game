@@ -6,7 +6,7 @@ namespace Game.DSL
     {
         public static readonly string ScriptsFolderPath = $@"{Directory.GetCurrentDirectory()}\Scripts";
         public static readonly string CallOrderFilePath = $@"{Directory.GetCurrentDirectory}\Scripts\CallOrder.txt";
-        private static readonly string _addToDynamicObjectsScriptLine = "Parameters.DynamicObjects.Add(name, (type, obj));";
+        private static readonly string _addToDynamicObjectsScriptLine = "parameters.DynamicObjects.Add(name, (type, obj));";
 
         static CodeBuilder()
         {

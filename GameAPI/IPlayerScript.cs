@@ -2,6 +2,6 @@
 {
     public interface IPlayerScript
     {
-        public void Invoke(GameWorld gameWorld);
+        public void Invoke(GameWorld gameWorld, Parameters parameters);
     }
 }

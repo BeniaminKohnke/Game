@@ -32,10 +32,9 @@
         MovingRight3,
     }
 
-    public static class Parameters
+    public class Parameters
     {
-        public static readonly GameWorld GameWorld = new();
-        public static readonly Dictionary<string, (ObjectsTypes, object)> DynamicObjects = new();
+        public readonly Dictionary<string, (ObjectsTypes, object)> DynamicObjects = new();
     }
 
     public class GameObjectComparer : IComparer<GameObject>

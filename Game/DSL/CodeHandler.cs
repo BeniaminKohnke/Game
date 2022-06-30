@@ -9,7 +9,7 @@ namespace Game.DSL
         private readonly CodeDomProvider _provider = CodeDomProvider.CreateProvider("CSharp");
         private Type[]? _types;
 
-        public void InvokePlayerScripts(GameWorld gameWorld)
+        public void InvokePlayerScripts(GameWorld gameWorld, Parameters parameters)
         {
             foreach(var position in CodeBuilder.GetCallOrder())
             {
@@ -17,7 +17,7 @@ namespace Game.DSL
                 if(script != null)
                 {
                     dynamic? instance = Activator.CreateInstance(script);
-                    (instance as IPlayerScript)?.Invoke(gameWorld);
+                    (instance as IPlayerScript)?.Invoke(gameWorld, parameters);
                 }
             }
         }

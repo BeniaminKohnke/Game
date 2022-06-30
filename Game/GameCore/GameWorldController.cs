@@ -6,21 +6,27 @@ namespace Game.GameCore
 {
     public class GameWorldController
     {
+        private readonly GameWorld _gameWorld;
         private readonly TextureLoader _textureLoader = new();
         private readonly GameObjectComparer _comparer = new();
-        private readonly Dictionary<uint, Sprite> _sprites = Parameters.GameWorld.GameObjects
-            .Select(go => new KeyValuePair<uint, Sprite>(go.ObjectId, new Sprite { Position = new Vector2f(go.PositionX, go.PositionY) }))
-            .ToDictionary(k => k.Key, v => v.Value);
+        private readonly Dictionary<uint, Sprite> _sprites;
 
-        public GameWorldController() => _textureLoader.LoadTextures();
+        public GameWorldController(GameWorld gameWorld)
+        {
+            _gameWorld = gameWorld;
+            _textureLoader.LoadTextures();
+            _sprites = _gameWorld.GameObjects
+                .Select(go => new KeyValuePair<uint, Sprite>(go.ObjectId, new Sprite { Position = new Vector2f(go.PositionX, go.PositionY) }))
+                .ToDictionary(k => k.Key, v => v.Value);
+        }
 
         public void Draw(RenderWindow window, int drawDistance)
         {
-            Parameters.GameWorld.GameObjects.Sort(_comparer);
+            _gameWorld.GameObjects.Sort(_comparer);
 
-            foreach (var gameObject in Parameters.GameWorld.GameObjects)
+            foreach (var gameObject in _gameWorld.GameObjects)
             {
-                var difference = Math.Sqrt(Math.Pow(Parameters.GameWorld.Player.PositionX - gameObject.PositionX, 2) + Math.Pow(Parameters.GameWorld.Player.PositionY - gameObject.PositionY, 2));
+                var difference = Math.Sqrt(Math.Pow(_gameWorld.Player.PositionX - gameObject.PositionX, 2) + Math.Pow(_gameWorld.Player.PositionY - gameObject.PositionY, 2));
                 if(difference <= drawDistance)
                 {
                     gameObject.State = States.NoAction1;
