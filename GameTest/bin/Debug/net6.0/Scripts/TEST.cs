@@ -2,18 +2,21 @@ using GameAPI;
 
 namespace Game.DSL
 {
-	public class TESTClass
+	public class TestScript : IPlayerScript
 	{
-		public TESTClass()
+		public TestScript()
 		{
 		}
 
-		public void TEST()
+		public void Invoke(GameWorld gameWorld, Parameters parameters)
 		{
 			var name = "testObject";
-			var type = ObjectsTypes.None
-			var obj = new GameObject()
-			parameters.DynamicObjects.Add(name, (type, obj));
+			var type = GameAPI.ObjectsTypes.None;
+			var obj = new GameObject();
+			if(!parameters.ContainsKey(name))
+			{
+				parameters.DynamicObjects.Add(name, (type, obj));
+			}
 		}
 	}
 }

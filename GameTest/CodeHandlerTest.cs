@@ -9,7 +9,7 @@ namespace GameTest
         [TestMethod]
         public void CompileToCSharpTest()
         {
-            CodeBuilder.CompileToCSharp("TEST");
+            CodeBuilder.CompileToCSharp("Test");
         }
     }
 }

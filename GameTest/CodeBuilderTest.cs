@@ -28,6 +28,10 @@ namespace GameTest
         {
             var handler = new CodeHandler();
             handler.LoadScripts();
+
+            var gameWorld = new GameWorld();
+            var parameters = new Parameters();
+            handler.InvokePlayerScripts(gameWorld, parameters);
         }
     }
 }
