@@ -33,6 +33,7 @@ namespace Game.DSL
                     GenerateInMemory = true,
                     TreatWarningsAsErrors = false,
                 };
+                parameters.ReferencedAssemblies.Add("GameAPI.dll");
 
                 var result = _provider.CompileAssemblyFromFile(parameters, csFile);
             }

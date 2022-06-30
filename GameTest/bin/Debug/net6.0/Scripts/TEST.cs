@@ -6,13 +6,14 @@ namespace Game.DSL
 	{
 		public TESTClass()
 		{
-			public void TEST()
-			{
-				var name = "testObject";
-				var type = ObjectsTypes.None
-				var obj = new GameObject()
-				Parameters.DynamicObjects.Add(name, (type, obj));
-			}
+		}
+
+		public void TEST()
+		{
+			var name = "testObject";
+			var type = ObjectsTypes.None
+			var obj = new GameObject()
+			parameters.DynamicObjects.Add(name, (type, obj));
 		}
 	}
 }
