@@ -44,11 +44,11 @@
             if (x != null && y != null)
             {
                 var differenceY = x.PositionY - y.PositionY;
-                if (differenceY > 0.001)
+                if (differenceY < 0.001)
                 {
                     return -1;
                 }
-                if (differenceY < 0.001)
+                if (differenceY > 0.001)
                 {
                     return 1;
                 }

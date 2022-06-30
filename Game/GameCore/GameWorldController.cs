@@ -27,9 +27,12 @@ namespace Game.GameCore
                 var difference = Math.Sqrt(Math.Pow(gameWorld.Player.PositionX - gameObject.PositionX, 2) + Math.Pow(gameWorld.Player.PositionY - gameObject.PositionY, 2));
                 if(difference <= drawDistance)
                 {
-                    gameObject.State = States.NoAction1;
-                    _sprites[gameObject.ObjectId].Texture = _textureLoader.Textures[gameObject.TextureType][gameObject.State];
+                    var texture = _textureLoader.Textures[gameObject.TextureType][gameObject.State];
+                    _sprites[gameObject.ObjectId].Texture = texture.texture;
+                    _sprites[gameObject.ObjectId].Position = new(gameObject.PositionX, gameObject.PositionY);
                     _sprites[gameObject.ObjectId].Scale = new(10, 10);
+                    _sprites[gameObject.ObjectId].Origin = new Vector2f(0, texture.size.Y);
+                    _sprites[gameObject.ObjectId].TextureRect = new(0, 0, (int)texture.size.X, (int)texture.size.Y);
                     window.Draw(_sprites[gameObject.ObjectId]);
                 }
             }

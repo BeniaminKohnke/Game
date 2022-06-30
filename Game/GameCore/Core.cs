@@ -16,19 +16,24 @@ namespace Game.GameCore
         private readonly GameWorld _gameWorld = new();
         private readonly GameWorldController _gameWorldController;
         private readonly CodeHandler _codeHandler = new();
-        private Time _updateTime;
-        private Time _renderTime;
-        private Time _updateFrameTime;
-        private Time _renderFrameTime;
-
+        private Time _lastUpdateTime = Time.Zero;
+        private Time _lastRenderTime = Time.Zero;
+        private Time _updateFrameTime = Time.FromSeconds(1.0f / 60.0f);
+        private Time _renderFrameTime = Time.FromSeconds(1.0f / 60.0f);
+        private readonly Clock _updateClock = new();
+        private readonly Clock _renderClock = new();
 
         public Core()
         {
             _gameWorldController = new(_gameWorld);
+            _window.KeyPressed += new EventHandler<KeyEventArgs>(HandleKeyboardInput);
+            _gameWorld.Player.PositionX = 400;
+            _gameWorld.Player.PositionY = 300;
         }
 
         private void Update()
         {
+            _window.DispatchEvents();
             _gameWorldController.Update(_gameWorld);
             _codeHandler.InvokePlayerScripts(_gameWorld, _parameters);
         }
@@ -36,20 +41,55 @@ namespace Game.GameCore
         private void Render()
         {
             _window.Clear();
+            _window.SetView(new(new(_gameWorld.Player.PositionX + 50, _gameWorld.Player.PositionY + 50), new(800, 600)));
             _gameWorldController.Draw(_window, 1200, _gameWorld);
             _window.Display();
         }
 
-        private void HandleKeyboardInput(Keyboard.Key key, bool isPressed)
+        private void HandleKeyboardInput(object? sender, KeyEventArgs e)
         {
+            if(e.Code == Keyboard.Key.Up)
+            {
+                _gameWorld.Player.PositionY -= 10;
+            }
 
+            if(e.Code == Keyboard.Key.Down)
+            {
+                _gameWorld.Player.PositionY += 10;
+            }
+
+            if (e.Code == Keyboard.Key.Right)
+            {
+                _gameWorld.Player.PositionX += 10;
+            }
+
+            if (e.Code == Keyboard.Key.Left)
+            {
+                _gameWorld.Player.PositionX -= 10;
+            }
         }
 
-        public bool Run()
+        public void Run()
         {
-            Update();
-            Render();
-            return _window.IsOpen;
+            _updateClock.Restart();
+            _renderClock.Restart();
+
+            while(_window.IsOpen)
+            {
+                _lastUpdateTime += _updateClock.Restart();
+                while (_lastUpdateTime > _updateFrameTime)
+                {
+                    _lastUpdateTime -= _updateFrameTime;
+                    Update();
+                }
+
+                _lastRenderTime += _renderClock.Restart();
+                if (_lastRenderTime > _renderFrameTime)
+                {
+                    _lastRenderTime = Time.Zero;
+                    Render();
+                }
+            }
         }
     }
 }
