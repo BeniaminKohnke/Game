@@ -171,19 +171,9 @@
             0,
             0,
             0});
-            this.WidthBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.WidthBox.Name = "WidthBox";
             this.WidthBox.Size = new System.Drawing.Size(89, 23);
             this.WidthBox.TabIndex = 10;
-            this.WidthBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.WidthBox.ValueChanged += new System.EventHandler(this.WidthBox_ValueChanged);
             // 
             // HeightBox
@@ -194,19 +184,9 @@
             0,
             0,
             0});
-            this.HeightBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.HeightBox.Name = "HeightBox";
             this.HeightBox.Size = new System.Drawing.Size(89, 23);
             this.HeightBox.TabIndex = 11;
-            this.HeightBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.HeightBox.ValueChanged += new System.EventHandler(this.HeightBox_ValueChanged);
             // 
             // XLabel

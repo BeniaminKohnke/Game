@@ -51,7 +51,7 @@ namespace SpriteMaker
                         if (TransparentButton.Checked)
                         {
                             _pixels[i][j] = 1;
-                            button.BackColor = Color.LightYellow;
+                            button.BackColor = Color.BlueViolet;
                         }
                         else if (FillingButton.Checked)
                         {
@@ -106,7 +106,7 @@ namespace SpriteMaker
             2 => Color.Black,
             3 => Color.Yellow,
             4 => Color.White,
-            _ => Color.LightYellow,
+            _ => Color.BlueViolet,
         };
 
         private void LoadButton_Click(object sender, EventArgs e)
@@ -117,7 +117,7 @@ namespace SpriteMaker
                 var pixels = File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
 
                 WidthBox.Value = pixels.Length;
-                HeightBox.Value = pixels.Max(p => p.Length);
+                HeightBox.Value = pixels.Any(c => c.Any()) ? pixels.Max(p => p.Length) : 0;
 
                 for(int i = 0; i < pixels.Length; i++)
                 {
@@ -168,7 +168,7 @@ namespace SpriteMaker
                         if (Controls[$"{i}-{j}"].BackColor == Color.Gray)
                         {
                             _pixels[i][j] = 1;
-                            Controls[$"{i}-{j}"].BackColor = Color.LightYellow;
+                            Controls[$"{i}-{j}"].BackColor = Color.BlueViolet;
                         }
                     }
                     else
