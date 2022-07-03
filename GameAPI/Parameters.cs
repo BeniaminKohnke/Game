@@ -37,13 +37,13 @@
         public readonly Dictionary<string, (ObjectsTypes, object)> DynamicObjects = new();
     }
 
-    public class GameObjectComparer : IComparer<GameObject>
+    public class GameObjectPositionComparer : IComparer<GameObject>
     {
         public int Compare(GameObject? x, GameObject? y)
         {
             if (x != null && y != null)
             {
-                var differenceY = x.PositionY - y.PositionY;
+                var differenceY = x.Y - y.Y;
                 if (differenceY < 0.001)
                 {
                     return -1;
@@ -53,7 +53,7 @@
                     return 1;
                 }
 
-                var differenceX = x.PositionX - y.PositionX;
+                var differenceX = x.X - y.X;
                 if (differenceX > 0.001)
                 {
                     return -1;

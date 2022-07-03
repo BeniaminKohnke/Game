@@ -27,8 +27,6 @@ namespace Game.GameCore
         {
             _gameWorldController = new(_gameWorld);
             _window.KeyPressed += new EventHandler<KeyEventArgs>(HandleKeyboardInput);
-            _gameWorld.Player.PositionX = 400;
-            _gameWorld.Player.PositionY = 300;
         }
 
         private void Update()
@@ -41,7 +39,7 @@ namespace Game.GameCore
         private void Render()
         {
             _window.Clear();
-            _window.SetView(new(new(_gameWorld.Player.PositionX + 50, _gameWorld.Player.PositionY + 50), new(800, 600)));
+            _window.SetView(new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(64, 64)));
             _gameWorldController.Draw(_window, 1200, _gameWorld);
             _window.Display();
         }
@@ -50,22 +48,22 @@ namespace Game.GameCore
         {
             if(e.Code == Keyboard.Key.Up)
             {
-                _gameWorld.Player.PositionY -= 10;
+                _gameWorld.Player.Y -= _gameWorld.Player.MovementSpeed;
             }
 
             if(e.Code == Keyboard.Key.Down)
             {
-                _gameWorld.Player.PositionY += 10;
+                _gameWorld.Player.Y += _gameWorld.Player.MovementSpeed;
             }
 
             if (e.Code == Keyboard.Key.Right)
             {
-                _gameWorld.Player.PositionX += 10;
+                _gameWorld.Player.X += _gameWorld.Player.MovementSpeed;
             }
 
             if (e.Code == Keyboard.Key.Left)
             {
-                _gameWorld.Player.PositionX -= 10;
+                _gameWorld.Player.X -= _gameWorld.Player.MovementSpeed;
             }
         }
 

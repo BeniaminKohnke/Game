@@ -1,21 +1,16 @@
 ﻿using GameAPI;
 using SFML.Graphics;
-using SFML.System;
 
 namespace Game.GameCore
 {
     public class GameWorldController
     {
         private readonly TextureLoader _textureLoader = new();
-        private readonly GameObjectComparer _comparer = new();
-        private readonly Dictionary<uint, Sprite> _sprites;
+        private readonly GameObjectPositionComparer _comparer = new();
 
         public GameWorldController(GameWorld gameWorld)
         {
             _textureLoader.LoadTextures();
-            _sprites = gameWorld.GameObjects
-                .Select(go => (go.ObjectId, sprite: new Sprite { Position = new(go.PositionX, go.PositionY) }))
-                .ToDictionary(k => k.ObjectId, v => v.sprite);
         }
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
@@ -24,23 +19,35 @@ namespace Game.GameCore
 
             foreach (var gameObject in gameWorld.GameObjects)
             {
-                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.PositionX - gameObject.PositionX, 2) + Math.Pow(gameWorld.Player.PositionY - gameObject.PositionY, 2));
+                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.X - gameObject.X, 2) + Math.Pow(gameWorld.Player.Y - gameObject.Y, 2));
                 if(difference <= drawDistance)
                 {
                     var texture = _textureLoader.Textures[gameObject.TextureType][gameObject.State];
-                    _sprites[gameObject.ObjectId].Texture = texture.texture;
-                    _sprites[gameObject.ObjectId].Position = new(gameObject.PositionX, gameObject.PositionY);
-                    _sprites[gameObject.ObjectId].Scale = new(10, 10);
-                    _sprites[gameObject.ObjectId].Origin = new Vector2f(0, texture.size.Y);
-                    _sprites[gameObject.ObjectId].TextureRect = new(0, 0, (int)texture.size.X, (int)texture.size.Y);
-                    window.Draw(_sprites[gameObject.ObjectId]);
+                    var sprite = new Sprite
+                    {
+                        Texture = texture.texture,
+                        Position = new((int)Math.Floor(gameObject.X), (int)Math.Floor(gameObject.Y)),
+                        Origin = new((int)Math.Floor(texture.size.X / 2d), (int)Math.Floor(texture.size.Y / 2d)),
+                    };
+                    gameObject.VerticalColliderLength = 1;
+                    gameObject.HorizontalColliderLength = (texture.size.X / 2);
+                    gameObject.OriginShiftY = texture.size.Y / 2;
+                    window.Draw(sprite);
                 }
             }
+
+            window.SetTitle($"X:{gameWorld.Player.X} Y:{gameWorld.Player.Y}");
         }
 
         public void Update(GameWorld gameWorld)
         {
-
+            for (int i = 0; i < gameWorld.GameObjects.Count; i++)
+            {
+                for (int j = i + 1; j < gameWorld.GameObjects.Count; j++)
+                {
+                    gameWorld.GameObjects[i].HandleCollison(gameWorld.GameObjects[j]);
+                }
+            }
         }
     }
 }
