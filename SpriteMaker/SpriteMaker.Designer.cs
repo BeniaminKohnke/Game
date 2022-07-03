@@ -39,7 +39,14 @@
             this.FolderPathLabel = new System.Windows.Forms.Label();
             this.RefreshButton = new System.Windows.Forms.Button();
             this.LoadButton = new System.Windows.Forms.Button();
+            this.WidthBox = new System.Windows.Forms.NumericUpDown();
+            this.HeightBox = new System.Windows.Forms.NumericUpDown();
+            this.XLabel = new System.Windows.Forms.Label();
+            this.KeywordBox = new System.Windows.Forms.TextBox();
+            this.KeywordLabel = new System.Windows.Forms.Label();
             this.ChoiceBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             this.SuspendLayout();
             // 
             // SaveButton
@@ -50,6 +57,7 @@
             this.SaveButton.TabIndex = 2;
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // ChoiceBox
             // 
@@ -120,7 +128,7 @@
             // 
             // FolderPathBox
             // 
-            this.FolderPathBox.Location = new System.Drawing.Point(653, 229);
+            this.FolderPathBox.Location = new System.Drawing.Point(653, 180);
             this.FolderPathBox.Name = "FolderPathBox";
             this.FolderPathBox.Size = new System.Drawing.Size(206, 23);
             this.FolderPathBox.TabIndex = 6;
@@ -129,7 +137,7 @@
             // FolderPathLabel
             // 
             this.FolderPathLabel.AutoSize = true;
-            this.FolderPathLabel.Location = new System.Drawing.Point(653, 204);
+            this.FolderPathLabel.Location = new System.Drawing.Point(653, 155);
             this.FolderPathLabel.Name = "FolderPathLabel";
             this.FolderPathLabel.Size = new System.Drawing.Size(111, 15);
             this.FolderPathLabel.TabIndex = 7;
@@ -137,7 +145,7 @@
             // 
             // RefreshButton
             // 
-            this.RefreshButton.Location = new System.Drawing.Point(770, 200);
+            this.RefreshButton.Location = new System.Drawing.Point(770, 151);
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(89, 23);
             this.RefreshButton.TabIndex = 8;
@@ -155,11 +163,88 @@
             this.LoadButton.UseVisualStyleBackColor = true;
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             // 
+            // WidthBox
+            // 
+            this.WidthBox.Location = new System.Drawing.Point(653, 122);
+            this.WidthBox.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.WidthBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.WidthBox.Name = "WidthBox";
+            this.WidthBox.Size = new System.Drawing.Size(89, 23);
+            this.WidthBox.TabIndex = 10;
+            this.WidthBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.WidthBox.ValueChanged += new System.EventHandler(this.WidthBox_ValueChanged);
+            // 
+            // HeightBox
+            // 
+            this.HeightBox.Location = new System.Drawing.Point(770, 122);
+            this.HeightBox.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.HeightBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.HeightBox.Name = "HeightBox";
+            this.HeightBox.Size = new System.Drawing.Size(89, 23);
+            this.HeightBox.TabIndex = 11;
+            this.HeightBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.HeightBox.ValueChanged += new System.EventHandler(this.HeightBox_ValueChanged);
+            // 
+            // XLabel
+            // 
+            this.XLabel.AutoSize = true;
+            this.XLabel.Location = new System.Drawing.Point(748, 124);
+            this.XLabel.Name = "XLabel";
+            this.XLabel.Size = new System.Drawing.Size(14, 15);
+            this.XLabel.TabIndex = 12;
+            this.XLabel.Text = "X";
+            // 
+            // KeywordBox
+            // 
+            this.KeywordBox.Location = new System.Drawing.Point(653, 229);
+            this.KeywordBox.Name = "KeywordBox";
+            this.KeywordBox.Size = new System.Drawing.Size(206, 23);
+            this.KeywordBox.TabIndex = 13;
+            this.KeywordBox.TextChanged += new System.EventHandler(this.KeywordBox_TextChanged);
+            // 
+            // KeywordLabel
+            // 
+            this.KeywordLabel.AutoSize = true;
+            this.KeywordLabel.Location = new System.Drawing.Point(653, 211);
+            this.KeywordLabel.Name = "KeywordLabel";
+            this.KeywordLabel.Size = new System.Drawing.Size(83, 15);
+            this.KeywordLabel.TabIndex = 14;
+            this.KeywordLabel.Text = "Keyword filter:";
+            // 
             // SpriteMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(956, 649);
+            this.ClientSize = new System.Drawing.Size(865, 649);
+            this.Controls.Add(this.KeywordLabel);
+            this.Controls.Add(this.KeywordBox);
+            this.Controls.Add(this.XLabel);
+            this.Controls.Add(this.HeightBox);
+            this.Controls.Add(this.WidthBox);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.RefreshButton);
             this.Controls.Add(this.FolderPathLabel);
@@ -171,6 +256,8 @@
             this.Text = "SpriteMaker";
             this.ChoiceBox.ResumeLayout(false);
             this.ChoiceBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -188,5 +275,10 @@
         private Label FolderPathLabel;
         private Button RefreshButton;
         private Button LoadButton;
+        private NumericUpDown WidthBox;
+        private NumericUpDown HeightBox;
+        private Label XLabel;
+        private TextBox KeywordBox;
+        private Label KeywordLabel;
     }
 }
