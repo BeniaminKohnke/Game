@@ -39,7 +39,7 @@ namespace Game.GameCore
         private void Render()
         {
             _window.Clear();
-            _window.SetView(new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(64, 64)));
+            _window.SetView(new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(480, 480)));
             _gameWorldController.Draw(_window, 1200, _gameWorld);
             _window.Display();
         }

@@ -25,13 +25,14 @@ namespace Game.GameCore
                     var texture = _textureLoader.Textures[gameObject.TextureType][gameObject.State];
                     var sprite = new Sprite
                     {
-                        Texture = texture.texture,
-                        Position = new((int)Math.Floor(gameObject.X), (int)Math.Floor(gameObject.Y)),
-                        Origin = new((int)Math.Floor(texture.size.X / 2d), (int)Math.Floor(texture.size.Y / 2d)),
+                        Texture = texture,
+                        Position = new(gameObject.X, gameObject.Y),
+                        Origin = new(texture.Size.X / 2, texture.Size.Y / 2),
+                        Scale = new (10, 10),
                     };
-                    gameObject.VerticalColliderLength = 1;
-                    gameObject.HorizontalColliderLength = (texture.size.X / 2);
-                    gameObject.OriginShiftY = texture.size.Y / 2;
+                    gameObject.VerticalColliderLength = 10;
+                    gameObject.HorizontalColliderLength = (int)texture.Size.X * 5;
+                    gameObject.OriginShiftY = (int)texture.Size.Y * 5;
                     window.Draw(sprite);
                 }
             }

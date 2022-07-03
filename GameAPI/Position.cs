@@ -2,23 +2,22 @@
 {
     public class Position
     {
-        public float X { get; set; } = 0f;
-
-        public float Y { get; set; } = 0f;
-        public float OriginShiftX { get; set; } = 0f;
-        public float OriginShiftY { get; set; } = 0f;
-        public float HorizontalColliderLength { get; set; } = 0f;
-        public float VerticalColliderLength { get; set; } = 0f;
-        public float ShiftedX => X + OriginShiftX;
-        public float ShiftedY => Y + OriginShiftY;
-        public Position(float x, float y)
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
+        public int OriginShiftX { get; set; } = 0;
+        public int OriginShiftY { get; set; } = 0;
+        public int HorizontalColliderLength { get; set; } = 0;
+        public int VerticalColliderLength { get; set; } = 0;
+        public int ShiftedX => X + OriginShiftX;
+        public int ShiftedY => Y + OriginShiftY;
+        public Position(int x, int y)
         {
             X = x;
             Y = y;
         }
 
-        public float GetDistance(float x, float y) => (float)Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2));
-        public float GetDistance(Position other, bool shift = false) => !shift ? (float)Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2))
-            : (float)Math.Sqrt(Math.Pow(ShiftedX - other.ShiftedX, 2) + Math.Pow(ShiftedY - other.ShiftedY, 2));
+        public int GetDistance(int x, int y) => (int)Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2));
+        public int GetDistance(Position other, bool shift = false) => !shift ? (int)Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2))
+            : (int)Math.Sqrt(Math.Pow(ShiftedX - other.ShiftedX, 2) + Math.Pow(ShiftedY - other.ShiftedY, 2));
     }
 }

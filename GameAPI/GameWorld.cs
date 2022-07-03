@@ -10,14 +10,14 @@
             GameObjects = new();
             Player = new(0, 0)
             {
-                MovementSpeed = 1f,
+                MovementSpeed = 10,
                 Weight = 70,
                 ObjectType = ObjectsTypes.Player,
                 State = States.NoAction1,
                 TextureType = TexturesTypes.Player,
             };
 
-            var tree = new GameObject(10, 20)
+            var tree = new GameObject(100, 200)
             {
                 Weight = 1000,
                 ObjectType = ObjectsTypes.Tree,
@@ -25,7 +25,7 @@
                 State = States.NoAction1,
             };
 
-            var tree2 = new GameObject(30, 50)
+            var tree2 = new GameObject(300, 500)
             {
                 Weight = 1000,
                 ObjectType = ObjectsTypes.Tree,
@@ -33,7 +33,7 @@
                 State = States.NoAction1,
             };
 
-            var rock1 = new GameObject(20, -30)
+            var rock1 = new GameObject(200, -300)
             {
                 Weight = 30,
                 ObjectType = ObjectsTypes.Rock,
