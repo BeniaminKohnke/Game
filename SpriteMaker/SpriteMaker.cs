@@ -36,81 +36,96 @@ namespace SpriteMaker
             }
 
             SetGrid();
+            RefreshButton_Click(new object(), new EventArgs());
         }
 
         private void ChangePixel(object? sender, EventArgs e)
         {
-            if(sender != null)
+            try
             {
-                if (sender is Button button)
+                if (sender != null)
                 {
-                    var splitedName = button.Name.Split('-');
-                    var i = byte.Parse(splitedName[0]);
-                    var j = byte.Parse(splitedName[1]);
-
-                    if(button.BackColor != Color.Orange)
+                    if (sender is Button button)
                     {
-                        if (TransparentButton.Checked)
+                        var splitedName = button.Name.Split('-');
+                        var i = byte.Parse(splitedName[0]);
+                        var j = byte.Parse(splitedName[1]);
+
+                        if (button.BackColor != Color.Orange)
                         {
-                            _pixels[i][j] = 1;
-                            button.BackColor = Color.BlueViolet;
-                        }
-                        else if (FillingButton.Checked)
-                        {
-                            _pixels[i][j] = 2;
-                            button.BackColor = Color.Gray;
-                        }
-                        else if (ColliderButton.Checked)
-                        {
-                            _pixels[i][j] = 3;
-                            button.BackColor = Color.Yellow;
-                        }
-                        else if (ContourButton.Checked)
-                        {
-                            _pixels[i][j] = 4;
-                            button.BackColor = Color.White;
-                        }
-                        else if (FillingColliderButton.Checked)
-                        {
-                            _pixels[i][j] = 5;
-                            button.BackColor = Color.LightSteelBlue;
-                        }
-                        else if (TransparentColliderButton.Checked)
-                        {
-                            _pixels[i][j] = 6;
-                            button.BackColor = Color.Fuchsia;
+                            if (TransparentButton.Checked)
+                            {
+                                _pixels[i][j] = 1;
+                                button.BackColor = Color.BlueViolet;
+                            }
+                            else if (FillingButton.Checked)
+                            {
+                                _pixels[i][j] = 2;
+                                button.BackColor = Color.Gray;
+                            }
+                            else if (ColliderButton.Checked)
+                            {
+                                _pixels[i][j] = 3;
+                                button.BackColor = Color.Yellow;
+                            }
+                            else if (ContourButton.Checked)
+                            {
+                                _pixels[i][j] = 4;
+                                button.BackColor = Color.White;
+                            }
+                            else if (FillingColliderButton.Checked)
+                            {
+                                _pixels[i][j] = 5;
+                                button.BackColor = Color.LightSteelBlue;
+                            }
+                            else if (TransparentColliderButton.Checked)
+                            {
+                                _pixels[i][j] = 6;
+                                button.BackColor = Color.Fuchsia;
+                            }
                         }
                     }
                 }
+            }
+            catch
+            {
+
             }
         }
 
         private void RefreshButton_Click(object sender, EventArgs e)
         {
-            ExistingTexturesBox.Items.Clear();
-            if(!string.IsNullOrEmpty(FolderPathBox.Text))
+            try
             {
-                foreach (var folder in Enum.GetValues(typeof(TexturesTypes)))
+                ExistingTexturesBox.Items.Clear();
+                if (!string.IsNullOrEmpty(FolderPathBox.Text))
                 {
-                    var dir = $@"{FolderPathBox.Text}\{folder}";
-                    if(!Directory.Exists(dir))
+                    foreach (var folder in Enum.GetValues(typeof(TexturesTypes)))
                     {
-                        Directory.CreateDirectory(dir);
-                    }
-
-                    foreach(var file in Enum.GetValues(typeof(States)))
-                    {
-                        var path = $@"{dir}\{file}.sm";
-                        if(!File.Exists(path))
+                        var dir = $@"{FolderPathBox.Text}\{folder}";
+                        if (!Directory.Exists(dir))
                         {
-                            File.Create(path);
+                            Directory.CreateDirectory(dir);
                         }
 
-                        var position = $"{Enum.GetName(typeof(TexturesTypes), folder)}->{Enum.GetName(typeof(States), file)}";
-                        ExistingTexturesBox.Items.Add(position);
-                        _paths[position] = path;
+                        foreach (var file in Enum.GetValues(typeof(States)))
+                        {
+                            var path = $@"{dir}\{file}.sm";
+                            if (!File.Exists(path))
+                            {
+                                File.Create(path);
+                            }
+
+                            var position = $"{Enum.GetName(typeof(TexturesTypes), folder)}->{Enum.GetName(typeof(States), file)}";
+                            ExistingTexturesBox.Items.Add(position);
+                            _paths[position] = path;
+                        }
                     }
                 }
+            }
+            catch
+            {
+
             }
         }
         private static Color GetColor(byte value) => value switch
@@ -125,47 +140,60 @@ namespace SpriteMaker
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
-            var fileName = ExistingTexturesBox.SelectedItem.ToString();
-            if(!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
+            try
             {
-                var pixels = File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
-
-                WidthBox.Value = pixels.Length;
-                HeightBox.Value = pixels.Any(c => c.Any()) ? pixels.Max(p => p.Length) : 0;
-
-                for(int i = 0; i < pixels.Length; i++)
+                var fileName = ExistingTexturesBox.SelectedItem?.ToString();
+                if(!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
                 {
-                    for(int j = 0; j < pixels[i].Length; j++)
-                    {
-                        _pixels[i][j] = pixels[i][j];
-                        TexturePanel.Controls[$"{i}-{j}"].BackColor = GetColor(_pixels[i][j]);
-                        TexturePanel.Controls[$"{i}-{j}"].Enabled = true;
-                        TexturePanel.Controls[$"{i}-{j}"].Visible = true;
-                    }
-                }
+                    var pixels = File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
 
-                for(int i = 0; i < _pixels.Length; i++)
-                {
-                    for(int j = 0; j < _pixels[i].Length; j++)
+                    WidthBox.Value = pixels.Length;
+                    HeightBox.Value = pixels.Any(c => c.Any()) ? pixels.Max(p => p.Length) : 0;
+
+                    for (int i = 0; i < pixels.Length; i++)
                     {
-                        if (_pixels[i][j] == 0)
+                        for (int j = 0; j < pixels[i].Length; j++)
                         {
-                            TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.Orange;
-                            TexturePanel.Controls[$"{i}-{j}"].Enabled = false;
-                            TexturePanel.Controls[$"{i}-{j}"].Visible = false;
+                            _pixels[i][j] = pixels[i][j];
+                            TexturePanel.Controls[$"{i}-{j}"].BackColor = GetColor(_pixels[i][j]);
+                            TexturePanel.Controls[$"{i}-{j}"].Enabled = true;
+                            TexturePanel.Controls[$"{i}-{j}"].Visible = true;
+                        }
+                    }
+
+                    for (int i = 0; i < _pixels.Length; i++)
+                    {
+                        for (int j = 0; j < _pixels[i].Length; j++)
+                        {
+                            if (_pixels[i][j] == 0)
+                            {
+                                TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.Orange;
+                                TexturePanel.Controls[$"{i}-{j}"].Enabled = false;
+                                TexturePanel.Controls[$"{i}-{j}"].Visible = false;
+                            }
                         }
                     }
                 }
             }
+            catch
+            {
 
+            }
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            var fileName = ExistingTexturesBox.SelectedItem.ToString();
-            if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
+            try
             {
-                File.WriteAllLines(_paths[fileName], _pixels.Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
+                var fileName = ExistingTexturesBox.SelectedItem.ToString();
+                if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
+                {
+                    File.WriteAllLines(_paths[fileName], _pixels.Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
+                }
+            }
+            catch
+            {
+
             }
         }
 
@@ -175,37 +203,51 @@ namespace SpriteMaker
 
         private void SetGrid()
         {
-            var height = (byte)HeightBox.Value;
-            var width = (byte)WidthBox.Value;
-            for (int i = 0; i < _pixels.Length; i++)
+            try
             {
-                for (int j = 0; j < _pixels[0].Length; j++)
+                var height = (byte)HeightBox.Value;
+                var width = (byte)WidthBox.Value;
+                for (int i = 0; i < _pixels.Length; i++)
                 {
-                    if (i < width && j < height)
+                    for (int j = 0; j < _pixels[0].Length; j++)
                     {
-                        if (TexturePanel.Controls[$"{i}-{j}"].BackColor == Color.Orange)
+                        if (i < width && j < height)
                         {
-                            _pixels[i][j] = 1;
-                            TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.BlueViolet;
-                            TexturePanel.Controls[$"{i}-{j}"].Enabled = true;
-                            TexturePanel.Controls[$"{i}-{j}"].Visible = true;
+                            if (TexturePanel.Controls[$"{i}-{j}"].BackColor == Color.Orange)
+                            {
+                                _pixels[i][j] = 1;
+                                TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.BlueViolet;
+                                TexturePanel.Controls[$"{i}-{j}"].Enabled = true;
+                                TexturePanel.Controls[$"{i}-{j}"].Visible = true;
+                            }
+                        }
+                        else
+                        {
+                            _pixels[i][j] = 0;
+                            TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.Orange;
+                            TexturePanel.Controls[$"{i}-{j}"].Enabled = false;
+                            TexturePanel.Controls[$"{i}-{j}"].Visible = false;
                         }
                     }
-                    else
-                    {
-                        _pixels[i][j] = 0;
-                        TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.Orange;
-                        TexturePanel.Controls[$"{i}-{j}"].Enabled = false;
-                        TexturePanel.Controls[$"{i}-{j}"].Visible = false;
-                    }
                 }
+            }
+            catch
+            {
+
             }
         }
 
         private void KeywordBox_TextChanged(object sender, EventArgs e)
         {
-            ExistingTexturesBox.Items.Clear();
-            _paths.Keys.Where(k => k.Contains(KeywordBox.Text))?.ToList().ForEach(e => ExistingTexturesBox.Items.Add(e));
+            try
+            {
+                ExistingTexturesBox.Items.Clear();
+                _paths.Keys.Where(k => k.Contains(KeywordBox.Text))?.ToList().ForEach(e => ExistingTexturesBox.Items.Add(e));
+            }
+            catch
+            {
+
+            }
         }
     }
 }

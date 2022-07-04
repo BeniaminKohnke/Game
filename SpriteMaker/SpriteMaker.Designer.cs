@@ -137,7 +137,11 @@
             this.FolderPathBox.Name = "FolderPathBox";
             this.FolderPathBox.Size = new System.Drawing.Size(206, 23);
             this.FolderPathBox.TabIndex = 6;
-            this.FolderPathBox.Text = "C:\\Users\\benia\\Documents\\GitHub\\Game\\Game\\Textures";
+            this.FolderPathBox.Text = $@"{Directory.GetCurrentDirectory()}\Textures";
+            if(!Directory.Exists(this.FolderPathBox.Text))
+            {
+                Directory.CreateDirectory(this.FolderPathBox.Text);
+            }
             // 
             // FolderPathLabel
             // 
