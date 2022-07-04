@@ -7,10 +7,32 @@ namespace Game.GameCore
     {
         private readonly TextureLoader _textureLoader = new();
         private readonly GameObjectPositionComparer _comparer = new();
-
+        private Dictionary<TexturesTypes, Dictionary<States, Image>> _images = new();
         public GameWorldController(GameWorld gameWorld)
         {
             _textureLoader.LoadTextures();
+
+            foreach(var type in _textureLoader.Textures)
+            {
+                _images[type.Key] = new Dictionary<States, Image>();
+                foreach(var pair in type.Value)
+                {
+                    if(pair.Value.Length > 0 && pair.Value.Any(r => r.Any()))
+                    {
+                        var image = new Image((uint)pair.Value.Length, (uint)pair.Value[0].Length);
+                        for (uint i = 0; i < pair.Value.Length; i++)
+                        {
+                            for (uint j = 0; j < pair.Value[i].Length; j++)
+                            {
+                                image.SetPixel(i, j, GetColor(pair.Value[i][j]));
+                            }
+                        }
+
+                        image.FlipVertically();
+                        _images[type.Key][pair.Key] = image;
+                    }
+                }
+            }
         }
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
@@ -22,21 +44,10 @@ namespace Game.GameCore
                 var difference = Math.Sqrt(Math.Pow(gameWorld.Player.X - gameObject.X, 2) + Math.Pow(gameWorld.Player.Y - gameObject.Y, 2));
                 if(difference <= drawDistance)
                 {
-                    var texture = _textureLoader.Textures[gameObject.TextureType][gameObject.State];
-                    var image = new Image((uint)texture.Length, (uint)texture[0].Length);
-                    
-                    for(uint i = 0; i < texture.Length; i++)
-                    {
-                        for(uint j = 0; j < texture[i].Length; j++)
-                        {
-                            image.SetPixel(i, j, GetColor(texture[i][j]));
-                        }
-                    }
-
-                    image.FlipVertically();
+                    var image = _images[gameObject.TextureType][gameObject.State];
                     var sprite = new Sprite
                     {
-                        Texture = new Texture(image),
+                        Texture = new(image),
                         Position = new(gameObject.X, gameObject.Y),
                         Origin = new(image.Size.X / 2, image.Size.Y / 2),
                         Scale = new(10, 10),
@@ -44,8 +55,10 @@ namespace Game.GameCore
                     };
 
                     gameObject.OriginShiftY = (int)image.Size.Y / 2;
-                    gameObject.VerticalColliderLength = texture.Count(c => c.Any(v => v == 3));
-                    gameObject.HorizontalColliderLength = texture.Max(c => Array.LastIndexOf(c, (byte)3) - Array.IndexOf(c, (byte)3));
+                    gameObject.VerticalColliderLength = _textureLoader.Textures[gameObject.TextureType][gameObject.State]
+                        .Count(c => c.Any(v => v == 3));
+                    gameObject.HorizontalColliderLength = _textureLoader.Textures[gameObject.TextureType][gameObject.State]
+                        .Max(c => Array.LastIndexOf(c, (byte)3) - Array.IndexOf(c, (byte)3));
 
                     window.Draw(sprite);
                 }
