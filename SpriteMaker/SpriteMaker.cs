@@ -5,31 +5,33 @@ namespace SpriteMaker
     public partial class SpriteMaker : Form
     {
         private Dictionary<string, string> _paths = new();
-        private readonly byte[][] _pixels = new byte[32][];
+        private readonly byte[][] _pixels = new byte[64][];
 
         public SpriteMaker()
         {
             InitializeComponent();
 
-            for(int i = 0; i < 32; i++)
+            for(int i = 0; i < 64; i++)
             {
-                _pixels[i] = new byte[32];
-                for(int j = 0; j < 32; j++)
+                _pixels[i] = new byte[64];
+                for(int j = 0; j < 64; j++)
                 {
                     _pixels[i][j] = 0;
                     var button = new Button
                     {
                         Name = $"{i}-{j}",
-                        Size = new(20, 20),
-                        Location = new(20 * j + 5, 20 * i + 5),
+                        Size = new(10, 10),
+                        Location = new(10 * j + 5, 10 * i + 5),
                         Text = string.Empty,
                         ImageAlign = ContentAlignment.TopCenter,
-                        BackColor = Color.Gray,
-                        FlatStyle = FlatStyle.Flat
+                        BackColor = Color.Orange,
+                        FlatStyle = FlatStyle.Flat,
+                        Enabled = false,
+                        Visible = false
                     };
             
                     button.Click += new(ChangePixel);
-                    Controls.Add(button);
+                    TexturePanel.Controls.Add(button);
                 }
             }
 
@@ -46,7 +48,7 @@ namespace SpriteMaker
                     var i = byte.Parse(splitedName[0]);
                     var j = byte.Parse(splitedName[1]);
 
-                    if(button.BackColor != Color.Gray)
+                    if(button.BackColor != Color.Orange)
                     {
                         if (TransparentButton.Checked)
                         {
@@ -56,7 +58,7 @@ namespace SpriteMaker
                         else if (FillingButton.Checked)
                         {
                             _pixels[i][j] = 2;
-                            button.BackColor = Color.Black;
+                            button.BackColor = Color.Gray;
                         }
                         else if (ColliderButton.Checked)
                         {
@@ -103,7 +105,7 @@ namespace SpriteMaker
         }
         private static Color GetColor(byte value) => value switch
         {
-            2 => Color.Black,
+            2 => Color.Gray,
             3 => Color.Yellow,
             4 => Color.White,
             _ => Color.BlueViolet,
@@ -124,7 +126,9 @@ namespace SpriteMaker
                     for(int j = 0; j < pixels[i].Length; j++)
                     {
                         _pixels[i][j] = pixels[i][j];
-                        Controls[$"{i}-{j}"].BackColor = GetColor(_pixels[i][j]);
+                        TexturePanel.Controls[$"{i}-{j}"].BackColor = GetColor(_pixels[i][j]);
+                        TexturePanel.Controls[$"{i}-{j}"].Enabled = true;
+                        TexturePanel.Controls[$"{i}-{j}"].Visible = true;
                     }
                 }
 
@@ -134,7 +138,9 @@ namespace SpriteMaker
                     {
                         if (_pixels[i][j] == 0)
                         {
-                            Controls[$"{i}-{j}"].BackColor = Color.Gray;
+                            TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.Orange;
+                            TexturePanel.Controls[$"{i}-{j}"].Enabled = false;
+                            TexturePanel.Controls[$"{i}-{j}"].Visible = false;
                         }
                     }
                 }
@@ -165,16 +171,20 @@ namespace SpriteMaker
                 {
                     if (i < width && j < height)
                     {
-                        if (Controls[$"{i}-{j}"].BackColor == Color.Gray)
+                        if (TexturePanel.Controls[$"{i}-{j}"].BackColor == Color.Orange)
                         {
                             _pixels[i][j] = 1;
-                            Controls[$"{i}-{j}"].BackColor = Color.BlueViolet;
+                            TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.BlueViolet;
+                            TexturePanel.Controls[$"{i}-{j}"].Enabled = true;
+                            TexturePanel.Controls[$"{i}-{j}"].Visible = true;
                         }
                     }
                     else
                     {
                         _pixels[i][j] = 0;
-                        Controls[$"{i}-{j}"].BackColor = Color.Gray;
+                        TexturePanel.Controls[$"{i}-{j}"].BackColor = Color.Orange;
+                        TexturePanel.Controls[$"{i}-{j}"].Enabled = false;
+                        TexturePanel.Controls[$"{i}-{j}"].Visible = false;
                     }
                 }
             }

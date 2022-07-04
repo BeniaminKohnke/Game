@@ -44,6 +44,7 @@
             this.XLabel = new System.Windows.Forms.Label();
             this.KeywordBox = new System.Windows.Forms.TextBox();
             this.KeywordLabel = new System.Windows.Forms.Label();
+            this.TexturePanel = new System.Windows.Forms.Panel();
             this.ChoiceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
@@ -215,11 +216,19 @@
             this.KeywordLabel.TabIndex = 14;
             this.KeywordLabel.Text = "Keyword filter:";
             // 
+            // TexturePanel
+            // 
+            this.TexturePanel.Location = new System.Drawing.Point(0, 0);
+            this.TexturePanel.Name = "TexturePanel";
+            this.TexturePanel.Size = new System.Drawing.Size(647, 637);
+            this.TexturePanel.TabIndex = 15;
+            // 
             // SpriteMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(865, 649);
+            this.Controls.Add(this.TexturePanel);
             this.Controls.Add(this.KeywordLabel);
             this.Controls.Add(this.KeywordBox);
             this.Controls.Add(this.XLabel);
@@ -260,5 +269,6 @@
         private Label XLabel;
         private TextBox KeywordBox;
         private Label KeywordLabel;
+        private Panel TexturePanel;
     }
 }
