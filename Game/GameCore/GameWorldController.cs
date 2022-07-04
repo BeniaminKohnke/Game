@@ -23,16 +23,30 @@ namespace Game.GameCore
                 if(difference <= drawDistance)
                 {
                     var texture = _textureLoader.Textures[gameObject.TextureType][gameObject.State];
+                    var image = new Image((uint)texture.Length, (uint)texture[0].Length);
+                    
+                    for(uint i = 0; i < texture.Length; i++)
+                    {
+                        for(uint j = 0; j < texture[i].Length; j++)
+                        {
+                            image.SetPixel(i, j, GetColor(texture[i][j]));
+                        }
+                    }
+
+                    image.FlipVertically();
                     var sprite = new Sprite
                     {
-                        Texture = texture,
+                        Texture = new Texture(image),
                         Position = new(gameObject.X, gameObject.Y),
-                        Origin = new(texture.Size.X / 2, texture.Size.Y / 2),
-                        Scale = new (10, 10),
+                        Origin = new(image.Size.X / 2, image.Size.Y / 2),
+                        Scale = new(10, 10),
+                        Rotation = 90,
                     };
-                    gameObject.VerticalColliderLength = 10;
-                    gameObject.HorizontalColliderLength = (int)texture.Size.X * 5;
-                    gameObject.OriginShiftY = (int)texture.Size.Y * 5;
+
+                    gameObject.OriginShiftY = (int)image.Size.Y / 2;
+                    gameObject.VerticalColliderLength = texture.Count(c => c.Any(v => v == 3));
+                    gameObject.HorizontalColliderLength = texture.Max(c => Array.LastIndexOf(c, (byte)3) - Array.IndexOf(c, (byte)3));
+
                     window.Draw(sprite);
                 }
             }
@@ -50,5 +64,12 @@ namespace Game.GameCore
                 }
             }
         }
+
+        private static Color GetColor(byte color) => color switch
+        {
+            2 => Color.Black,
+            3 or 4 => Color.White,
+            _ => Color.Transparent,
+        };
     }
 }
