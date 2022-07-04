@@ -45,6 +45,8 @@
             this.KeywordBox = new System.Windows.Forms.TextBox();
             this.KeywordLabel = new System.Windows.Forms.Label();
             this.TexturePanel = new System.Windows.Forms.Panel();
+            this.FillingColliderButton = new System.Windows.Forms.RadioButton();
+            this.TransparentColliderButton = new System.Windows.Forms.RadioButton();
             this.ChoiceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
@@ -52,7 +54,7 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(653, 93);
+            this.SaveButton.Location = new System.Drawing.Point(653, 102);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(89, 23);
             this.SaveButton.TabIndex = 2;
@@ -62,13 +64,15 @@
             // 
             // ChoiceBox
             // 
+            this.ChoiceBox.Controls.Add(this.TransparentColliderButton);
+            this.ChoiceBox.Controls.Add(this.FillingColliderButton);
             this.ChoiceBox.Controls.Add(this.ContourButton);
             this.ChoiceBox.Controls.Add(this.ColliderButton);
             this.ChoiceBox.Controls.Add(this.FillingButton);
             this.ChoiceBox.Controls.Add(this.TransparentButton);
             this.ChoiceBox.Location = new System.Drawing.Point(653, 12);
             this.ChoiceBox.Name = "ChoiceBox";
-            this.ChoiceBox.Size = new System.Drawing.Size(206, 75);
+            this.ChoiceBox.Size = new System.Drawing.Size(206, 90);
             this.ChoiceBox.TabIndex = 4;
             this.ChoiceBox.TabStop = false;
             this.ChoiceBox.Text = "Options";
@@ -77,7 +81,7 @@
             // 
             this.ContourButton.AutoSize = true;
             this.ContourButton.Checked = true;
-            this.ContourButton.Location = new System.Drawing.Point(106, 47);
+            this.ContourButton.Location = new System.Drawing.Point(6, 65);
             this.ContourButton.Name = "ContourButton";
             this.ContourButton.Size = new System.Drawing.Size(69, 19);
             this.ContourButton.TabIndex = 3;
@@ -88,7 +92,7 @@
             // ColliderButton
             // 
             this.ColliderButton.AutoSize = true;
-            this.ColliderButton.Location = new System.Drawing.Point(106, 22);
+            this.ColliderButton.Location = new System.Drawing.Point(106, 21);
             this.ColliderButton.Name = "ColliderButton";
             this.ColliderButton.Size = new System.Drawing.Size(66, 19);
             this.ColliderButton.TabIndex = 2;
@@ -110,7 +114,7 @@
             // TransparentButton
             // 
             this.TransparentButton.AutoSize = true;
-            this.TransparentButton.Location = new System.Drawing.Point(6, 22);
+            this.TransparentButton.Location = new System.Drawing.Point(6, 21);
             this.TransparentButton.Name = "TransparentButton";
             this.TransparentButton.Size = new System.Drawing.Size(86, 19);
             this.TransparentButton.TabIndex = 0;
@@ -129,7 +133,7 @@
             // 
             // FolderPathBox
             // 
-            this.FolderPathBox.Location = new System.Drawing.Point(653, 180);
+            this.FolderPathBox.Location = new System.Drawing.Point(653, 185);
             this.FolderPathBox.Name = "FolderPathBox";
             this.FolderPathBox.Size = new System.Drawing.Size(206, 23);
             this.FolderPathBox.TabIndex = 6;
@@ -138,7 +142,7 @@
             // FolderPathLabel
             // 
             this.FolderPathLabel.AutoSize = true;
-            this.FolderPathLabel.Location = new System.Drawing.Point(653, 155);
+            this.FolderPathLabel.Location = new System.Drawing.Point(653, 164);
             this.FolderPathLabel.Name = "FolderPathLabel";
             this.FolderPathLabel.Size = new System.Drawing.Size(111, 15);
             this.FolderPathLabel.TabIndex = 7;
@@ -146,7 +150,7 @@
             // 
             // RefreshButton
             // 
-            this.RefreshButton.Location = new System.Drawing.Point(770, 151);
+            this.RefreshButton.Location = new System.Drawing.Point(770, 160);
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(89, 23);
             this.RefreshButton.TabIndex = 8;
@@ -156,7 +160,7 @@
             // 
             // LoadButton
             // 
-            this.LoadButton.Location = new System.Drawing.Point(770, 93);
+            this.LoadButton.Location = new System.Drawing.Point(768, 102);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(89, 23);
             this.LoadButton.TabIndex = 9;
@@ -166,7 +170,7 @@
             // 
             // WidthBox
             // 
-            this.WidthBox.Location = new System.Drawing.Point(653, 122);
+            this.WidthBox.Location = new System.Drawing.Point(653, 131);
             this.WidthBox.Maximum = new decimal(new int[] {
             32,
             0,
@@ -179,7 +183,7 @@
             // 
             // HeightBox
             // 
-            this.HeightBox.Location = new System.Drawing.Point(770, 122);
+            this.HeightBox.Location = new System.Drawing.Point(768, 131);
             this.HeightBox.Maximum = new decimal(new int[] {
             32,
             0,
@@ -193,7 +197,7 @@
             // XLabel
             // 
             this.XLabel.AutoSize = true;
-            this.XLabel.Location = new System.Drawing.Point(748, 124);
+            this.XLabel.Location = new System.Drawing.Point(748, 133);
             this.XLabel.Name = "XLabel";
             this.XLabel.Size = new System.Drawing.Size(14, 15);
             this.XLabel.TabIndex = 12;
@@ -222,6 +226,28 @@
             this.TexturePanel.Name = "TexturePanel";
             this.TexturePanel.Size = new System.Drawing.Size(647, 637);
             this.TexturePanel.TabIndex = 15;
+            // 
+            // FillingColliderButton
+            // 
+            this.FillingColliderButton.AutoSize = true;
+            this.FillingColliderButton.Location = new System.Drawing.Point(106, 43);
+            this.FillingColliderButton.Name = "FillingColliderButton";
+            this.FillingColliderButton.Size = new System.Drawing.Size(99, 19);
+            this.FillingColliderButton.TabIndex = 4;
+            this.FillingColliderButton.TabStop = true;
+            this.FillingColliderButton.Text = "Filling collider";
+            this.FillingColliderButton.UseVisualStyleBackColor = true;
+            // 
+            // TransparentColliderButton
+            // 
+            this.TransparentColliderButton.AutoSize = true;
+            this.TransparentColliderButton.Location = new System.Drawing.Point(106, 65);
+            this.TransparentColliderButton.Name = "TransparentColliderButton";
+            this.TransparentColliderButton.Size = new System.Drawing.Size(101, 19);
+            this.TransparentColliderButton.TabIndex = 5;
+            this.TransparentColliderButton.TabStop = true;
+            this.TransparentColliderButton.Text = "Transp collider";
+            this.TransparentColliderButton.UseVisualStyleBackColor = true;
             // 
             // SpriteMaker
             // 
@@ -270,5 +296,7 @@
         private TextBox KeywordBox;
         private Label KeywordLabel;
         private Panel TexturePanel;
+        private RadioButton TransparentColliderButton;
+        private RadioButton FillingColliderButton;
     }
 }

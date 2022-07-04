@@ -10,11 +10,11 @@ namespace Game.GameCore
     {
         private readonly RenderWindow _window = new(VideoMode.DesktopMode, "Thesis", Styles.Default)
         {
-            Size = new Vector2u(800, 600),
+            Size = new(800, 600),
         };
         private readonly Parameters _parameters = new();
         private readonly GameWorld _gameWorld = new();
-        private readonly GameWorldController _gameWorldController;
+        private readonly GameWorldController _gameWorldController = new();
         private readonly CodeHandler _codeHandler = new();
         private Time _lastUpdateTime = Time.Zero;
         private Time _lastRenderTime = Time.Zero;
@@ -25,7 +25,6 @@ namespace Game.GameCore
 
         public Core()
         {
-            _gameWorldController = new(_gameWorld);
             _window.KeyPressed += new EventHandler<KeyEventArgs>(HandleKeyboardInput);
         }
 

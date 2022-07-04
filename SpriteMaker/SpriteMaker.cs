@@ -70,6 +70,16 @@ namespace SpriteMaker
                             _pixels[i][j] = 4;
                             button.BackColor = Color.White;
                         }
+                        else if (FillingColliderButton.Checked)
+                        {
+                            _pixels[i][j] = 5;
+                            button.BackColor = Color.LightSteelBlue;
+                        }
+                        else if (TransparentColliderButton.Checked)
+                        {
+                            _pixels[i][j] = 6;
+                            button.BackColor = Color.Fuchsia;
+                        }
                     }
                 }
             }
@@ -108,6 +118,8 @@ namespace SpriteMaker
             2 => Color.Gray,
             3 => Color.Yellow,
             4 => Color.White,
+            5 => Color.LightSteelBlue,
+            6 => Color.Fuchsia,
             _ => Color.BlueViolet,
         };
 

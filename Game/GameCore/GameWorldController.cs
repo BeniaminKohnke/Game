@@ -7,11 +7,10 @@ namespace Game.GameCore
     {
         private readonly TextureLoader _textureLoader = new();
         private readonly GameObjectPositionComparer _comparer = new();
-        private Dictionary<TexturesTypes, Dictionary<States, Image>> _images = new();
-        public GameWorldController(GameWorld gameWorld)
+        private readonly Dictionary<TexturesTypes, Dictionary<States, Image>> _images = new();
+        public GameWorldController()
         {
             _textureLoader.LoadTextures();
-
             foreach(var type in _textureLoader.Textures)
             {
                 _images[type.Key] = new Dictionary<States, Image>();
@@ -80,7 +79,7 @@ namespace Game.GameCore
 
         private static Color GetColor(byte color) => color switch
         {
-            2 => Color.Black,
+            2 or 5 => Color.Black,
             3 or 4 => Color.White,
             _ => Color.Transparent,
         };
