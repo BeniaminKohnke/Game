@@ -5,33 +5,41 @@ namespace Game.GameCore
 {
     public class GameWorldController
     {
-        private readonly TextureLoader _textureLoader = new();
         private readonly GameObjectPositionComparer _comparer = new();
-        private readonly Dictionary<TexturesTypes, Dictionary<States, Image>> _images = new();
-        public GameWorldController()
+        private readonly Dictionary<Shapes, Dictionary<States, Texture>> _textures = new();
+        private readonly Dictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
+
+        public GameWorldController(GameWorld gameWorld)
         {
-            _textureLoader.LoadTextures();
-            foreach(var type in _textureLoader.Textures)
+            gameWorld.ShapeLoader.LoadShapes();
+            foreach(var type in gameWorld.ShapeLoader.Shapes)
             {
-                _images[type.Key] = new Dictionary<States, Image>();
+                _textures[type.Key] = new();
                 foreach(var pair in type.Value)
                 {
                     if(pair.Value.Length > 0 && pair.Value.Any(r => r.Any()))
                     {
-                        var image = new Image((uint)pair.Value.Length, (uint)pair.Value[0].Length);
+                        var image = new Image((uint)pair.Value[0].Length, (uint)pair.Value.Length);
                         for (uint i = 0; i < pair.Value.Length; i++)
                         {
                             for (uint j = 0; j < pair.Value[i].Length; j++)
                             {
-                                image.SetPixel(i, j, GetColor(pair.Value[i][j]));
+                                image.SetPixel(j, i, GetColor(pair.Value[i][j]));
                             }
                         }
 
-                        image.FlipVertically();
-                        _images[type.Key][pair.Key] = image;
+                        _textures[type.Key][pair.Key] = new(image);
                     }
                 }
             }
+
+            gameWorld.GameObjects.ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
+            {
+                Texture = _textures[go.Shape][go.State],
+                Position = new(go.GridPositionX, go.GridPositionY),
+                Origin = new(_textures[go.Shape][go.State].Size.X / 2, _textures[go.Shape][go.State].Size.Y / 2),
+            }));
+
         }
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
@@ -40,41 +48,32 @@ namespace Game.GameCore
 
             foreach (var gameObject in gameWorld.GameObjects)
             {
-                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.X - gameObject.X, 2) + Math.Pow(gameWorld.Player.Y - gameObject.Y, 2));
-                if(difference <= drawDistance)
+                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.GridPositionX - gameObject.GridPositionX, 2) + Math.Pow(gameWorld.Player.GridRelativePositionY - gameObject.GridRelativePositionY, 2));
+                if (difference <= drawDistance)
                 {
-                    var image = _images[gameObject.TextureType][gameObject.State];
-                    var sprite = new Sprite
+                    var (state, sprite) = _gameObjectsSprites[gameObject.Id];
+                    if(gameObject.State != state)
                     {
-                        Texture = new(image),
-                        Position = new(gameObject.X, gameObject.Y),
-                        Origin = new(image.Size.X / 2, image.Size.Y / 2),
-                        Scale = new(10, 10),
-                        Rotation = 90,
-                    };
-
-                    gameObject.OriginShiftY = (int)image.Size.Y / 2;
-                    gameObject.VerticalColliderLength = _textureLoader.Textures[gameObject.TextureType][gameObject.State]
-                        .Count(c => c.Any(v => v == 3));
-                    gameObject.HorizontalColliderLength = _textureLoader.Textures[gameObject.TextureType][gameObject.State]
-                        .Max(c => Array.LastIndexOf(c, (byte)3) - Array.IndexOf(c, (byte)3));
+                        var texture = _textures[gameObject.Shape][gameObject.State];
+                        state = gameObject.State;
+                        sprite = new()
+                        {
+                            Texture = texture,
+                            Position = new(gameObject.GridPositionX, gameObject.GridPositionY),
+                            Origin = new(texture.Size.X / 2, texture.Size.Y / 2),
+                        };
+                        _gameObjectsSprites[gameObject.Id] = (state, sprite);
+                    }
+                    else
+                    {
+                        sprite.Position = new(gameObject.GridPositionX, gameObject.GridPositionY);
+                    }
 
                     window.Draw(sprite);
                 }
             }
 
-            window.SetTitle($"X:{gameWorld.Player.X} Y:{gameWorld.Player.Y}");
-        }
-
-        public void Update(GameWorld gameWorld)
-        {
-            for (int i = 0; i < gameWorld.GameObjects.Count; i++)
-            {
-                for (int j = i + 1; j < gameWorld.GameObjects.Count; j++)
-                {
-                    gameWorld.GameObjects[i].HandleCollison(gameWorld.GameObjects[j]);
-                }
-            }
+            window.SetTitle($"X:{gameWorld.Player.GridPositionX} Y:{gameWorld.Player.GridRelativePositionY}");
         }
 
         private static Color GetColor(byte color) => color switch

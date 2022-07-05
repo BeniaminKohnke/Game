@@ -1,6 +1,6 @@
 ﻿namespace GameAPI
 {
-    public enum ObjectsTypes
+    public enum Types
     {
         None,
         Player,
@@ -8,7 +8,7 @@
         Tree
     }
 
-    public enum TexturesTypes
+    public enum Shapes
     {
         Player,
         Rock1,
@@ -32,39 +32,70 @@
         MovingRight3,
     }
 
+    public enum Directions
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+    }
+
     public class Parameters
     {
-        public readonly Dictionary<string, (ObjectsTypes, object)> DynamicObjects = new();
+        public readonly Dictionary<string, (Types, object)> DynamicObjects = new();
     }
 
     public class GameObjectPositionComparer : IComparer<GameObject>
     {
-        public int Compare(GameObject? x, GameObject? y)
+        public int Compare(GameObject? first, GameObject? second)
         {
-            if (x != null && y != null)
+            //if (x != null && y != null)
+            //{
+            //    var differenceY = x.Y - y.Y;
+            //    if (differenceY < 0.001)
+            //    {
+            //        return -1;
+            //    }
+            //    if (differenceY > 0.001)
+            //    {
+            //        return 1;
+            //    }
+            //
+            //    var differenceX = x.X - y.X;
+            //    if (differenceX > 0.001)
+            //    {
+            //        return -1;
+            //    }
+            //    if (differenceX < 0.001)
+            //    {
+            //        return 1;
+            //    }
+            //}
+
+            if (first != null && second != null)
             {
-                var differenceY = x.Y - y.Y;
-                if (differenceY < 0.001)
+                var differenceY = first.GridRelativePositionY - second.GridRelativePositionY;
+                if (differenceY < 0)
                 {
                     return -1;
                 }
-                if (differenceY > 0.001)
+                if (differenceY > 0)
                 {
                     return 1;
                 }
 
-                var differenceX = x.X - y.X;
-                if (differenceX > 0.001)
+                var differenceX = first.GridPositionX - second.GridPositionX;
+                if (differenceX > 0)
                 {
                     return -1;
                 }
-                if (differenceX < 0.001)
+                if (differenceX < 0)
                 {
                     return 1;
                 }
             }
 
-            return 0;
+            return (first != null && second != null) ? (first.Id > second.Id ? -1 : 1) : 0;
         }
     }
 }
