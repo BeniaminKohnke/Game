@@ -97,11 +97,11 @@
                     var canMove = true;
                     for (int j = i + 1; j < GameObjects.Count; j++)
                     {
-                        //if (HandleCollision(GameObjects[i], GameObjects[j], predictedPositionX, predictedPositionY))
-                        //{
-                        //    canMove = false;
-                        //    break;
-                        //}
+                        if (HandleCollision(GameObjects[i], GameObjects[j], predictedPositionX, predictedPositionY))
+                        {
+                            canMove = false;
+                            break;
+                        }
                     }
 
                     if (canMove)
