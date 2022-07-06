@@ -5,7 +5,7 @@ namespace Game
 {
     public class Engine
     {
-        private readonly GameObjectPositionComparer _comparer = new();
+        private readonly GameObjectComparer _comparer = new();
         private readonly Dictionary<Shapes, Dictionary<States, Texture>> _textures = new();
         private readonly Dictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
 
@@ -44,31 +44,26 @@ namespace Game
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
         {
             gameWorld.GameObjects.Sort(_comparer);
-
-            foreach (var gameObject in gameWorld.GameObjects)
+            foreach (var gameObject in GameAPI.DSL.ScriptFunctions.ScanArea(gameWorld, drawDistance))
             {
-                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.X - gameObject.X, 2) + Math.Pow(gameWorld.Player.RelativeY - gameObject.RelativeY, 2));
-                if (difference <= drawDistance)
+                var (state, sprite) = _gameObjectsSprites[gameObject.Id];
+                if (gameObject.State != state)
                 {
-                    var (state, sprite) = _gameObjectsSprites[gameObject.Id];
-                    if (gameObject.State != state)
+                    var texture = _textures[gameObject.Shape][gameObject.State];
+                    state = gameObject.State;
+                    sprite = new()
                     {
-                        var texture = _textures[gameObject.Shape][gameObject.State];
-                        state = gameObject.State;
-                        sprite = new()
-                        {
-                            Texture = texture,
-                            Position = new(gameObject.X, gameObject.Y),
-                        };
-                        _gameObjectsSprites[gameObject.Id] = (state, sprite);
-                    }
-                    else
-                    {
-                        sprite.Position = new(gameObject.X, gameObject.Y);
-                    }
-
-                    window.Draw(sprite);
+                        Texture = texture,
+                        Position = new(gameObject.X, gameObject.Y),
+                    };
+                    _gameObjectsSprites[gameObject.Id] = (state, sprite);
                 }
+                else
+                {
+                    sprite.Position = new(gameObject.X, gameObject.Y);
+                }
+
+                window.Draw(sprite);
             }
 
             window.SetTitle($"X:{gameWorld.Player.X} Y:{gameWorld.Player.Y}");

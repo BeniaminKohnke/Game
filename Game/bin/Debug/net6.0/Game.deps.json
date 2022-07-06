@@ -9,7 +9,6 @@
       "Game/1.0.0": {
         "dependencies": {
           "GameAPI": "1.0.0",
-          "Microsoft.CodeAnalysis.CSharp": "4.2.0",
           "SFML.Net": "2.5.0",
           "morelinq": "3.3.2"
         },

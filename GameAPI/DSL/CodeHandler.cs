@@ -1,14 +1,16 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using MoreLinq.Extensions;
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace GameAPI.DSL
 {
     public class CodeHandler
     {
+        private readonly ConcurrentDictionary<string, (Types, object)> _dynamicObjects = new();
         private Type[]? _types;
-        private readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary); 
+        private readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary);
         private readonly MetadataReference[] _references = new[]
         {
             AssemblyMetadata.CreateFromFile(typeof(string).Assembly.Location).GetReference(),
@@ -18,9 +20,10 @@ namespace GameAPI.DSL
             MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Core.dll"),
             MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Runtime.dll"),
             MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Collections.dll"),
+            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Collections.Concurrent.dll"),
         };
-
-        public void InvokePlayerScripts(GameWorld gameWorld, Parameters parameters)
+        
+        public void InvokePlayerScripts(GameWorld gameWorld)
         {
             foreach(var position in CodeBuilder.GetCallOrder())
             {
@@ -28,7 +31,7 @@ namespace GameAPI.DSL
                 if(script != null)
                 {
                     dynamic? instance = Activator.CreateInstance(script);
-                    (instance as PlayerScript)?.Invoke(gameWorld, parameters);
+                    (instance as PlayerScript)?.Invoke(gameWorld, _dynamicObjects);
                 }
             }
         }
@@ -42,6 +45,7 @@ namespace GameAPI.DSL
 
                 using var dllStream = new MemoryStream();
                 using var pdbStream = new MemoryStream();
+
                 if (compilation.Emit(dllStream, pdbStream).Success)
                 {
                     var filePath = $@"{CodeBuilder.ScriptsFolderPath}\{dllFileName}.dll";

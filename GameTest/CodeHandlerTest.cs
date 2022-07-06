@@ -1,4 +1,5 @@
-﻿using GameAPI.DSL;
+﻿using GameAPI;
+using GameAPI.DSL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GameTest
@@ -7,9 +8,28 @@ namespace GameTest
     public class CodeHandlerTest
     {
         [TestMethod]
-        public void CompileToCSharpTest()
+        public void InvokePlayerScriptsTest()
         {
-            CodeBuilder.CompileToCSharp("Test");
+            var handler = new CodeHandler();
+            var gameWorld = new GameWorld();
+            handler.InvokePlayerScripts(gameWorld);
+        }
+
+        [TestMethod]
+        public void CompileScriptsTest()
+        {
+            var handler = new CodeHandler();
+            handler.CompileScripts();
+        }
+
+        [TestMethod]
+        public void LoadScriptsTest()
+        {
+            var handler = new CodeHandler();
+            handler.LoadScripts();
+
+            var gameWorld = new GameWorld();
+            handler.InvokePlayerScripts(gameWorld);
         }
     }
 }

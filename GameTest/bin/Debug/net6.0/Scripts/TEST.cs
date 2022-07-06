@@ -1,21 +1,23 @@
 using GameAPI;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-namespace Game.DSL
+namespace GameAPI.DSL
 {
-	public class TestScript : IPlayerScript
+	public class TestScript : PlayerScript
 	{
 		public TestScript()
 		{
 		}
 
-		public void Invoke(GameWorld gameWorld, Parameters parameters)
+		protected override void Do(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters)
 		{
 			var name = "testObject";
-			var type = GameAPI.ObjectsTypes.None;
+			var type = Types.None;
 			var obj = new GameObject();
 			if(!parameters.ContainsKey(name))
 			{
-				parameters.DynamicObjects.Add(name, (type, obj));
+				parameters[name] = (type, obj);
 			}
 		}
 	}

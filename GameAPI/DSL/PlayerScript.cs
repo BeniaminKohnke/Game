@@ -1,13 +1,15 @@
-﻿namespace GameAPI.DSL
+﻿using System.Collections.Concurrent;
+
+namespace GameAPI.DSL
 {
     public abstract class PlayerScript
     {
         public bool IsActive { get; private set; }
         private Thread? t_script;
 
-        protected abstract void Do(GameWorld gameWorld, Parameters parameters);
+        protected abstract void Do(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters);
 
-        public void Invoke(GameWorld gameWorld, Parameters parameters)
+        public void Invoke(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters)
         {
             try
             {

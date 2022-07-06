@@ -82,37 +82,12 @@
                 }
             },
         };
-
-        public readonly Dictionary<string, (Types, object)> DynamicObjects = new();
     }
 
-    public class GameObjectPositionComparer : IComparer<GameObject>
+    public class GameObjectComparer : IComparer<GameObject>
     {
         public int Compare(GameObject? first, GameObject? second)
         {
-            //if (x != null && y != null)
-            //{
-            //    var differenceY = x.Y - y.Y;
-            //    if (differenceY < 0.001)
-            //    {
-            //        return -1;
-            //    }
-            //    if (differenceY > 0.001)
-            //    {
-            //        return 1;
-            //    }
-            //
-            //    var differenceX = x.X - y.X;
-            //    if (differenceX > 0.001)
-            //    {
-            //        return -1;
-            //    }
-            //    if (differenceX < 0.001)
-            //    {
-            //        return 1;
-            //    }
-            //}
-
             if (first != null && second != null)
             {
                 var differenceY = first.RelativeY - second.RelativeY;

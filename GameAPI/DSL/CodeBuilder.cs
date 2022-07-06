@@ -7,7 +7,7 @@ namespace GameAPI.DSL
         public static readonly string ScriptsFolderPath = $@"{Directory.GetCurrentDirectory()}\Scripts";
         public static readonly string CallOrderFilePath = $@"{Directory.GetCurrentDirectory()}\Scripts\CallOrder.txt";
         private static string AddToDynamicObjects(string name, string type, string obj, string tabs) =>
-            $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters.DynamicObjects.Add({name}, ({type}, {obj}));{"\n"}{tabs}{"}"}";
+            $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters[{name}] = ({type}, {obj});{"\n"}{tabs}{"}"}";
 
         static CodeBuilder()
         {
@@ -25,7 +25,9 @@ namespace GameAPI.DSL
 
             var builder = new StringBuilder();
 
-            builder.AppendLine("using GameAPI;\n");
+            builder.AppendLine("using GameAPI;");
+            builder.AppendLine("using System.Collections.Concurrent;");
+            builder.AppendLine("using System.Collections.Generic;\n");
             builder.AppendLine("namespace GameAPI.DSL");
             builder.AppendLine("{");
             builder.AppendLine($"\tpublic class {scriptName}Script : PlayerScript");
@@ -34,12 +36,12 @@ namespace GameAPI.DSL
             builder.AppendLine("\t\t{");
             builder.AppendLine("\t\t}\n");
 
-            builder.AppendLine($"\t\tpublic void Invoke(GameWorld gameWorld, Parameters parameters)");
+            builder.AppendLine($"\t\tprotected override void Do(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters)");
             builder.AppendLine("\t\t{");
 
             //test
             builder.AppendLine("\t\t\tvar name = \"testObject\";");
-            builder.AppendLine("\t\t\tvar type = GameAPI.ObjectsTypes.None;");
+            builder.AppendLine("\t\t\tvar type = Types.None;");
             builder.AppendLine("\t\t\tvar obj = new GameObject();");
             builder.AppendLine($"{AddToDynamicObjects("name", "type", "obj", "\t\t\t")}");
             

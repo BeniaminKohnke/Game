@@ -120,10 +120,6 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
-            "Microsoft.CodeAnalysis.CSharp": {
-              "target": "Package",
-              "version": "[4.2.0, )"
-            },
             "SFML.Net": {
               "target": "Package",
               "version": "[2.5.0, )"

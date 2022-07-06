@@ -8,12 +8,8 @@ namespace Game
 {
     public class Core
     {
-        private readonly RenderWindow _window = new(VideoMode.DesktopMode, "Thesis", Styles.Default)
-        {
-            Size = new(800, 600),
-        };
+        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], "Thesis", Styles.Fullscreen);
         private readonly View _view;
-        private readonly Parameters _parameters = new();
         private readonly GameWorld _gameWorld = new();
         private readonly Engine _gameWorldController;
         private readonly CodeHandler _codeHandler = new();
@@ -28,7 +24,7 @@ namespace Game
         {
             _gameWorldController = new(_gameWorld);
             _window.KeyPressed += new EventHandler<KeyEventArgs>(HandleKeyboardInput);
-            _view = new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(64, 64));
+            _view = new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(128, 128));
             _window.SetView(_view);
         }
 
@@ -36,7 +32,7 @@ namespace Game
         {
             _window.DispatchEvents();
             _gameWorld.Update();
-            _codeHandler.InvokePlayerScripts(_gameWorld, _parameters);
+            _codeHandler.InvokePlayerScripts(_gameWorld);
         }
 
         private void Render()
@@ -44,7 +40,7 @@ namespace Game
             _window.Clear();
             _view.Center = new(_gameWorld.Player.X, _gameWorld.Player.Y);
             _window.SetView(_view);
-            _gameWorldController.Draw(_window, 1200, _gameWorld);
+            _gameWorldController.Draw(_window, 300, _gameWorld);
             _window.Display();
         }
 
@@ -68,6 +64,11 @@ namespace Game
             if (e.Code == Keyboard.Key.Left)
             {
                 _gameWorld.Player.EnqueueMovement(Directions.Left);
+            }
+
+            if(e.Code == Keyboard.Key.Escape)
+            {
+                _window.Close();
             }
         }
 
