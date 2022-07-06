@@ -107,7 +107,7 @@ namespace SpriteMaker
                 ExistingTexturesBox.Items.Clear();
                 if (!string.IsNullOrEmpty(FolderPathBox.Text))
                 {
-                    foreach (var folder in Enum.GetValues(typeof(Shapes)))
+                    foreach (var folder in Enum.GetValues(typeof(Grids)))
                     {
                         var dir = $@"{FolderPathBox.Text}\{folder}";
                         if (!Directory.Exists(dir))
@@ -123,7 +123,7 @@ namespace SpriteMaker
                                 File.Create(path);
                             }
 
-                            var position = $"{Enum.GetName(typeof(Shapes), folder)}->{Enum.GetName(typeof(States), file)}";
+                            var position = $"{Enum.GetName(typeof(Grids), folder)}->{Enum.GetName(typeof(States), file)}";
                             ExistingTexturesBox.Items.Add(position);
                             _paths[position] = path;
                         }

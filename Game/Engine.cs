@@ -5,14 +5,12 @@ namespace Game
 {
     public class Engine
     {
-        private readonly GameObjectComparer _comparer = new();
-        private readonly Dictionary<Shapes, Dictionary<States, Texture>> _textures = new();
+        private readonly Dictionary<Grids, Dictionary<States, Texture>> _textures = new();
         private readonly Dictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
 
         public Engine(GameWorld gameWorld)
         {
-            gameWorld.ShapeLoader.LoadShapes();
-            foreach (var type in gameWorld.ShapeLoader.Shapes)
+            foreach (var type in gameWorld.Loader.GetGrids())
             {
                 _textures[type.Key] = new();
                 foreach (var pair in type.Value)
@@ -35,38 +33,38 @@ namespace Game
 
             gameWorld.GameObjects.ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
             {
-                Texture = _textures[go.Shape][go.State],
-                Position = new(go.X, go.Y),
+                Texture = _textures[go.Grid][go.State],
+                Position = new(go.V1.x, go.V1.y),
             }));
 
         }
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
         {
-            gameWorld.GameObjects.Sort(_comparer);
+            gameWorld.Sort();
             foreach (var gameObject in GameAPI.DSL.ScriptFunctions.ScanArea(gameWorld, drawDistance))
             {
                 var (state, sprite) = _gameObjectsSprites[gameObject.Id];
                 if (gameObject.State != state)
                 {
-                    var texture = _textures[gameObject.Shape][gameObject.State];
+                    var texture = _textures[gameObject.Grid][gameObject.State];
                     state = gameObject.State;
                     sprite = new()
                     {
                         Texture = texture,
-                        Position = new(gameObject.X, gameObject.Y),
+                        Position = new(gameObject.V1.x, gameObject.V1.y),
                     };
                     _gameObjectsSprites[gameObject.Id] = (state, sprite);
                 }
                 else
                 {
-                    sprite.Position = new(gameObject.X, gameObject.Y);
+                    sprite.Position = new(gameObject.V1.x, gameObject.V1.y);
                 }
 
                 window.Draw(sprite);
             }
 
-            window.SetTitle($"X:{gameWorld.Player.X} Y:{gameWorld.Player.Y}");
+            window.SetTitle($"X:{gameWorld.Player.V1.x} Y:{gameWorld.Player.V1.y}");
         }
 
         private static Color GetColor(byte color) => color switch

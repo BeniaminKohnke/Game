@@ -1,32 +1,36 @@
 ﻿namespace GameAPI
 {
-    public class ShapeLoader
+    public class GridLoader
     {
-        public Dictionary<Shapes, Dictionary<States, byte[][]>> Shapes = new();
+        private readonly Dictionary<Grids, Dictionary<States, byte[][]>> _grids = new();
 
-        public void LoadShapes()
+        public GridLoader()
         {
             var mainDir = $@"{Directory.GetCurrentDirectory()}\Textures";
-            foreach(var folder in Enum.GetValues(typeof(Shapes)))
+            foreach (var folder in Enum.GetValues(typeof(Grids)))
             {
                 var folderPath = $@"{mainDir}\{folder}";
-                if(Directory.Exists(folderPath))
+                if (Directory.Exists(folderPath))
                 {
-                    Shapes[(Shapes)folder] = new();
-                    foreach(var file in Enum.GetValues(typeof(States)))
+                    _grids[(Grids)folder] = new();
+                    foreach (var file in Enum.GetValues(typeof(States)))
                     {
                         var filePath = $@"{folderPath}\{file}.sm";
-                        if(File.Exists(filePath))
+                        if (File.Exists(filePath))
                         {
                             var state = File.ReadAllLines(filePath).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
-                            if(state.Length > 0)
+                            if (state.Length > 0)
                             {
-                                Shapes[(Shapes)folder][(States)file] = state;
+                                _grids[(Grids)folder][(States)file] = state;
                             }
                         }
                     }
                 }
             }
         }
+
+        public byte[][] GetGrid(Grids grid, States state) => _grids.ContainsKey(grid) && _grids[grid].ContainsKey(state) ? _grids[grid][state] : new byte[][] { new byte[] { 1 } };
+        public Dictionary<States, byte[][]> GetStates(Grids grid) => _grids.ContainsKey(grid) ? _grids[grid] : new();
+        public Dictionary<Grids, Dictionary<States, byte[][]>> GetGrids() => _grids;
     }
 }

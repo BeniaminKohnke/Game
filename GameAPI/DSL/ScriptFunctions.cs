@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace GameAPI.DSL
+﻿namespace GameAPI.DSL
 {
     public static class ScriptFunctions
     {
@@ -23,8 +21,8 @@ namespace GameAPI.DSL
             var squaredRadius = radius * radius;
             foreach(var go in gameWorld.GameObjects)
             {
-                var deltaX = gameWorld.Player.X - go.X;
-                var deltaY = gameWorld.Player.Y - go.Y;
+                var deltaX = gameWorld.Player.V1.x - go.V1.x;
+                var deltaY = gameWorld.Player.V1.y - go.V1.y;
 
                 if((deltaX * deltaX) + (deltaY * deltaY) <= squaredRadius)
                 {
@@ -34,7 +32,5 @@ namespace GameAPI.DSL
 
             return objects;
         }
-
-            //Math.Sqrt(Math.Pow(gameWorld.Player.X - go.X, 2) + Math.Pow(gameWorld.Player.RelativeY - go.RelativeY, 2)
     }
 }

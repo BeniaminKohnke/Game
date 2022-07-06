@@ -2,66 +2,43 @@
 {
     public class GameWorld
     {
-        public ShapeLoader ShapeLoader { get; } = new();
-        public readonly List<GameObject> GameObjects;
-        public readonly Player Player;
+        private readonly PositionComparer _comparer = new();
+        public GridLoader Loader { get; } = new();
+        public List<GameObject> GameObjects { get; } = new();
+        public Player Player { get; private set; }
 
         public GameWorld()
         {
-            ShapeLoader.LoadShapes();
             GameObjects = new();
 
-            Player = new()
+            Player = new(Loader, 0, 0)
             {
-                X = 0,
-                Y = 0,
                 MovementSpeed = 1,
                 Weight = 70,
-                ObjectType = Types.Player,
-                State = States.NoAction1,
-                Shape = Shapes.Player,
             };
 
-            var tree = new GameObject
+            var tree = new GameObject(Loader, 20, 20, Types.Tree, Grids.Tree1)
             {
-                X = 20,
-                Y = 20,
                 Weight = 1000,
-                ObjectType = Types.Tree,
-                Shape = Shapes.Tree1,
-                State = States.NoAction1,
             };
 
-            var tree2 = new GameObject
+            var tree2 = new GameObject(Loader, 40, 40, Types.Tree, Grids.Tree1)
             {
-                X = 40,
-                Y = 40,
                 Weight = 1000,
-                ObjectType = Types.Tree,
-                Shape = Shapes.Tree1,
-                State = States.NoAction1,
             };
 
-            var building1 = new GameObject
+            var building1 = new GameObject(Loader, -50, -20, Types.Building, Grids.Building1)
             {
-                X = -50,
-                Y = -20,
                 Weight = 10000,
-                ObjectType = Types.Building,
-                Shape = Shapes.Building1,
-                State = States.NoAction1,
             };
 
             GameObjects.Add(tree);
             GameObjects.Add(tree2);
             GameObjects.Add(building1);
             GameObjects.Add(Player);
-
-            foreach(var gameObject in GameObjects)
-            {
-                gameObject.Initialize(ShapeLoader);
-            }
         }
+
+        public void Sort() => GameObjects.Sort(_comparer);
 
         public void Update()
         {
@@ -72,11 +49,11 @@
         {
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                var direction = GameObjects[i].DequeueMovement(ShapeLoader);
+                var direction = GameObjects[i].DequeueMovement(Loader);
                 while (direction != Directions.None)
                 {
-                    var predictedPositionX = GameObjects[i].X;
-                    var predictedPositionY = GameObjects[i].Y;
+                    var predictedPositionX = GameObjects[i].V1.x;
+                    var predictedPositionY = GameObjects[i].V1.y;
 
                     switch (direction)
                     {
@@ -97,20 +74,19 @@
                     var canMove = true;
                     for (int j = i + 1; j < GameObjects.Count; j++)
                     {
-                        if (HandleCollision(GameObjects[i], GameObjects[j], predictedPositionX, predictedPositionY))
-                        {
-                            canMove = false;
-                            break;
-                        }
+                        //if (HandleCollision(GameObjects[i], GameObjects[j], predictedPositionX, predictedPositionY))
+                        //{
+                        //    canMove = false;
+                        //    break;
+                        //}
                     }
 
                     if (canMove)
                     {
-                        GameObjects[i].X = predictedPositionX;
-                        GameObjects[i].Y = predictedPositionY;
+                        GameObjects[i].V1 = (predictedPositionX, predictedPositionY);
                     }
 
-                    direction = GameObjects[i].DequeueMovement(ShapeLoader);
+                    direction = GameObjects[i].DequeueMovement(Loader);
                 }
             }
         }
@@ -119,64 +95,63 @@
         {
             var isColliding = false;
 
-            var mainX = newX + first.ShapeData[0].Length / 2;
-            var mainY = newY + first.ShapeData.Length / 2;
+            var mainX = newX + first.SizeX / 2;
+            var mainY = newY + first.SizeY / 2;
 
-            var otherX = second.X + second.ShapeData[0].Length / 2;
-            var otherY = second.Y + second.ShapeData.Length / 2;
+            var otherX = second.V1.x + second.SizeX / 2;
+            var otherY = second.V1.y + second.SizeY / 2;
 
             var deltaX = otherX - mainX;
             var deltaY = otherY - mainY;
-            if (Math.Abs(deltaX) <= (first.ShapeData[0].Length / 2 + second.ShapeData[0].Length / 2)
-                && Math.Abs(deltaY) <= (first.ShapeData.Length / 2 + second.ShapeData.Length / 2))
+            if (Math.Abs(deltaX) <= (first.SizeX / 2 + second.SizeX / 2) && Math.Abs(deltaY) <= (first.SizeY / 2 + second.SizeY / 2))
             {
                 long x1, y1, x2, y2;
 
                 if (deltaX > 0)
                 {
                     x1 = newX;
-                    x2 = second.X + second.ShapeData[0].Length;
+                    x2 = second.V1.x + second.SizeX;
                 }
                 else if (deltaX < 0)
                 {
-                    x1 = newX + first.ShapeData[0].Length;
-                    x2 = second.X;
+                    x1 = newX + first.SizeX;
+                    x2 = second.V1.x;
                 }
                 else
                 {
-                    if (first.ShapeData[0].Length > second.ShapeData[0].Length)
+                    if (first.SizeX > second.SizeX)
                     {
                         x1 = newX;
-                        x2 = newX + first.ShapeData[0].Length;
+                        x2 = newX + first.SizeX;
                     }
                     else
                     {
-                        x1 = second.X;
-                        x2 = second.X + second.ShapeData[0].Length;
+                        x1 = second.V1.x;
+                        x2 = second.V1.x + second.SizeX;
                     }
                 }
 
                 if (deltaY > 0)
                 {
                     y1 = newY;
-                    y2 = second.Y + second.ShapeData.Length;
+                    y2 = second.V1.y + second.SizeY;
                 }
                 else if (deltaY < 0)
                 {
-                    y1 = newY + first.ShapeData.Length;
-                    y2 = second.Y;
+                    y1 = newY + first.SizeY;
+                    y2 = second.V1.y;
                 }
                 else
                 {
-                    if (first.ShapeData.Length > second.ShapeData.Length)
+                    if (first.SizeY > second.SizeY)
                     {
                         y1 = newY;
-                        y2 = newY + first.ShapeData.Length;
+                        y2 = newY + first.SizeY;
                     }
                     else
                     {
-                        y1 = second.Y;
-                        y2 = second.Y + second.ShapeData.Length;
+                        y1 = second.V1.y;
+                        y2 = second.V1.y + second.SizeY;
                     }
                 }
 
@@ -197,22 +172,22 @@
                 {
                     if(deltaY > 0)
                     {
-                        for(int i = 0; i < first.ShapeData.Length; i++)
+                        for(int i = 0; i < first.SizeY; i++)
                         {
-                            for(int j = 0; j < first.ShapeData[i].Length; j++)
+                            for(int j = 0; j < first.SizeX; j++)
                             {
-                                var value = first.ShapeData[i][j];
+                                var value = first[i,j];
                                 if(value == 3 || value == 5 || value == 6)
                                 {
                                     grid[i][j] += 1;
                                 }
                             }
                         }
-                        for(int i = second.ShapeData.Length - 1, x = 1; i > 0; i--, x++)
+                        for(int i = second.SizeY - 1, x = 1; i > 0; i--, x++)
                         {
-                            for(int j = second.ShapeData[i].Length - 1, y = 1; j > 0; j--, y++)
+                            for(int j = second.SizeX - 1, y = 1; j > 0; j--, y++)
                             {
-                                var value = second.ShapeData[i][j];
+                                var value = second[i,j];
                                 if (value == 3 || value == 5 || value == 6)
                                 {
                                     grid[relativeDeltaX - x][relativeDeltaY - y] += 1;
@@ -240,6 +215,37 @@
                 }
             }
             return false;
+        }
+
+        private class PositionComparer : IComparer<GameObject>
+        {
+            public int Compare(GameObject? first, GameObject? second)
+            {
+                if (first != null && second != null)
+                {
+                    var differenceY = (first.V1.y + first.SizeY) - (second.V1.y + second.SizeY);
+                    if (differenceY < 0)
+                    {
+                        return -1;
+                    }
+                    if (differenceY > 0)
+                    {
+                        return 1;
+                    }
+
+                    var differenceX = first.V1.x - second.V1.x;
+                    if (differenceX > 0)
+                    {
+                        return -1;
+                    }
+                    if (differenceX < 0)
+                    {
+                        return 1;
+                    }
+                }
+
+                return (first != null && second != null) ? (first.Id > second.Id ? -1 : 1) : 0;
+            }
         }
     }
 }

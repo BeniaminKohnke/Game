@@ -1,6 +1,6 @@
 ﻿namespace GameAPI
 {
-    public class GameObject
+    public class GameObject : Ractangle
     {
         private static uint _lastId = 0;
         public readonly uint Id = _lastId++;
@@ -9,23 +9,16 @@
 
         public ushort Weight { get; set; } = 0;
         public int MovementSpeed { get; set; } = 0;
-        public int MovementSpeedMultipiler { get; set; } = 1;
-        public States State { get; set; }
-        public Types ObjectType { get; set; }
-        public Shapes Shape { get; set; }
-        
-        public byte[][] ShapeData { get; set; } = Array.Empty<byte[]>();
+        public Types ObjectType { get; private set; }
+        public Grids Grid { get; private set; }
+        public States State { get; private set; } = States.NoAction1;
 
-        public long Y { get; set; }
-        public long X { get; set; }
-
-        public long RelativeY => Y + ShapeData.Length;
-
-        public void Initialize(ShapeLoader loader)
+        public GameObject(GridLoader loader, long x, long y, Types type, Grids grid) : base(loader.GetGrid(grid, States.NoAction1), x, y)
         {
-            var states = loader.Shapes[Shape];
-            ShapeData = states[States.NoAction1];
+            ObjectType = type;
+            Grid = grid;
 
+            var states = loader.GetStates(grid);
             foreach (var animation in Parameters.Animations)
             {
                 var animationStates = new List<States>();
@@ -46,7 +39,7 @@
 
         public void EnqueueMovement(Directions direction) => _movement.Enqueue(direction);
 
-        public Directions DequeueMovement(ShapeLoader shapeLoader)
+        public Directions DequeueMovement(GridLoader shapeLoader)
         {
             if(_movement.TryDequeue(out var direction))
             {
@@ -69,7 +62,7 @@
                 
                 if(changeAnimation)
                 {
-                    ShapeData = shapeLoader.Shapes[Shape][State];
+                    SetGrid(shapeLoader.GetGrid(Grid, State));
                 }
 
                 return direction;

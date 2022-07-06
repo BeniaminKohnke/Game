@@ -9,7 +9,7 @@
         Building
     }
 
-    public enum Shapes
+    public enum Grids
     {
         Player,
         Rock1,
@@ -82,36 +82,5 @@
                 }
             },
         };
-    }
-
-    public class GameObjectComparer : IComparer<GameObject>
-    {
-        public int Compare(GameObject? first, GameObject? second)
-        {
-            if (first != null && second != null)
-            {
-                var differenceY = first.RelativeY - second.RelativeY;
-                if (differenceY < 0)
-                {
-                    return -1;
-                }
-                if (differenceY > 0)
-                {
-                    return 1;
-                }
-
-                var differenceX = first.X - second.X;
-                if (differenceX > 0)
-                {
-                    return -1;
-                }
-                if (differenceX < 0)
-                {
-                    return 1;
-                }
-            }
-
-            return (first != null && second != null) ? (first.Id > second.Id ? -1 : 1) : 0;
-        }
     }
 }
