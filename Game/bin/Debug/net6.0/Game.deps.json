@@ -499,6 +499,11 @@
       },
       "System.Threading.Tasks.Extensions/4.5.4": {},
       "GameAPI/1.0.0": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.2.0",
+          "Microsoft.CodeAnalysis.Common": "4.2.0",
+          "morelinq": "3.3.2"
+        },
         "runtime": {
           "GameAPI.dll": {}
         }

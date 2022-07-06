@@ -1,4 +1,4 @@
-﻿using Game.DSL;
+﻿using GameAPI.DSL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GameTest

@@ -501,6 +501,11 @@
       "GameAPI/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.2.0",
+          "Microsoft.CodeAnalysis.Common": "4.2.0",
+          "morelinq": "3.3.2"
+        },
         "compile": {
           "bin/placeholder/GameAPI.dll": {}
         },

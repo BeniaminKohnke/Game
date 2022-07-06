@@ -1,4 +1,4 @@
-using Game.DSL;
+using GameAPI.DSL;
 using GameAPI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
