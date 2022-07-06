@@ -5,7 +5,8 @@
         None,
         Player,
         Rock,
-        Tree
+        Tree,
+        Building
     }
 
     public enum Shapes
@@ -17,6 +18,7 @@
         Tree1,
         Tree2,
         Tree3,
+        Building1,
     }
 
     public enum States
@@ -32,8 +34,16 @@
         MovingRight3,
     }
 
+    public enum Animations
+    {
+        NoAction,
+        MovingLeft,
+        MovingRight,
+    }
+
     public enum Directions
     {
+        None,
         Up,
         Down,
         Left,
@@ -42,6 +52,37 @@
 
     public class Parameters
     {
+        public static readonly Dictionary<Animations, States[]> Animations = new()
+        {
+            {
+                GameAPI.Animations.MovingLeft,
+                new[]
+                {
+                    States.MovingLeft1,
+                    States.MovingLeft2,
+                    States.MovingLeft3,
+                }
+            },
+            {
+                GameAPI.Animations.MovingRight,
+                new[]
+                {
+                    States.MovingRight1,
+                    States.MovingRight2,
+                    States.MovingRight3,
+                }
+            },
+            {
+                GameAPI.Animations.NoAction,
+                new[]
+                {
+                    States.NoAction1,
+                    States.NoAction2,
+                    States.NoAction3,
+                }
+            },
+        };
+
         public readonly Dictionary<string, (Types, object)> DynamicObjects = new();
     }
 
@@ -74,7 +115,7 @@
 
             if (first != null && second != null)
             {
-                var differenceY = first.GridRelativePositionY - second.GridRelativePositionY;
+                var differenceY = first.RelativeY - second.RelativeY;
                 if (differenceY < 0)
                 {
                     return -1;
@@ -84,7 +125,7 @@
                     return 1;
                 }
 
-                var differenceX = first.GridPositionX - second.GridPositionX;
+                var differenceX = first.X - second.X;
                 if (differenceX > 0)
                 {
                     return -1;

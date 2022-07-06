@@ -28,7 +28,7 @@ namespace Game.DSL
             builder.AppendLine("using GameAPI;\n");
             builder.AppendLine("namespace Game.DSL");
             builder.AppendLine("{");
-            builder.AppendLine($"\tpublic class {scriptName}Script : IPlayerScript");
+            builder.AppendLine($"\tpublic class {scriptName}Script : PlayerScript");
             builder.AppendLine("\t{");
             builder.AppendLine($"\t\tpublic {scriptName}Script()");
             builder.AppendLine("\t\t{");

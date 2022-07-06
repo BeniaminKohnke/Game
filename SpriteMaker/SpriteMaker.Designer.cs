@@ -30,6 +30,8 @@
         {
             this.SaveButton = new System.Windows.Forms.Button();
             this.ChoiceBox = new System.Windows.Forms.GroupBox();
+            this.TransparentColliderButton = new System.Windows.Forms.RadioButton();
+            this.FillingColliderButton = new System.Windows.Forms.RadioButton();
             this.ContourButton = new System.Windows.Forms.RadioButton();
             this.ColliderButton = new System.Windows.Forms.RadioButton();
             this.FillingButton = new System.Windows.Forms.RadioButton();
@@ -45,8 +47,6 @@
             this.KeywordBox = new System.Windows.Forms.TextBox();
             this.KeywordLabel = new System.Windows.Forms.Label();
             this.TexturePanel = new System.Windows.Forms.Panel();
-            this.FillingColliderButton = new System.Windows.Forms.RadioButton();
-            this.TransparentColliderButton = new System.Windows.Forms.RadioButton();
             this.ChoiceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
@@ -77,11 +77,33 @@
             this.ChoiceBox.TabStop = false;
             this.ChoiceBox.Text = "Options";
             // 
+            // TransparentColliderButton
+            // 
+            this.TransparentColliderButton.AutoSize = true;
+            this.TransparentColliderButton.Location = new System.Drawing.Point(106, 65);
+            this.TransparentColliderButton.Name = "TransparentColliderButton";
+            this.TransparentColliderButton.Size = new System.Drawing.Size(101, 19);
+            this.TransparentColliderButton.TabIndex = 5;
+            this.TransparentColliderButton.TabStop = true;
+            this.TransparentColliderButton.Text = "Transp collider";
+            this.TransparentColliderButton.UseVisualStyleBackColor = true;
+            // 
+            // FillingColliderButton
+            // 
+            this.FillingColliderButton.AutoSize = true;
+            this.FillingColliderButton.Location = new System.Drawing.Point(106, 43);
+            this.FillingColliderButton.Name = "FillingColliderButton";
+            this.FillingColliderButton.Size = new System.Drawing.Size(99, 19);
+            this.FillingColliderButton.TabIndex = 4;
+            this.FillingColliderButton.TabStop = true;
+            this.FillingColliderButton.Text = "Filling collider";
+            this.FillingColliderButton.UseVisualStyleBackColor = true;
+            // 
             // ContourButton
             // 
             this.ContourButton.AutoSize = true;
             this.ContourButton.Checked = true;
-            this.ContourButton.Location = new System.Drawing.Point(6, 65);
+            this.ContourButton.Location = new System.Drawing.Point(6, 22);
             this.ContourButton.Name = "ContourButton";
             this.ContourButton.Size = new System.Drawing.Size(69, 19);
             this.ContourButton.TabIndex = 3;
@@ -103,7 +125,7 @@
             // FillingButton
             // 
             this.FillingButton.AutoSize = true;
-            this.FillingButton.Location = new System.Drawing.Point(6, 46);
+            this.FillingButton.Location = new System.Drawing.Point(6, 43);
             this.FillingButton.Name = "FillingButton";
             this.FillingButton.Size = new System.Drawing.Size(57, 19);
             this.FillingButton.TabIndex = 1;
@@ -114,7 +136,7 @@
             // TransparentButton
             // 
             this.TransparentButton.AutoSize = true;
-            this.TransparentButton.Location = new System.Drawing.Point(6, 21);
+            this.TransparentButton.Location = new System.Drawing.Point(6, 65);
             this.TransparentButton.Name = "TransparentButton";
             this.TransparentButton.Size = new System.Drawing.Size(86, 19);
             this.TransparentButton.TabIndex = 0;
@@ -137,11 +159,6 @@
             this.FolderPathBox.Name = "FolderPathBox";
             this.FolderPathBox.Size = new System.Drawing.Size(206, 23);
             this.FolderPathBox.TabIndex = 6;
-            this.FolderPathBox.Text = $@"{Directory.GetCurrentDirectory()}\Textures";
-            if(!Directory.Exists(this.FolderPathBox.Text))
-            {
-                Directory.CreateDirectory(this.FolderPathBox.Text);
-            }
             // 
             // FolderPathLabel
             // 
@@ -176,7 +193,7 @@
             // 
             this.WidthBox.Location = new System.Drawing.Point(653, 131);
             this.WidthBox.Maximum = new decimal(new int[] {
-            32,
+            64,
             0,
             0,
             0});
@@ -189,7 +206,7 @@
             // 
             this.HeightBox.Location = new System.Drawing.Point(768, 131);
             this.HeightBox.Maximum = new decimal(new int[] {
-            32,
+            64,
             0,
             0,
             0});
@@ -228,30 +245,8 @@
             // 
             this.TexturePanel.Location = new System.Drawing.Point(0, 0);
             this.TexturePanel.Name = "TexturePanel";
-            this.TexturePanel.Size = new System.Drawing.Size(647, 637);
+            this.TexturePanel.Size = new System.Drawing.Size(647, 649);
             this.TexturePanel.TabIndex = 15;
-            // 
-            // FillingColliderButton
-            // 
-            this.FillingColliderButton.AutoSize = true;
-            this.FillingColliderButton.Location = new System.Drawing.Point(106, 43);
-            this.FillingColliderButton.Name = "FillingColliderButton";
-            this.FillingColliderButton.Size = new System.Drawing.Size(99, 19);
-            this.FillingColliderButton.TabIndex = 4;
-            this.FillingColliderButton.TabStop = true;
-            this.FillingColliderButton.Text = "Filling collider";
-            this.FillingColliderButton.UseVisualStyleBackColor = true;
-            // 
-            // TransparentColliderButton
-            // 
-            this.TransparentColliderButton.AutoSize = true;
-            this.TransparentColliderButton.Location = new System.Drawing.Point(106, 65);
-            this.TransparentColliderButton.Name = "TransparentColliderButton";
-            this.TransparentColliderButton.Size = new System.Drawing.Size(101, 19);
-            this.TransparentColliderButton.TabIndex = 5;
-            this.TransparentColliderButton.TabStop = true;
-            this.TransparentColliderButton.Text = "Transp collider";
-            this.TransparentColliderButton.UseVisualStyleBackColor = true;
             // 
             // SpriteMaker
             // 

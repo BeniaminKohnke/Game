@@ -28,7 +28,7 @@ namespace Game.GameCore
         {
             _gameWorldController = new(_gameWorld);
             _window.KeyPressed += new EventHandler<KeyEventArgs>(HandleKeyboardInput);
-            _view = new(new(_gameWorld.Player.GridPositionX, _gameWorld.Player.GridRelativePositionY), new(64, 64));
+            _view = new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(64, 64));
             _window.SetView(_view);
         }
 
@@ -42,8 +42,7 @@ namespace Game.GameCore
         private void Render()
         {
             _window.Clear();
-            //_window.SetView(new(new(_gameWorld.Player.X, _gameWorld.Player.Y), new(64, 64)));
-            _view.Center = new(_gameWorld.Player.GridPositionX, _gameWorld.Player.GridRelativePositionY);
+            _view.Center = new(_gameWorld.Player.X, _gameWorld.Player.Y);
             _window.SetView(_view);
             _gameWorldController.Draw(_window, 1200, _gameWorld);
             _window.Display();
@@ -53,26 +52,22 @@ namespace Game.GameCore
         {
             if(e.Code == Keyboard.Key.Up)
             {
-                //_gameWorld.Player.Y -= _gameWorld.Player.MovementSpeed;
-                _gameWorld.Player.Movement.Enqueue(Directions.Up);
+                _gameWorld.Player.EnqueueMovement(Directions.Up);
             }
 
             if(e.Code == Keyboard.Key.Down)
             {
-                //_gameWorld.Player.Y += _gameWorld.Player.MovementSpeed;
-                _gameWorld.Player.Movement.Enqueue(Directions.Down);
+                _gameWorld.Player.EnqueueMovement(Directions.Down);
             }
 
             if (e.Code == Keyboard.Key.Right)
             {
-                //_gameWorld.Player.X += _gameWorld.Player.MovementSpeed;
-                _gameWorld.Player.Movement.Enqueue(Directions.Right);
+                _gameWorld.Player.EnqueueMovement(Directions.Right);
             }
 
             if (e.Code == Keyboard.Key.Left)
             {
-                //_gameWorld.Player.X -= _gameWorld.Player.MovementSpeed;
-                _gameWorld.Player.Movement.Enqueue(Directions.Left);
+                _gameWorld.Player.EnqueueMovement(Directions.Left);
             }
         }
 

@@ -29,7 +29,7 @@ namespace Game.DSL
                 if(script != null)
                 {
                     dynamic? instance = Activator.CreateInstance(script);
-                    (instance as IPlayerScript)?.Invoke(gameWorld, parameters);
+                    (instance as PlayerScript)?.Invoke(gameWorld, parameters);
                 }
             }
         }

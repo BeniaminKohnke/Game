@@ -18,8 +18,11 @@
                         var filePath = $@"{folderPath}\{file}.sm";
                         if(File.Exists(filePath))
                         {
-                            Shapes[(Shapes)folder][(States)file] = 
-                                File.ReadAllLines(filePath).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
+                            var state = File.ReadAllLines(filePath).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
+                            if(state.Length > 0)
+                            {
+                                Shapes[(Shapes)folder][(States)file] = state;
+                            }
                         }
                     }
                 }

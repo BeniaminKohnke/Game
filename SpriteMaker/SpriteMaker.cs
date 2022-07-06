@@ -4,7 +4,7 @@ namespace SpriteMaker
 {
     public partial class SpriteMaker : Form
     {
-        private Dictionary<string, string> _paths = new();
+        private readonly Dictionary<string, string> _paths = new();
         private readonly byte[][] _pixels = new byte[64][];
 
         public SpriteMaker()
@@ -35,6 +35,13 @@ namespace SpriteMaker
                 }
             }
 
+
+            //FolderPathBox.Text = $@"{Directory.GetCurrentDirectory()}\Textures";
+            //if (!Directory.Exists(FolderPathBox.Text))
+            //{
+            //    Directory.CreateDirectory(FolderPathBox.Text);
+            //}
+            FolderPathBox.Text = @"C:\Users\benia\Documents\GitHub\Game\Game\bin\Debug\net6.0\Textures";
             SetGrid();
             RefreshButton_Click(new object(), new EventArgs());
         }

@@ -11,8 +11,10 @@
             ShapeLoader.LoadShapes();
             GameObjects = new();
 
-            Player = new(0, 0, ShapeLoader.Shapes[Shapes.Player][States.NoAction1])
+            Player = new()
             {
+                X = 0,
+                Y = 0,
                 MovementSpeed = 1,
                 Weight = 70,
                 ObjectType = Types.Player,
@@ -20,25 +22,45 @@
                 Shape = Shapes.Player,
             };
 
-            var tree = new GameObject(20, 20, ShapeLoader.Shapes[Shapes.Tree1][States.NoAction1])
+            var tree = new GameObject
             {
+                X = 20,
+                Y = 20,
                 Weight = 1000,
                 ObjectType = Types.Tree,
                 Shape = Shapes.Tree1,
                 State = States.NoAction1,
             };
 
-            var tree2 = new GameObject(40, 40, ShapeLoader.Shapes[Shapes.Tree1][States.NoAction1])
+            var tree2 = new GameObject
             {
+                X = 40,
+                Y = 40,
                 Weight = 1000,
                 ObjectType = Types.Tree,
                 Shape = Shapes.Tree1,
+                State = States.NoAction1,
+            };
+
+            var building1 = new GameObject
+            {
+                X = -50,
+                Y = -20,
+                Weight = 10000,
+                ObjectType = Types.Building,
+                Shape = Shapes.Building1,
                 State = States.NoAction1,
             };
 
             GameObjects.Add(tree);
             GameObjects.Add(tree2);
+            GameObjects.Add(building1);
             GameObjects.Add(Player);
+
+            foreach(var gameObject in GameObjects)
+            {
+                gameObject.Initialize(ShapeLoader);
+            }
         }
 
         public void Update()
@@ -50,11 +72,11 @@
         {
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                while (GameObjects[i].Movement.TryDequeue(out var direction))
+                var direction = GameObjects[i].DequeueMovement(ShapeLoader);
+                while (direction != Directions.None)
                 {
-                    var predictedPositionX = GameObjects[i].GridPositionX;
-                    var predictedPositionY = GameObjects[i].GridPositionY;
-                    var mainObjectShape = GameObjects[i].ShapeData;
+                    var predictedPositionX = GameObjects[i].X;
+                    var predictedPositionY = GameObjects[i].Y;
 
                     switch (direction)
                     {
@@ -75,18 +97,20 @@
                     var canMove = true;
                     for (int j = i + 1; j < GameObjects.Count; j++)
                     {
-                        if (HandleCollision(GameObjects[i], GameObjects[j], predictedPositionX, predictedPositionY))
-                        {
-                            canMove = false;
-                            break;
-                        }
+                        //if (HandleCollision(GameObjects[i], GameObjects[j], predictedPositionX, predictedPositionY))
+                        //{
+                        //    canMove = false;
+                        //    break;
+                        //}
                     }
 
                     if (canMove)
                     {
-                        GameObjects[i].GridPositionX = predictedPositionX;
-                        GameObjects[i].GridPositionY = predictedPositionY;
+                        GameObjects[i].X = predictedPositionX;
+                        GameObjects[i].Y = predictedPositionY;
                     }
+
+                    direction = GameObjects[i].DequeueMovement(ShapeLoader);
                 }
             }
         }
@@ -98,8 +122,8 @@
             var mainX = newX + first.ShapeData[0].Length / 2;
             var mainY = newY + first.ShapeData.Length / 2;
 
-            var otherX = second.GridPositionX + second.ShapeData[0].Length / 2;
-            var otherY = second.GridPositionY + second.ShapeData.Length / 2;
+            var otherX = second.X + second.ShapeData[0].Length / 2;
+            var otherY = second.Y + second.ShapeData.Length / 2;
 
             var deltaX = otherX - mainX;
             var deltaY = otherY - mainY;
@@ -111,23 +135,49 @@
                 if (deltaX > 0)
                 {
                     x1 = newX;
-                    x2 = second.GridPositionX + second.ShapeData[0].Length;
+                    x2 = second.X + second.ShapeData[0].Length;
+                }
+                else if (deltaX < 0)
+                {
+                    x1 = newX + first.ShapeData[0].Length;
+                    x2 = second.X;
                 }
                 else
                 {
-                    x1 = newX + first.ShapeData[0].Length;
-                    x2 = second.GridPositionX;
+                    if (first.ShapeData[0].Length > second.ShapeData[0].Length)
+                    {
+                        x1 = newX;
+                        x2 = newX + first.ShapeData[0].Length;
+                    }
+                    else
+                    {
+                        x1 = second.X;
+                        x2 = second.X + second.ShapeData[0].Length;
+                    }
                 }
 
                 if (deltaY > 0)
                 {
                     y1 = newY;
-                    y2 = second.GridPositionY + second.ShapeData.Length;
+                    y2 = second.Y + second.ShapeData.Length;
+                }
+                else if (deltaY < 0)
+                {
+                    y1 = newY + first.ShapeData.Length;
+                    y2 = second.Y;
                 }
                 else
                 {
-                    y1 = newY + first.ShapeData.Length;
-                    y2 = second.GridPositionY;
+                    if (first.ShapeData.Length > second.ShapeData.Length)
+                    {
+                        y1 = newY;
+                        y2 = newY + first.ShapeData.Length;
+                    }
+                    else
+                    {
+                        y1 = second.Y;
+                        y2 = second.Y + second.ShapeData.Length;
+                    }
                 }
 
                 var relativeDeltaX = x2 - x1;
@@ -170,7 +220,7 @@
                             }
                         }
 
-                        File.WriteAllLines(@"C:\Users\benia\Desktop\array.txt", grid.Select(l => string.Join(' ', l)));
+                        //File.WriteAllLines(@"C:\Users\benia\Desktop\array.txt", grid.Select(l => string.Join(' ', l)));
 
                         return grid.Any(r => r.Any(c => c == 2));
                     }

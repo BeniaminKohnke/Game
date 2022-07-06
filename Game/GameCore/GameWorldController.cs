@@ -36,8 +36,7 @@ namespace Game.GameCore
             gameWorld.GameObjects.ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
             {
                 Texture = _textures[go.Shape][go.State],
-                Position = new(go.GridPositionX, go.GridPositionY),
-                Origin = new(_textures[go.Shape][go.State].Size.X / 2, _textures[go.Shape][go.State].Size.Y / 2),
+                Position = new(go.X, go.Y),
             }));
 
         }
@@ -48,7 +47,7 @@ namespace Game.GameCore
 
             foreach (var gameObject in gameWorld.GameObjects)
             {
-                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.GridPositionX - gameObject.GridPositionX, 2) + Math.Pow(gameWorld.Player.GridRelativePositionY - gameObject.GridRelativePositionY, 2));
+                var difference = Math.Sqrt(Math.Pow(gameWorld.Player.X - gameObject.X, 2) + Math.Pow(gameWorld.Player.RelativeY - gameObject.RelativeY, 2));
                 if (difference <= drawDistance)
                 {
                     var (state, sprite) = _gameObjectsSprites[gameObject.Id];
@@ -59,21 +58,20 @@ namespace Game.GameCore
                         sprite = new()
                         {
                             Texture = texture,
-                            Position = new(gameObject.GridPositionX, gameObject.GridPositionY),
-                            Origin = new(texture.Size.X / 2, texture.Size.Y / 2),
+                            Position = new(gameObject.X, gameObject.Y),
                         };
                         _gameObjectsSprites[gameObject.Id] = (state, sprite);
                     }
                     else
                     {
-                        sprite.Position = new(gameObject.GridPositionX, gameObject.GridPositionY);
+                        sprite.Position = new(gameObject.X, gameObject.Y);
                     }
 
                     window.Draw(sprite);
                 }
             }
 
-            window.SetTitle($"X:{gameWorld.Player.GridPositionX} Y:{gameWorld.Player.GridRelativePositionY}");
+            window.SetTitle($"X:{gameWorld.Player.X} Y:{gameWorld.Player.Y}");
         }
 
         private static Color GetColor(byte color) => color switch
