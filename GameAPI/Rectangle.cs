@@ -5,20 +5,16 @@ namespace GameAPI
     public class Rectangle
     {
         private ReadOnlyCollection<ReadOnlyCollection<byte>>? _grid;
-        private (int x, int y) _v1;
-        private (int x, int y) _v2;
+        private (int x, int y) _topLeft;
+        private (int x, int y) _bottomRight;
 
-        /// <summary>
-        ///Position: top-left vertex
-        ///<para>This point can be set</para>
-        /// </summary>
         public (int x, int y) Position 
         {
-            get => _v1; 
+            get => _topLeft; 
             set
             {
-                _v1 = value;
-                _v2 = (_v1.x + _grid?[0]?.Count ?? 0, _v1.y + _grid?.Count ?? 0);
+                _topLeft = value;
+                _bottomRight = (_topLeft.x + _grid?[0]?.Count ?? 0, _topLeft.y + _grid?.Count ?? 0);
             }
         }
 
@@ -29,15 +25,15 @@ namespace GameAPI
         public Rectangle(ReadOnlyCollection<ReadOnlyCollection<byte>>? grid, int x, int y)
         {
             _grid = grid;
-            _v1 = (x, y);
-            _v2 = (x + grid?[0]?.Count ?? 0, y + grid?.Count ?? 0);
+            _topLeft = (x, y);
+            _bottomRight = (x + grid?[0]?.Count ?? 0, y + grid?.Count ?? 0);
         }
 
         public void SetGrid(ReadOnlyCollection<ReadOnlyCollection<byte>>? grid)
         {
             _grid = grid;
-            _v1 = (_v1.x, _v1.y);
-            _v2 = (_v1.x + _grid?[0]?.Count ?? 0, _v1.y + _grid?.Count ?? 0);
+            _topLeft = (_topLeft.x, _topLeft.y);
+            _bottomRight = (_topLeft.x + _grid?[0]?.Count ?? 0, _topLeft.y + _grid?.Count ?? 0);
         }
 
         public Rectangle Copy(int? x = 0, int? y = 0) => new(_grid, x ?? Position.x, y ?? Position.y);
@@ -47,8 +43,8 @@ namespace GameAPI
         {
             if(_grid != null && other.SizeX != 0)
             {
-                if ((Math.Max(_v2.x, other._v2.x) - Math.Min(Position.x, other.Position.x) - 1 <= SizeX + other.SizeX) 
-                    && (Math.Max(_v2.y, other._v2.y) - Math.Min(Position.y, other.Position.y) - 1 <= SizeY + other.SizeY))
+                if ((Math.Max(_bottomRight.x, other._bottomRight.x) - Math.Min(_topLeft.x, other._topLeft.x) - 1 <= SizeX + other.SizeX) 
+                    && (Math.Max(_bottomRight.y, other._bottomRight.y) - Math.Min(_topLeft.y, other._topLeft.y) - 1 <= SizeY + other.SizeY))
                 {
                     var positions = new Dictionary<int, int>();
                     for(int i = 0; i < SizeX; i++)
@@ -57,7 +53,7 @@ namespace GameAPI
                         {
                             if(6 % this[i, j] == 0)
                             {
-                                positions[Position.x + i] = Position.y + j;
+                                positions[_topLeft.x + i] = _topLeft.y + j;
                             }
                         }
                     }
@@ -68,8 +64,8 @@ namespace GameAPI
                         {
                             if (6 % other[i, j] == 0)
                             {
-                                var position = other.Position.x + i;
-                                if (positions.ContainsKey(position) && positions[position] == other.Position.y + j)
+                                var position = other._topLeft.x + i;
+                                if (positions.ContainsKey(position) && positions[position] == other._topLeft.y + j)
                                 {
                                     return true;
                                 }
