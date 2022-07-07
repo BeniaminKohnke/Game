@@ -21,8 +21,8 @@
             var squaredRadius = radius * radius;
             foreach(var go in gameWorld.GameObjects)
             {
-                var deltaX = gameWorld.Player.V1.x - go.V1.x;
-                var deltaY = gameWorld.Player.V1.y - go.V1.y;
+                var deltaX = gameWorld.Player.Position.x - go.Position.x;
+                var deltaY = gameWorld.Player.Position.y - go.Position.y;
 
                 if((deltaX * deltaX) + (deltaY * deltaY) <= squaredRadius)
                 {

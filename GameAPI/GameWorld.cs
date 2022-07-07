@@ -75,7 +75,7 @@
 
                         if (canMove)
                         {
-                            GameObjects[i].V1 = newRectangle.V1;
+                            GameObjects[i].Position = newRectangle.Position;
                         }
                     }
 
@@ -90,7 +90,7 @@
             {
                 if (first != null && second != null)
                 {
-                    var differenceY = (first.V1.y + first.SizeY) - (second.V1.y + second.SizeY);
+                    var differenceY = (first.Position.y + first.SizeY) - (second.Position.y + second.SizeY);
                     if (differenceY < 0)
                     {
                         return -1;
@@ -100,7 +100,7 @@
                         return 1;
                     }
 
-                    var differenceX = first.V1.x - second.V1.x;
+                    var differenceX = first.Position.x - second.Position.x;
                     if (differenceX > 0)
                     {
                         return -1;

@@ -34,7 +34,7 @@ namespace Game
             gameWorld.GameObjects.ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
             {
                 Texture = _textures[go.Grid][go.State],
-                Position = new(go.V1.x, go.V1.y),
+                Position = new(go.Position.x, go.Position.y),
             }));
 
         }
@@ -52,19 +52,19 @@ namespace Game
                     sprite = new()
                     {
                         Texture = texture,
-                        Position = new(gameObject.V1.x, gameObject.V1.y),
+                        Position = new(gameObject.Position.x, gameObject.Position.y),
                     };
                     _gameObjectsSprites[gameObject.Id] = (state, sprite);
                 }
                 else
                 {
-                    sprite.Position = new(gameObject.V1.x, gameObject.V1.y);
+                    sprite.Position = new(gameObject.Position.x, gameObject.Position.y);
                 }
 
                 window.Draw(sprite);
             }
 
-            window.SetTitle($"X:{gameWorld.Player.V1.x} Y:{gameWorld.Player.V1.y}");
+            window.SetTitle($"X:{gameWorld.Player.Position.x} Y:{gameWorld.Player.Position.y}");
         }
 
         private static Color GetColor(byte color) => color switch

@@ -24,7 +24,7 @@ namespace Game
         {
             _engine = new(_gameWorld);
             _window.KeyPressed += new EventHandler<KeyEventArgs>(HandleKeyboardInput);
-            _view = new(new(_gameWorld.Player.V1.x, _gameWorld.Player.V1.y), new(128, 128));
+            _view = new(new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y), new(128, 128));
             _window.SetView(_view);
         }
 
@@ -38,7 +38,7 @@ namespace Game
         private void Render()
         {
             _window.Clear();
-            _view.Center = new(_gameWorld.Player.V1.x, _gameWorld.Player.V1.y);
+            _view.Center = new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
             _window.SetView(_view);
             _engine.Draw(_window, 200, _gameWorld);
             _window.Display();
