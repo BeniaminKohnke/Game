@@ -4,10 +4,10 @@
     {
         private static uint _lastId = 0;
         public readonly uint Id = _lastId++;
+
         private readonly Queue<Directions> _movement = new();
         private readonly Dictionary<Animations, States[]> _animations = new();
 
-        public ushort Weight { get; set; } = 0;
         public int MovementSpeed { get; set; } = 0;
         public Types ObjectType { get; private set; }
         public Grids Grid { get; private set; }

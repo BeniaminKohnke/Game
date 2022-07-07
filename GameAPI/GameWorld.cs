@@ -9,33 +9,18 @@
 
         public GameWorld()
         {
-            GameObjects = new();
-
             Player = new(Loader, 0, 0)
             {
                 MovementSpeed = 1,
-                Weight = 70,
             };
 
-            var tree = new GameObject(Loader, 20, 20, Types.Tree, Grids.Tree1)
+            GameObjects = new()
             {
-                Weight = 1000,
+                Player,
+                new GameObject(Loader, 20, 20, Types.Tree, Grids.Tree1),
+                new GameObject(Loader, 40, 40, Types.Tree, Grids.Tree1),
+                new GameObject(Loader, -50, -20, Types.Building, Grids.Building1),
             };
-
-            var tree2 = new GameObject(Loader, 40, 40, Types.Tree, Grids.Tree1)
-            {
-                Weight = 1000,
-            };
-
-            var building1 = new GameObject(Loader, -50, -20, Types.Building, Grids.Building1)
-            {
-                Weight = 10000,
-            };
-
-            GameObjects.Add(tree);
-            GameObjects.Add(tree2);
-            GameObjects.Add(building1);
-            GameObjects.Add(Player);
         }
 
         public void Sort() => GameObjects.Sort(_comparer);
@@ -73,7 +58,7 @@
                             }
                         }
 
-                        if (canMove)
+                        if(canMove)
                         {
                             GameObjects[i].Position = newRectangle.Position;
                         }
