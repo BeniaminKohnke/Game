@@ -64,22 +64,21 @@ namespace GameAPI
         {
             if(_grid != null && other.SizeX != 0)
             {
-                var v1 = (x: V1.x < other.V1.x ? V1.x : other.V1.x, y: V1.y < other.V1.y ? V1.y : other.V1.y);
-                var v4 = (x: V4.x > other.V4.x ? V4.x : other.V4.x, y: V4.y > other.V4.y ? V4.y : other.V4.y);
+                var x1 = V1.x < other.V1.x ? V1.x : other.V1.x;
+                var x2 = V4.x > other.V4.x ? V4.x : other.V4.x;
+                var y1 = V1.y < other.V1.y ? V1.y : other.V1.y;
+                var y2 = V4.y > other.V4.y ? V4.y : other.V4.y;
 
                 var sizeX = SizeX + other.SizeX;
                 var sizeY = SizeY + other.SizeY;
-                if (Math.Abs(v1.x - v4.x) - 1 <= sizeX || Math.Abs(v1.y - v4.y) - 1 <= sizeY)
+                if (Math.Abs(x2 - x1) - 1 <= sizeX || Math.Abs(y2 - y1) - 1 <= sizeY)
                 {
-                    var v2 = (x: V2.x > other.V2.x ? V2.x : other.V2.x, y: V2.y > other.V2.y ? V2.y : other.V2.y);
-                    //var v3 = (x: V3.x < other.V3.x ? V3.x : other.V3.x, y: V3.y < other.V3.y ? V3.y : other.V3.y);
-
                     var grid = new Dictionary<(int, int), byte>();
                     for(int i = -sizeX; i <= sizeX * 2; i++)
                     {
                         for(int j = -sizeY; j <= sizeY * 2; j++)
                         {
-                            grid[(v1.x + i, v1.y + j)] = 0;
+                            grid[(x1 + i, y1 + j)] = 0;
                         }
                     }
 
@@ -90,7 +89,11 @@ namespace GameAPI
                             var value = this[i, j];
                             if(value == 3 || value == 5 || value == 6)
                             {
-                                grid[(i + V1.x, j + V1.y)]++;
+                                var position = (V1.x + i, V1.y + j);
+                                if (grid.ContainsKey(position))
+                                {
+                                    grid[position]++;
+                                }
                             }
                         }
                     }
@@ -102,7 +105,11 @@ namespace GameAPI
                             var value = other[i, j];
                             if (value == 3 || value == 5 || value == 6)
                             {
-                                grid[(i + other.V1.x, j + other.V1.y)]++;
+                                var position = (other.V1.x + i, other.V1.y + j);
+                                if(grid.ContainsKey(position))
+                                {
+                                    grid[position]++;
+                                }
                             }
                         }
                     }
