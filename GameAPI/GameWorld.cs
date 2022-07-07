@@ -52,7 +52,7 @@
                 var direction = GameObjects[i].DequeueMovement(Loader);
                 while (direction != Directions.None)
                 {
-                    var newRactangle = direction switch
+                    var newRectangle = direction switch
                     {
                         Directions.Up => GameObjects[i].CopyWithShift(0, -GameObjects[i].MovementSpeed),
                         Directions.Down => GameObjects[i].CopyWithShift(0, GameObjects[i].MovementSpeed),
@@ -61,12 +61,12 @@
                         _ => null,
                     };
 
-                    if(newRactangle != null)
+                    if(newRectangle != null)
                     {
                         var canMove = true;
                         for (int j = 0; j < GameObjects.Count; j++)
                         {
-                            if (i != j && newRactangle.CheckCollision(GameObjects[j]))
+                            if (i != j && newRectangle.CheckCollision(GameObjects[j]))
                             {
                                 canMove = false;
                                 break;
@@ -75,7 +75,7 @@
 
                         if (canMove)
                         {
-                            GameObjects[i].V1 = newRactangle.V1;
+                            GameObjects[i].V1 = newRectangle.V1;
                         }
                     }
 

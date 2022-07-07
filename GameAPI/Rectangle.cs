@@ -2,7 +2,7 @@
 
 namespace GameAPI
 {
-    public class Ractangle
+    public class Rectangle
     {
         private ReadOnlyCollection<ReadOnlyCollection<byte>>? _grid;
         private (int x, int y) _v1;
@@ -39,7 +39,7 @@ namespace GameAPI
         public int SizeY => _grid?.Count ?? 0;
         public byte this[int x, int y] => _grid?[y]?[x] ?? 0;
 
-        public Ractangle(ReadOnlyCollection<ReadOnlyCollection<byte>>? grid, int x, int y)
+        public Rectangle(ReadOnlyCollection<ReadOnlyCollection<byte>>? grid, int x, int y)
         {
             _grid = grid;
             _v1 = (x, y);
@@ -57,10 +57,10 @@ namespace GameAPI
             V4 = (_v1.x + _grid?[0]?.Count ?? 0, _v1.y + _grid?.Count ?? 0);
         }
 
-        public Ractangle Copy(int? x = 0, int? y = 0) => new(_grid, x ?? V1.x, y ?? V2.y);
-        public Ractangle CopyWithShift(int x = 0, int y = 0) => new(_grid, V1.x + x, V2.y + y);
+        public Rectangle Copy(int? x = 0, int? y = 0) => new(_grid, x ?? V1.x, y ?? V2.y);
+        public Rectangle CopyWithShift(int x = 0, int y = 0) => new(_grid, V1.x + x, V2.y + y);
 
-        public bool CheckCollision(Ractangle other)
+        public bool CheckCollision(Rectangle other)
         {
             if(_grid != null && other.SizeX != 0)
             {

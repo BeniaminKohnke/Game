@@ -1,6 +1,6 @@
 ﻿namespace GameAPI
 {
-    public class GameObject : Ractangle
+    public class GameObject : Rectangle
     {
         private static uint _lastId = 0;
         public readonly uint Id = _lastId++;
