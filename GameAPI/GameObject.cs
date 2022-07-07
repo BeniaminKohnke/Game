@@ -13,26 +13,29 @@
         public Grids Grid { get; private set; }
         public States State { get; private set; } = States.NoAction1;
 
-        public GameObject(GridLoader loader, long x, long y, Types type, Grids grid) : base(loader.GetGrid(grid, States.NoAction1), x, y)
+        public GameObject(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader.GetGrid(grid, States.NoAction1), x, y)
         {
             ObjectType = type;
             Grid = grid;
 
             var states = loader.GetStates(grid);
-            foreach (var animation in Parameters.Animations)
+            if(states != null)
             {
-                var animationStates = new List<States>();
-                foreach (var state in animation.Value)
+                foreach (var animation in Parameters.Animations)
                 {
-                    if (states.ContainsKey(state))
+                    var animationStates = new List<States>();
+                    foreach (var state in animation.Value)
                     {
-                        animationStates.Add(state);
+                        if (states.ContainsKey(state))
+                        {
+                            animationStates.Add(state);
+                        }
                     }
-                }
 
-                if (animationStates.Any())
-                {
-                    _animations[animation.Key] = animationStates.ToArray();
+                    if (animationStates.Any())
+                    {
+                        _animations[animation.Key] = animationStates.ToArray();
+                    }
                 }
             }
         }

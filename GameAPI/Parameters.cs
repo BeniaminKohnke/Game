@@ -50,7 +50,7 @@
         Right,
     }
 
-    public class Parameters
+    public static class Parameters
     {
         public static readonly Dictionary<Animations, States[]> Animations = new()
         {

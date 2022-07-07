@@ -1,8 +1,10 @@
-﻿namespace GameAPI
+﻿using System.Collections.ObjectModel;
+
+namespace GameAPI
 {
     public class GridLoader
     {
-        private readonly Dictionary<Grids, Dictionary<States, byte[][]>> _grids = new();
+        private readonly Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> _grids = new();
 
         public GridLoader()
         {
@@ -21,7 +23,7 @@
                             var state = File.ReadAllLines(filePath).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
                             if (state.Length > 0)
                             {
-                                _grids[(Grids)folder][(States)file] = state;
+                                _grids[(Grids)folder][(States)file] =  Array.AsReadOnly(state.Select(a => Array.AsReadOnly<byte>(a)).ToArray());
                             }
                         }
                     }
@@ -29,8 +31,9 @@
             }
         }
 
-        public byte[][] GetGrid(Grids grid, States state) => _grids.ContainsKey(grid) && _grids[grid].ContainsKey(state) ? _grids[grid][state] : new byte[][] { new byte[] { 1 } };
-        public Dictionary<States, byte[][]> GetStates(Grids grid) => _grids.ContainsKey(grid) ? _grids[grid] : new();
-        public Dictionary<Grids, Dictionary<States, byte[][]>> GetGrids() => _grids;
+        public ReadOnlyCollection<ReadOnlyCollection<byte>>? GetGrid(Grids grid, States state) 
+            => _grids.ContainsKey(grid) && _grids[grid].ContainsKey(state) ? _grids[grid][state] : null;
+        public Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>? GetStates(Grids grid) => _grids.ContainsKey(grid) ? _grids[grid] : null;
+        public Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _grids;
     }
 }

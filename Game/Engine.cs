@@ -15,14 +15,14 @@ namespace Game
                 _textures[type.Key] = new();
                 foreach (var pair in type.Value)
                 {
-                    if (pair.Value.Length > 0 && pair.Value.Any(r => r.Any()))
+                    if (pair.Value.Count > 0 && pair.Value.Any(r => r.Any()))
                     {
-                        var image = new Image((uint)pair.Value[0].Length, (uint)pair.Value.Length);
-                        for (uint i = 0; i < pair.Value.Length; i++)
+                        var image = new Image((uint)pair.Value[0].Count, (uint)pair.Value.Count);
+                        for (uint i = 0; i < pair.Value.Count; i++)
                         {
-                            for (uint j = 0; j < pair.Value[i].Length; j++)
+                            for (uint j = 0; j < pair.Value[(int)i].Count; j++)
                             {
-                                image.SetPixel(j, i, GetColor(pair.Value[i][j]));
+                                image.SetPixel(j, i, GetColor(pair.Value[(int)i][(int)j]));
                             }
                         }
 
