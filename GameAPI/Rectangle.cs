@@ -73,12 +73,12 @@ namespace GameAPI
                 var sizeY = SizeY + other.SizeY;
                 if (Math.Abs(x2 - x1) - 1 <= sizeX || Math.Abs(y2 - y1) - 1 <= sizeY)
                 {
-                    var grid = new Dictionary<(int, int), byte>();
+                    var grid = new Dictionary<(int, int), bool>();
                     for(int i = -sizeX; i <= sizeX * 2; i++)
                     {
                         for(int j = -sizeY; j <= sizeY * 2; j++)
                         {
-                            grid[(x1 + i, y1 + j)] = 0;
+                            grid[(x1 + i, y1 + j)] = false;
                         }
                     }
 
@@ -92,7 +92,7 @@ namespace GameAPI
                                 var position = (V1.x + i, V1.y + j);
                                 if (grid.ContainsKey(position))
                                 {
-                                    grid[position]++;
+                                    grid[position] = true;
                                 }
                             }
                         }
@@ -106,15 +106,13 @@ namespace GameAPI
                             if (value == 3 || value == 5 || value == 6)
                             {
                                 var position = (other.V1.x + i, other.V1.y + j);
-                                if(grid.ContainsKey(position))
+                                if(grid.ContainsKey(position) && grid[position])
                                 {
-                                    grid[position]++;
+                                    return true;
                                 }
                             }
                         }
                     }
-
-                    return grid.Values.Any(v => v == 2);
                 }
             }
 
