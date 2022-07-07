@@ -62,12 +62,12 @@ namespace SpriteMaker
                         {
                             if (TransparentButton.Checked)
                             {
-                                _pixels[i][j] = 1;
+                                _pixels[i][j] = 7;
                                 button.BackColor = Color.BlueViolet;
                             }
                             else if (FillingButton.Checked)
                             {
-                                _pixels[i][j] = 2;
+                                _pixels[i][j] = 5;
                                 button.BackColor = Color.Gray;
                             }
                             else if (ColliderButton.Checked)
@@ -82,7 +82,7 @@ namespace SpriteMaker
                             }
                             else if (FillingColliderButton.Checked)
                             {
-                                _pixels[i][j] = 5;
+                                _pixels[i][j] = 2;
                                 button.BackColor = Color.LightSteelBlue;
                             }
                             else if (TransparentColliderButton.Checked)
@@ -137,10 +137,10 @@ namespace SpriteMaker
         }
         private static Color GetColor(byte value) => value switch
         {
-            2 => Color.Gray,
+            5 => Color.Gray,
             3 => Color.Yellow,
             4 => Color.White,
-            5 => Color.LightSteelBlue,
+            2 => Color.LightSteelBlue,
             6 => Color.Fuchsia,
             _ => Color.BlueViolet,
         };

@@ -69,31 +69,16 @@ namespace GameAPI
                 var y1 = V1.y < other.V1.y ? V1.y : other.V1.y;
                 var y2 = V4.y > other.V4.y ? V4.y : other.V4.y;
 
-                var sizeX = SizeX + other.SizeX;
-                var sizeY = SizeY + other.SizeY;
-                if (Math.Abs(x2 - x1) - 1 <= sizeX || Math.Abs(y2 - y1) - 1 <= sizeY)
+                if ((x2 - x1 - 1 <= SizeX + other.SizeX) && (y2 - y1 - 1 <= SizeY + other.SizeY))
                 {
-                    var grid = new Dictionary<(int, int), bool>();
-                    for(int i = -sizeX; i <= sizeX * 2; i++)
-                    {
-                        for(int j = -sizeY; j <= sizeY * 2; j++)
-                        {
-                            grid[(x1 + i, y1 + j)] = false;
-                        }
-                    }
-
+                    var positionDict = new Dictionary<int, int>();
                     for(int i = 0; i < SizeX; i++)
                     {
                         for(int j = 0; j < SizeY; j++)
                         {
-                            var value = this[i, j];
-                            if(value == 3 || value == 5 || value == 6)
+                            if(6 % this[i, j] == 0)
                             {
-                                var position = (V1.x + i, V1.y + j);
-                                if (grid.ContainsKey(position))
-                                {
-                                    grid[position] = true;
-                                }
+                                positionDict[V1.x + i] = V1.y + j;
                             }
                         }
                     }
@@ -102,11 +87,10 @@ namespace GameAPI
                     {
                         for (int j = 0; j < other.SizeY; j++)
                         {
-                            var value = other[i, j];
-                            if (value == 3 || value == 5 || value == 6)
+                            if (6 % other[i, j] == 0)
                             {
-                                var position = (other.V1.x + i, other.V1.y + j);
-                                if(grid.ContainsKey(position) && grid[position])
+                                var position = other.V1.x + i;
+                                if (positionDict.ContainsKey(position) && positionDict[position] == other.V1.y + j)
                                 {
                                     return true;
                                 }
