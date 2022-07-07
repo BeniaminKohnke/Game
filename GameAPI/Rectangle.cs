@@ -36,8 +36,8 @@ namespace GameAPI
             _bottomRight = (_topLeft.x + _grid?[0]?.Count ?? 0, _topLeft.y + _grid?.Count ?? 0);
         }
 
-        public Rectangle Copy(int? x = 0, int? y = 0) => new(_grid, x ?? Position.x, y ?? Position.y);
-        public Rectangle CopyWithShift(int x = 0, int y = 0) => new(_grid, Position.x + x, Position.y + y);
+        public Rectangle Copy(int? x = 0, int? y = 0) => new(_grid, x ?? _topLeft.x, y ?? _topLeft.y);
+        public Rectangle CopyWithShift(int x = 0, int y = 0) => new(_grid, _topLeft.x + x, _topLeft.y + y);
 
         public bool CheckCollision(Rectangle other)
         {
