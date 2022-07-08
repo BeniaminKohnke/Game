@@ -47,3 +47,5 @@ C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\ru\Mic
 C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\benia\Documents\GitHub\Game\SpriteMaker\obj\Debug\net6.0-windows\SpriteMaker.Grid.resources
+C:\Users\benia\Documents\GitHub\Game\SpriteMaker\obj\Debug\net6.0-windows\SpriteMaker.OptionsMenu.resources
