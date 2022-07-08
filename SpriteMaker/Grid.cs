@@ -9,8 +9,6 @@
         public ushort GridHeight { get; set; } = 0;
         public byte Value { get; set; } = 3;
 
-        private static byte x = 64;
-
         public Grid()
         {
             InitializeComponent();
