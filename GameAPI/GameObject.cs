@@ -1,12 +1,14 @@
-﻿namespace GameAPI
+﻿using System.Collections.Concurrent;
+
+namespace GameAPI
 {
     public class GameObject : Rectangle
     {
         private static uint _lastId = 0;
         public readonly uint Id = _lastId++;
 
-        private readonly Queue<Directions> _movement = new();
-        private readonly Dictionary<Animations, States[]> _animations = new();
+        private readonly ConcurrentQueue<Directions> _movement = new();
+        private readonly ConcurrentDictionary<Animations, States[]> _animations = new();
 
         public int MovementSpeed { get; set; } = 0;
         public Types ObjectType { get; private set; }

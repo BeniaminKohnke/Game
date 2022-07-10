@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 
 namespace GameAPI
 {
     public class GridLoader
     {
-        private readonly Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> _grids = new();
+        private readonly ConcurrentDictionary<Grids, ConcurrentDictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> _grids = new();
 
         public GridLoader()
         {
@@ -33,7 +34,7 @@ namespace GameAPI
 
         public ReadOnlyCollection<ReadOnlyCollection<byte>>? GetGrid(Grids grid, States state) 
             => _grids.ContainsKey(grid) && _grids[grid].ContainsKey(state) ? _grids[grid][state] : null;
-        public Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>? GetStates(Grids grid) => _grids.ContainsKey(grid) ? _grids[grid] : null;
-        public Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _grids;
+        public ConcurrentDictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>? GetStates(Grids grid) => _grids.ContainsKey(grid) ? _grids[grid] : null;
+        public ConcurrentDictionary<Grids, ConcurrentDictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _grids;
     }
 }

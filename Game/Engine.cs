@@ -1,16 +1,17 @@
 ﻿using GameAPI;
 using SFML.Graphics;
+using System.Collections.Concurrent;
 
 namespace Game
 {
     public class Engine
     {
-        private readonly Dictionary<Grids, Dictionary<States, Texture>> _textures = new();
-        private readonly Dictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
+        private readonly ConcurrentDictionary<Grids, ConcurrentDictionary<States, Texture>> _textures = new();
+        private readonly ConcurrentDictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
 
         public Engine(GameWorld gameWorld)
         {
-            foreach (var type in gameWorld.Loader.GetGrids())
+            foreach (var type in gameWorld.GetGrids())
             {
                 _textures[type.Key] = new();
                 foreach (var pair in type.Value)
@@ -22,7 +23,12 @@ namespace Game
                         {
                             for (uint j = 0; j < pair.Value[(int)i].Count; j++)
                             {
-                                image.SetPixel(j, i, GetColor(pair.Value[(int)i][(int)j]));
+                                image.SetPixel(j, i, pair.Value[(int)i][(int)j] switch
+                                {
+                                    2 or 5 => Color.Black,
+                                    3 or 4 => Color.White,
+                                    _ => Color.Transparent,
+                                });
                             }
                         }
 
@@ -31,18 +37,17 @@ namespace Game
                 }
             }
 
-            gameWorld.GameObjects.ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
+            gameWorld.GetObjects().ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
             {
                 Texture = _textures[go.Grid][go.State],
                 Position = new(go.Position.x, go.Position.y),
             }));
-
         }
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
         {
-            gameWorld.Sort();
-            foreach (var gameObject in GameAPI.DSL.ScriptFunctions.ScanArea(gameWorld, drawDistance))
+            var gameObjects = gameWorld.GetObjects(GetObjectsOptions.FromPlayer | GetObjectsOptions.Ordered, drawDistance);
+            foreach (var gameObject in gameObjects)
             {
                 var (state, sprite) = _gameObjectsSprites[gameObject.Id];
                 if (gameObject.State != state)
@@ -63,15 +68,6 @@ namespace Game
 
                 window.Draw(sprite);
             }
-
-            window.SetTitle($"X:{gameWorld.Player.Position.x} Y:{gameWorld.Player.Position.y}");
         }
-
-        private static Color GetColor(byte color) => color switch
-        {
-            2 or 5 => Color.Black,
-            3 or 4 => Color.White,
-            _ => Color.Transparent,
-        };
     }
 }

@@ -8,8 +8,11 @@ namespace GameAPI.DSL
 {
     public class CodeHandler
     {
+        private bool _recompile = false;
+        private readonly GameWorld _gameWorld;
+        private readonly Thread t_update;
         private readonly ConcurrentDictionary<string, (Types, object)> _dynamicObjects = new();
-        private Type[]? _types;
+        private readonly Dictionary<string, PlayerScript> _activeScripts = new();
         private readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary);
         private readonly MetadataReference[] _references = new[]
         {
@@ -22,56 +25,92 @@ namespace GameAPI.DSL
             MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Collections.dll"),
             MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Collections.Concurrent.dll"),
         };
-        
-        public void InvokePlayerScripts(GameWorld gameWorld)
+        public bool AllowRunningScripts { get; set; } = false;
+        public bool IsActive { get; set; } = true;
+
+        public CodeHandler(GameWorld gameWorld)
         {
-            foreach(var position in CodeBuilder.GetCallOrder())
+            CodeBuilder.CompileToCSharp("MovePlayer");
+
+            _gameWorld = gameWorld;
+            t_update = new(new ThreadStart(Update));
+            t_update.Start();
+        }
+
+        private void Update()
+        {
+            while(IsActive)
             {
-                var script = _types?.FirstOrDefault(t => t.Name.Equals(position));
-                if(script != null)
+                if(_recompile)
                 {
-                    dynamic? instance = Activator.CreateInstance(script);
-                    (instance as PlayerScript)?.Invoke(gameWorld, _dynamicObjects);
+                    CompileScripts();
+                    _recompile = false;
+                }
+                if(AllowRunningScripts)
+                {
+                    RunScripts();
+                }
+            }
+
+            AbortScripts();
+        }
+
+        private void RunScripts()
+        {
+            foreach (var position in CodeBuilder.CallOrder)
+            {
+                if (_activeScripts.TryGetValue(position, out var script) && !script.IsActive)
+                {
+                    script.Invoke(_gameWorld, _dynamicObjects);
                 }
             }
         }
 
-        public void CompileScripts()
+        private void CompileScripts()
         {
+            AbortScripts();
+
             foreach (var csFile in Directory.GetFiles(CodeBuilder.ScriptsFolderPath).Where(f => f.Contains(".cs")))
             {
                 var dllFileName = $"{csFile.Replace($@"{CodeBuilder.ScriptsFolderPath}\", string.Empty).Replace(".cs", string.Empty)}";
                 var compilation = CSharpCompilation.Create(dllFileName, new[] { SyntaxFactory.ParseSyntaxTree(File.ReadAllText(csFile), null, string.Empty) }, _references, _compilationOptions);
 
-                using var dllStream = new MemoryStream();
-                using var pdbStream = new MemoryStream();
 
-                if (compilation.Emit(dllStream, pdbStream).Success)
+                var types = new List<Type>();
+                using (var dllStream = new MemoryStream())
                 {
-                    var filePath = $@"{CodeBuilder.ScriptsFolderPath}\{dllFileName}.dll";
-                    if (File.Exists(filePath))
+                    var result = compilation.Emit(dllStream);
+                    if (result.Success)
                     {
-                        File.Delete(filePath);
+                        var dll = Assembly.Load(dllStream.ToArray());
+                        types.AddRange(dll.GetExportedTypes());
                     }
-                    File.WriteAllBytes(filePath, dllStream.ToArray());
+                }
+
+                foreach (var position in CodeBuilder.GetCallOrder())
+                {
+                    var script = types.FirstOrDefault(t => t.Name.Equals(position));
+                    if (script != null)
+                    {
+                        dynamic? instance = Activator.CreateInstance(script);
+                        if (instance is PlayerScript playerScript)
+                        {
+                            _activeScripts[position] = playerScript;
+                        }
+                    }
                 }
             }
         }
 
-        public void LoadScripts()
-        {
-            var types = new List<Type>();
-            foreach(var dllFile in Directory.GetFiles(CodeBuilder.ScriptsFolderPath).Where(f => f.Contains(".dll")))
-            {
-                var dll = Assembly.LoadFile(dllFile);
-                types.AddRange(dll.GetExportedTypes());
-            }
-            _types = types.ToArray();
-        }
-
         public void CreateScript(string code)
         {
+            _recompile = true;
+        }
 
+        public void AbortScripts()
+        {
+            AllowRunningScripts = false;
+            _activeScripts.ForEach(s => s.Value.Abort());
         }
     }
 }

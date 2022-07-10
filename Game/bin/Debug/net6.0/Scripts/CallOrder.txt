@@ -1,1 +1,1 @@
-TestScript()
+MovePlayer()

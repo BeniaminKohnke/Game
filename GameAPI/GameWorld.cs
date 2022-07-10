@@ -1,70 +1,114 @@
-﻿namespace GameAPI
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+
+namespace GameAPI
 {
+    public enum GetObjectsOptions
+    {
+        None = 0,
+        FromPlayer = 2,
+        Ordered = 8,
+    }
+
     public class GameWorld
     {
+        private readonly Thread t_update;
+        private readonly ConcurrentBag<GameObject> _gameObjects;// = new();
         private readonly PositionComparer _comparer = new();
-        public GridLoader Loader { get; } = new();
-        public List<GameObject> GameObjects { get; } = new();
+        private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
+        public bool IsActive { get; set; } = true;
 
         public GameWorld()
         {
-            Player = new(Loader, 0, 0)
+            Player = new(_loader, 0, 0)
             {
                 MovementSpeed = 1,
             };
 
-            GameObjects = new()
+            _gameObjects = new()
             {
                 Player,
-                new GameObject(Loader, 20, 20, Types.Tree, Grids.Tree1),
-                new GameObject(Loader, 40, 40, Types.Tree, Grids.Tree1),
-                new GameObject(Loader, -50, -20, Types.Building, Grids.Building1),
+                new GameObject(_loader, 20, 20, Types.Tree, Grids.Tree1),
+                new GameObject(_loader, 40, 40, Types.Tree, Grids.Tree1),
+                new GameObject(_loader, -50, -20, Types.Building, Grids.Building1),
             };
+
+            t_update = new(new ThreadStart(Update));
+            t_update.Start();
         }
 
-        public void Sort() => GameObjects.Sort(_comparer);
+        public ConcurrentDictionary<Grids, ConcurrentDictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _loader.GetGrids();
 
-        public void Update()
+        public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
-            HandleCollisions();
+            var objects = _gameObjects.ToList();
+            if (options.HasFlag(GetObjectsOptions.FromPlayer))
+            {
+                var squaredRadius = Math.Pow(radius ?? Player.ScanRadius, 2);
+                foreach (var go in _gameObjects)
+                {
+                    var deltaX = Player.Position.x - go.Position.x;
+                    var deltaY = Player.Position.y - go.Position.y;
+
+                    if ((deltaX * deltaX) + (deltaY * deltaY) > squaredRadius)
+                    {
+                        objects.Remove(go);
+                    }
+                };
+            }
+
+            if (options.HasFlag(GetObjectsOptions.Ordered))
+            {
+                return objects.OrderBy(go => go, _comparer).ToList();
+            }
+
+            return objects;
+        }
+
+        private void Update()
+        {
+            while(IsActive)
+            {
+                HandleCollisions();
+            }
         }
 
         private void HandleCollisions()
         {
-            for (int i = 0; i < GameObjects.Count; i++)
+            foreach(var main in _gameObjects)
             {
-                var direction = GameObjects[i].DequeueMovement(Loader);
+                var direction = main.DequeueMovement(_loader);
                 while (direction != Directions.None)
                 {
                     var newRectangle = direction switch
                     {
-                        Directions.Up => GameObjects[i].CopyWithShift(0, -GameObjects[i].MovementSpeed),
-                        Directions.Down => GameObjects[i].CopyWithShift(0, GameObjects[i].MovementSpeed),
-                        Directions.Left => GameObjects[i].CopyWithShift(-GameObjects[i].MovementSpeed, 0),
-                        Directions.Right => GameObjects[i].CopyWithShift(GameObjects[i].MovementSpeed, 0),
+                        Directions.Up => main.CopyWithShift(0, -main.MovementSpeed),
+                        Directions.Down => main.CopyWithShift(0, main.MovementSpeed),
+                        Directions.Left => main.CopyWithShift(-main.MovementSpeed, 0),
+                        Directions.Right => main.CopyWithShift(main.MovementSpeed, 0),
                         _ => null,
                     };
 
-                    if(newRectangle != null)
+                    if (newRectangle != null)
                     {
                         var canMove = true;
-                        for (int j = 0; j < GameObjects.Count; j++)
+                        foreach(var other in _gameObjects)
                         {
-                            if (i != j && newRectangle.CheckCollision(GameObjects[j]))
+                            if(main.Id != other.Id && newRectangle.CheckCollision(other))
                             {
                                 canMove = false;
                                 break;
                             }
                         }
 
-                        if(canMove)
+                        if (canMove)
                         {
-                            GameObjects[i].Position = newRectangle.Position;
+                            main.Position = newRectangle.Position;
                         }
                     }
 
-                    direction = GameObjects[i].DequeueMovement(Loader);
+                    direction = main.DequeueMovement(_loader);
                 }
             }
         }
