@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameAPI\GameAPI.csproj" />
+    <ProjectReference Include="..\Game\Game.csproj" />
   </ItemGroup>
 
 </Project>

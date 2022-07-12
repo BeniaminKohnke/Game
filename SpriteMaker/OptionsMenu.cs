@@ -1,4 +1,5 @@
-﻿using GameAPI;
+﻿using Game;
+using GameAPI;
 
 namespace SpriteMaker
 {
@@ -29,26 +30,58 @@ namespace SpriteMaker
                 ExistingTexturesBox.Items.Clear();
                 if (!string.IsNullOrEmpty(FolderPathBox.Text))
                 {
-                    foreach (var folder in Enum.GetValues(typeof(Grids)))
+                    switch(OptionsBox.Text)
                     {
-                        var dir = $@"{FolderPathBox.Text}\{folder}";
-                        if (!Directory.Exists(dir))
-                        {
-                            Directory.CreateDirectory(dir);
-                        }
-
-                        foreach (var file in Enum.GetValues(typeof(States)))
-                        {
-                            var path = $@"{dir}\{file}.sm";
-                            if (!File.Exists(path))
+                        case "API":
                             {
-                                File.Create(path);
-                            }
+                                foreach (var folder in Enum.GetValues(typeof(Grids)))
+                                {
+                                    var dir = $@"{FolderPathBox.Text}\Textures\{folder}";
+                                    if (!Directory.Exists(dir))
+                                    {
+                                        Directory.CreateDirectory(dir);
+                                    }
 
-                            var position = $"{Enum.GetName(typeof(Grids), folder)}->{Enum.GetName(typeof(States), file)}";
-                            ExistingTexturesBox.Items.Add(position);
-                            _paths[position] = path;
-                        }
+                                    foreach (var file in Enum.GetValues(typeof(States)))
+                                    {
+                                        var path = $@"{dir}\{file}.sm";
+                                        if (!File.Exists(path))
+                                        {
+                                            File.Create(path);
+                                        }
+
+                                        var position = $"{Enum.GetName(typeof(Grids), folder)}->{Enum.GetName(typeof(States), file)}";
+                                        ExistingTexturesBox.Items.Add(position);
+                                        _paths[position] = path;
+                                    }
+                                }
+                                break;
+                            }
+                        case "GUI":
+                            {
+                                var dir = $@"{FolderPathBox.Text}\Inerface";
+                                if (!Directory.Exists(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+
+                                foreach (var file in Enum.GetValues(typeof(Controls)))
+                                {
+                                    var path = $@"{dir}\{file}.sm";
+                                    if (!File.Exists(path))
+                                    {
+                                        File.Create(path);
+                                    }
+
+                                    var name = file.ToString();
+                                    if(!string.IsNullOrEmpty(name))
+                                    {
+                                        ExistingTexturesBox.Items.Add(name);
+                                        _paths[name] = path;
+                                    }
+                                }
+                                break;
+                            }
                     }
                 }
             }

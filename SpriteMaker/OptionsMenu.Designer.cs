@@ -48,6 +48,7 @@
             this.SaveButton = new System.Windows.Forms.Button();
             this.Pages = new System.Windows.Forms.TabControl();
             this.FilePage = new System.Windows.Forms.TabPage();
+            this.OptionsBox = new System.Windows.Forms.ComboBox();
             this.ToolsPage = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
@@ -60,7 +61,7 @@
             // KeywordLabel
             // 
             this.KeywordLabel.AutoSize = true;
-            this.KeywordLabel.Location = new System.Drawing.Point(6, 82);
+            this.KeywordLabel.Location = new System.Drawing.Point(6, 112);
             this.KeywordLabel.Name = "KeywordLabel";
             this.KeywordLabel.Size = new System.Drawing.Size(83, 15);
             this.KeywordLabel.TabIndex = 26;
@@ -68,7 +69,7 @@
             // 
             // KeywordBox
             // 
-            this.KeywordBox.Location = new System.Drawing.Point(6, 100);
+            this.KeywordBox.Location = new System.Drawing.Point(6, 130);
             this.KeywordBox.Name = "KeywordBox";
             this.KeywordBox.Size = new System.Drawing.Size(206, 23);
             this.KeywordBox.TabIndex = 25;
@@ -132,7 +133,7 @@
             // FolderPathLabel
             // 
             this.FolderPathLabel.AutoSize = true;
-            this.FolderPathLabel.Location = new System.Drawing.Point(6, 38);
+            this.FolderPathLabel.Location = new System.Drawing.Point(7, 68);
             this.FolderPathLabel.Name = "FolderPathLabel";
             this.FolderPathLabel.Size = new System.Drawing.Size(111, 15);
             this.FolderPathLabel.TabIndex = 19;
@@ -140,7 +141,7 @@
             // 
             // FolderPathBox
             // 
-            this.FolderPathBox.Location = new System.Drawing.Point(6, 56);
+            this.FolderPathBox.Location = new System.Drawing.Point(7, 86);
             this.FolderPathBox.Name = "FolderPathBox";
             this.FolderPathBox.Size = new System.Drawing.Size(206, 23);
             this.FolderPathBox.TabIndex = 18;
@@ -149,9 +150,9 @@
             // 
             this.ExistingTexturesBox.FormattingEnabled = true;
             this.ExistingTexturesBox.ItemHeight = 15;
-            this.ExistingTexturesBox.Location = new System.Drawing.Point(6, 129);
+            this.ExistingTexturesBox.Location = new System.Drawing.Point(6, 159);
             this.ExistingTexturesBox.Name = "ExistingTexturesBox";
-            this.ExistingTexturesBox.Size = new System.Drawing.Size(206, 199);
+            this.ExistingTexturesBox.Size = new System.Drawing.Size(206, 169);
             this.ExistingTexturesBox.TabIndex = 17;
             // 
             // ChoiceBox
@@ -258,6 +259,7 @@
             // 
             // FilePage
             // 
+            this.FilePage.Controls.Add(this.OptionsBox);
             this.FilePage.Controls.Add(this.ExistingTexturesBox);
             this.FilePage.Controls.Add(this.KeywordLabel);
             this.FilePage.Controls.Add(this.RefreshButton);
@@ -273,6 +275,18 @@
             this.FilePage.TabIndex = 0;
             this.FilePage.Text = "Files";
             this.FilePage.UseVisualStyleBackColor = true;
+            // 
+            // OptionsBox
+            // 
+            this.OptionsBox.FormattingEnabled = true;
+            this.OptionsBox.Items.AddRange(new object[] {
+            "API",
+            "GUI"});
+            this.OptionsBox.Location = new System.Drawing.Point(7, 42);
+            this.OptionsBox.Name = "OptionsBox";
+            this.OptionsBox.Size = new System.Drawing.Size(206, 23);
+            this.OptionsBox.TabIndex = 27;
+            this.OptionsBox.Text = "API";
             // 
             // ToolsPage
             // 
@@ -335,5 +349,6 @@
         private TabControl Pages;
         private TabPage FilePage;
         private TabPage ToolsPage;
+        private ComboBox OptionsBox;
     }
 }
