@@ -2,9 +2,11 @@
 {
     public partial class Grid : UserControl
     {
+        private const ushort GRID_SIZE = 64;
+
         private readonly Pen _blackPen = new(Color.Black, 0.1f);
         private readonly SolidBrush _fillingBrush = new(Color.BlueViolet);
-        private readonly Pixel[][] _pixels = new Pixel[2048][];
+        private readonly Pixel[][] _pixels = new Pixel[GRID_SIZE][];
         public ushort GridWidth { get; set; } = 0;
         public ushort GridHeight { get; set; } = 0;
         public byte Value { get; set; } = 3;
@@ -15,10 +17,10 @@
 
             Size = new(2048, 2048);
 
-            for(int i = 0; i < 2048; i++)
+            for(int i = 0; i < GRID_SIZE; i++)
             {
-                _pixels[i] = new Pixel[2048];
-                for(int j = 0; j < 2048; j++)
+                _pixels[i] = new Pixel[GRID_SIZE];
+                for(int j = 0; j < GRID_SIZE; j++)
                 {
                     _pixels[i][j] = new()
                     {
@@ -38,12 +40,42 @@
 
         public void SetGrid(byte[][] grid)
         {
+            for(int i = 0; i < _pixels.Length; i++)
+            {
+                for(int j = 0; j < _pixels[i].Length; j++)
+                {
+                    _pixels[i][j].IsActive = false;
+                    _pixels[i][j].Value = 0;
+                    _pixels[i][j].Color = Color.BlueViolet;
+                }
+            }
 
+            GridWidth = (ushort)grid[0].Length;
+            GridHeight = (ushort)grid.Length;
+
+            for (int i = 0; i < GridHeight; i++)
+            {
+                for (int j = 0; j < GridWidth; j++)
+                {
+                    _pixels[j][i].IsActive = true;
+                    _pixels[j][i].Value = grid[i][j];
+                    _pixels[j][i].Color = GetColor(grid[i][j]);
+                }
+            }
         }
 
         public byte[][] GetGrid()
         {
-            return null;
+            var grid = new byte[GridHeight][].Select(l => l = new byte[GridWidth]).ToArray();
+            for (int i = 0; i < GridHeight; i++)
+            {
+                for (int j = 0; j < GridWidth; j++)
+                {
+                    grid[i][j] = _pixels[j][i].Value;
+                }
+            }
+
+            return grid;
         }
 
         private static Color GetColor(byte value) => value switch

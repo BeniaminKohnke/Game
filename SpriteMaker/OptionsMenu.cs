@@ -11,9 +11,9 @@ namespace SpriteMaker
             InitializeComponent();
             _grid = grid;
 
-            foreach (var conrol in ChoiceBox.Controls)
+            foreach (var control in ChoiceBox.Controls)
             {
-                if (conrol is RadioButton button)
+                if (control is RadioButton button)
                 {
                     button.CheckedChanged += new EventHandler(ChangeGridValue);
                 }
@@ -66,6 +66,8 @@ namespace SpriteMaker
                 if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
                 {
                     _grid.SetGrid(File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray());
+                    HeightBox.Value = _grid.GridHeight;
+                    WidthBox.Value = _grid.GridWidth;
                 }
             }
             catch
@@ -81,7 +83,7 @@ namespace SpriteMaker
                 var fileName = ExistingTexturesBox.SelectedItem.ToString();
                 if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
                 {
-                    //File.WriteAllLines(_paths[fileName], _pixels.Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
+                    File.WriteAllLines(_paths[fileName], _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
                 }
             }
             catch
