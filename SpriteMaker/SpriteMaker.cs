@@ -21,6 +21,7 @@ namespace SpriteMaker
             _menu.Show();
             this.TexturePanel.Controls.Add(_menu);
             this.TexturePanel.Controls.Add(_grid);
+            this.AutoScroll = true;
         }
     }
 }

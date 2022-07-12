@@ -37,14 +37,14 @@
             this.TexturePanel.AutoSize = true;
             this.TexturePanel.Location = new System.Drawing.Point(0, 0);
             this.TexturePanel.Name = "TexturePanel";
-            this.TexturePanel.Size = new System.Drawing.Size(1000, 800);
+            this.TexturePanel.Size = new System.Drawing.Size(2048, 2048);
             this.TexturePanel.TabIndex = 15;
             // 
             // SpriteMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 800);
+            this.ClientSize = new System.Drawing.Size(684, 661);
             this.Controls.Add(this.TexturePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.IsMdiContainer = true;
@@ -52,6 +52,7 @@
             this.Text = "SpriteMaker";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

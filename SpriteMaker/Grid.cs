@@ -2,7 +2,7 @@
 {
     public partial class Grid : UserControl
     {
-        private const ushort GRID_SIZE = 64;
+        private const ushort GRID_SIZE = 2048;
 
         private readonly Pen _blackPen = new(Color.Black, 0.1f);
         private readonly SolidBrush _fillingBrush = new(Color.BlueViolet);

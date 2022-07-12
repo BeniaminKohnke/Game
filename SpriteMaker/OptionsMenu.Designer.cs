@@ -292,9 +292,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(229, 365);
+            this.ClientSize = new System.Drawing.Size(238, 395);
             this.ControlBox = false;
             this.Controls.Add(this.Pages);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "OptionsMenu";
             this.Text = "OptionsMenu";
@@ -308,7 +309,7 @@
             this.ToolsPage.ResumeLayout(false);
             this.ToolsPage.PerformLayout();
             this.ResumeLayout(false);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+
         }
 
         #endregion
