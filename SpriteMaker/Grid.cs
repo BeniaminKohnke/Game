@@ -3,13 +3,54 @@
     public partial class Grid : UserControl
     {
         private const ushort GRID_SIZE = 2048;
-
+        private ushort _width = 0;
+        private ushort _height = 0;
         private readonly Pen _blackPen = new(Color.Black, 0.1f);
-        private readonly SolidBrush _fillingBrush = new(Color.BlueViolet);
         private readonly Pixel[][] _pixels = new Pixel[GRID_SIZE][];
-        public ushort GridWidth { get; set; } = 0;
-        public ushort GridHeight { get; set; } = 0;
-        public byte Value { get; set; } = 3;
+        public byte Value { get; set; } = 4;
+        public ushort GridWidth
+        {
+            get => _width;
+            set
+            {
+                _width = value;
+                ResizeGrid();
+            }
+        }
+        public ushort GridHeight
+        {
+            get => _height;
+            set
+            {
+                _height = value;
+                ResizeGrid();
+            }
+        }
+
+        private void ResizeGrid()
+        {
+            for (int i = 0; i < GRID_SIZE; i++)
+            {
+                for(int j = 0; j < GRID_SIZE; j++)
+                {
+                    if(i < _height && j < _width)
+                    {
+                        if (_pixels[i][j].Value == 0)
+                        {
+                            _pixels[i][j].Value = 7;
+                            _pixels[i][j].IsActive = true;
+                            _pixels[i][j].Color = Color.BlueViolet;
+                        }
+                    }
+                    else
+                    {
+                        _pixels[i][j].Value = 0;
+                        _pixels[i][j].IsActive = false;
+                        _pixels[i][j].Color = Color.BlueViolet;
+                    }
+                }
+            }
+        }
 
         public Grid()
         {
@@ -24,7 +65,7 @@
                 {
                     _pixels[i][j] = new()
                     {
-                        Position = new(i * 10, j * 10),
+                        Position = new(j * 10, i * 10),
                     };
                 }
             }
@@ -35,43 +76,34 @@
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
 
+            MouseMove += new MouseEventHandler(ChangeGrid);
             MouseClick += new MouseEventHandler(ChangeGrid);
         }
 
         public void SetGrid(byte[][] grid)
         {
-            for(int i = 0; i < _pixels.Length; i++)
-            {
-                for(int j = 0; j < _pixels[i].Length; j++)
-                {
-                    _pixels[i][j].IsActive = false;
-                    _pixels[i][j].Value = 0;
-                    _pixels[i][j].Color = Color.BlueViolet;
-                }
-            }
+            _height = (ushort)grid.Length;
+            _width = (ushort)grid[0].Length;
+            ResizeGrid();
 
-            GridWidth = (ushort)grid[0].Length;
-            GridHeight = (ushort)grid.Length;
-
-            for (int i = 0; i < GridHeight; i++)
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < GridWidth; j++)
+                for (int j = 0; j < _width; j++)
                 {
-                    _pixels[j][i].IsActive = true;
-                    _pixels[j][i].Value = grid[i][j];
-                    _pixels[j][i].Color = GetColor(grid[i][j]);
+                    _pixels[i][j].Value = grid[i][j];
+                    _pixels[i][j].Color = GetColor(grid[i][j]);
                 }
             }
         }
 
         public byte[][] GetGrid()
         {
-            var grid = new byte[GridHeight][].Select(l => l = new byte[GridWidth]).ToArray();
-            for (int i = 0; i < GridHeight; i++)
+            var grid = new byte[_height][].Select(l => l = new byte[_width]).ToArray();
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < GridWidth; j++)
+                for (int j = 0; j < _width; j++)
                 {
-                    grid[i][j] = _pixels[j][i].Value;
+                    grid[i][j] = _pixels[i][j].Value;
                 }
             }
 
@@ -90,19 +122,31 @@
 
         private void ChangeGrid(object? sender, MouseEventArgs args)
         {
-            var pixel = GetPixel();
-
-            if(pixel != null)
+            if(args.Button == MouseButtons.Left)
             {
-                pixel.Value = Value;
-                pixel.Color = GetColor(pixel.Value);
+                var pixel = GetPixel();
+                if(pixel != null)
+                {
+                    pixel.Value = Value;
+                    pixel.Color = GetColor(pixel.Value);
+                }
+            }
+
+            if(args.Button == MouseButtons.Right)
+            {
+                var pixel = GetPixel();
+                if (pixel != null)
+                {
+                    pixel.Value = 7;
+                    pixel.Color = Color.BlueViolet;
+                }
             }
 
             Pixel? GetPixel()
             {
-                for(int i = 0; i < GridWidth; i++)
+                for(int i = 0; i < _height; i++)
                 {
-                    for(int j = 0; j < GridHeight; j++)
+                    for(int j = 0; j < _width; j++)
                     {
                         if(_pixels[i][j].Position.X <= args.X
                             && args.X < _pixels[i][j].Position.X + _pixels[i][j].Size.Width
@@ -120,11 +164,11 @@
         private void Draw(object? sender, PaintEventArgs args)
         {
             args.Graphics.Clear(Color.BlueViolet);
-            if(GridWidth > 0 && GridHeight > 0)
+            if(_width > 0 && _height > 0)
             {
-                for (int i = 0; i < GridWidth; i++)
+                for (int i = 0; i < _height; i++)
                 {
-                    for (int j = 0; j < GridHeight; j++)
+                    for (int j = 0; j < _width; j++)
                     {
                         if(_pixels[i][j].IsActive)
                         {
@@ -133,14 +177,14 @@
                     }
                 }
 
-                for (int i = 0; i <= GridWidth; i++)
+                for (int i = 0; i <= _width; i++)
                 {
-                    args.Graphics.DrawLine(_blackPen, new(i * 10, 0), new(i * 10, GridHeight * 10));
+                    args.Graphics.DrawLine(_blackPen, new(i * 10, 0), new(i * 10, _height * 10));
                 }
 
-                for (int i = 0; i <= GridHeight; i++)
+                for (int i = 0; i <= _height; i++)
                 {
-                    args.Graphics.DrawLine(_blackPen, new(0, i * 10), new(GridWidth * 10, i * 10));
+                    args.Graphics.DrawLine(_blackPen, new(0, i * 10), new(_width * 10, i * 10));
                 }
             }
 

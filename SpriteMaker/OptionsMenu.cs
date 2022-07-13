@@ -36,7 +36,7 @@ namespace SpriteMaker
                             {
                                 foreach (var folder in Enum.GetValues(typeof(Grids)))
                                 {
-                                    var dir = $@"{FolderPathBox.Text}\Textures\{folder}";
+                                    var dir = $@"{FolderPathBox.Text}\{folder}";
                                     if (!Directory.Exists(dir))
                                     {
                                         Directory.CreateDirectory(dir);
@@ -98,7 +98,8 @@ namespace SpriteMaker
                 var fileName = ExistingTexturesBox.SelectedItem?.ToString();
                 if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
                 {
-                    _grid.SetGrid(File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray());
+                    var grid = File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
+                    _grid.SetGrid(grid);
                     HeightBox.Value = _grid.GridHeight;
                     WidthBox.Value = _grid.GridWidth;
                 }
