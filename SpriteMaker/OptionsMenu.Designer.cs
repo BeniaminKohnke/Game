@@ -50,12 +50,17 @@
             this.FilePage = new System.Windows.Forms.TabPage();
             this.OptionsBox = new System.Windows.Forms.ComboBox();
             this.ToolsPage = new System.Windows.Forms.TabPage();
+            this.WidthLabel = new System.Windows.Forms.Label();
+            this.HeightLabel = new System.Windows.Forms.Label();
+            this.PixelSizeLabel = new System.Windows.Forms.Label();
+            this.PixelSizeBox = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             this.ChoiceBox.SuspendLayout();
             this.Pages.SuspendLayout();
             this.FilePage.SuspendLayout();
             this.ToolsPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PixelSizeBox)).BeginInit();
             this.SuspendLayout();
             // 
             // KeywordLabel
@@ -135,9 +140,9 @@
             this.FolderPathLabel.AutoSize = true;
             this.FolderPathLabel.Location = new System.Drawing.Point(7, 68);
             this.FolderPathLabel.Name = "FolderPathLabel";
-            this.FolderPathLabel.Size = new System.Drawing.Size(111, 15);
+            this.FolderPathLabel.Size = new System.Drawing.Size(114, 15);
             this.FolderPathLabel.TabIndex = 19;
-            this.FolderPathLabel.Text = "Textures folder path";
+            this.FolderPathLabel.Text = "Textures folder path:";
             // 
             // FolderPathBox
             // 
@@ -290,6 +295,10 @@
             // 
             // ToolsPage
             // 
+            this.ToolsPage.Controls.Add(this.PixelSizeBox);
+            this.ToolsPage.Controls.Add(this.PixelSizeLabel);
+            this.ToolsPage.Controls.Add(this.HeightLabel);
+            this.ToolsPage.Controls.Add(this.WidthLabel);
             this.ToolsPage.Controls.Add(this.ChoiceBox);
             this.ToolsPage.Controls.Add(this.XLabel);
             this.ToolsPage.Controls.Add(this.WidthBox);
@@ -301,6 +310,51 @@
             this.ToolsPage.TabIndex = 1;
             this.ToolsPage.Text = "Tools";
             this.ToolsPage.UseVisualStyleBackColor = true;
+            // 
+            // WidthLabel
+            // 
+            this.WidthLabel.AutoSize = true;
+            this.WidthLabel.Location = new System.Drawing.Point(6, 289);
+            this.WidthLabel.Name = "WidthLabel";
+            this.WidthLabel.Size = new System.Drawing.Size(42, 15);
+            this.WidthLabel.TabIndex = 25;
+            this.WidthLabel.Text = "Width:";
+            // 
+            // HeightLabel
+            // 
+            this.HeightLabel.AutoSize = true;
+            this.HeightLabel.Location = new System.Drawing.Point(122, 289);
+            this.HeightLabel.Name = "HeightLabel";
+            this.HeightLabel.Size = new System.Drawing.Size(46, 15);
+            this.HeightLabel.TabIndex = 26;
+            this.HeightLabel.Text = "Height:";
+            // 
+            // PixelSizeLabel
+            // 
+            this.PixelSizeLabel.AutoSize = true;
+            this.PixelSizeLabel.Location = new System.Drawing.Point(6, 266);
+            this.PixelSizeLabel.Name = "PixelSizeLabel";
+            this.PixelSizeLabel.Size = new System.Drawing.Size(57, 15);
+            this.PixelSizeLabel.TabIndex = 27;
+            this.PixelSizeLabel.Text = "Pixel size:";
+            // 
+            // PixelSizeBox
+            // 
+            this.PixelSizeBox.Location = new System.Drawing.Point(122, 264);
+            this.PixelSizeBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.PixelSizeBox.Name = "PixelSizeBox";
+            this.PixelSizeBox.Size = new System.Drawing.Size(89, 23);
+            this.PixelSizeBox.TabIndex = 28;
+            this.PixelSizeBox.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.PixelSizeBox.ValueChanged += new System.EventHandler(this.PixelSizeBox_ValueChanged);
             // 
             // OptionsMenu
             // 
@@ -322,6 +376,7 @@
             this.FilePage.PerformLayout();
             this.ToolsPage.ResumeLayout(false);
             this.ToolsPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PixelSizeBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -350,5 +405,9 @@
         private TabPage FilePage;
         private TabPage ToolsPage;
         private ComboBox OptionsBox;
+        private Label PixelSizeLabel;
+        private Label HeightLabel;
+        private Label WidthLabel;
+        private NumericUpDown PixelSizeBox;
     }
 }

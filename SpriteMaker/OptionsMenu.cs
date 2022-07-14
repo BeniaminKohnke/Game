@@ -130,6 +130,8 @@ namespace SpriteMaker
 
         private void HeightBox_ValueChanged(object sender, EventArgs e) => _grid.GridHeight = (ushort)HeightBox.Value;
 
+        private void PixelSizeBox_ValueChanged(object sender, EventArgs e) => _grid.PixelSize = (byte)PixelSizeBox.Value;
+
         private void KeywordBox_TextChanged(object sender, EventArgs e)
         {
             try
