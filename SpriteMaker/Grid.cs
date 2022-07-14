@@ -144,11 +144,56 @@
 
             if(args.Button == MouseButtons.Middle)
             {
-                for(int i = 0; i < _height; i++)
+                var pixel = GetPixel();
+                if (pixel != null)
                 {
-                    for(int j = 0; j < _width; j++)
+                    var j = _pixels.Select(a => Array.IndexOf(a, pixel)).FirstOrDefault(v => v > 0);
+                    var i = Array.IndexOf(_pixels, _pixels.Where(a => Array.IndexOf(a, pixel) > 0).FirstOrDefault());
+
+                    var value = pixel.Value;
+                    if(value != Value)
                     {
-                        _pixels[i][j].Value = Value;
+                        var positionsToCheck = new Queue<(int i, int j)>();
+                        positionsToCheck.Enqueue((i, j));
+                        while (positionsToCheck.TryDequeue(out var position))
+                        {
+                            if (_pixels[position.i][position.j].Value == value)
+                            {
+                                _pixels[position.i][position.j].Value = Value;
+                                if (position.i > 0)
+                                {
+                                    var positionToCheck = (i: position.i - 1, position.j);
+                                    if (_pixels[positionToCheck.i][positionToCheck.j].Value == value)
+                                    {
+                                        positionsToCheck.Enqueue(positionToCheck);
+                                    }
+                                }
+                                if (position.j > 0)
+                                {
+                                    var positionToCheck = (position.i, j: position.j - 1);
+                                    if (_pixels[positionToCheck.i][positionToCheck.j].Value == value)
+                                    {
+                                        positionsToCheck.Enqueue(positionToCheck);
+                                    }
+                                }
+                                if (position.i < _height - 1)
+                                {
+                                    var positionToCheck = (i: position.i + 1, position.j);
+                                    if (_pixels[positionToCheck.i][positionToCheck.j].Value == value)
+                                    {
+                                        positionsToCheck.Enqueue(positionToCheck);
+                                    }
+                                }
+                                if (position.j < _width - 1)
+                                {
+                                    var positionToCheck = (position.i, j: position.j + 1);
+                                    if (_pixels[positionToCheck.i][positionToCheck.j].Value == value)
+                                    {
+                                        positionsToCheck.Enqueue(positionToCheck);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
