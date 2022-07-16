@@ -63,14 +63,13 @@
                 }
             }
 
-            Paint += new PaintEventHandler(Draw);
+            Paint += new(Draw);
+            MouseMove += new(ChangeGrid);
+            MouseClick += new(ChangeGrid);
 
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
-
-            MouseMove += new MouseEventHandler(ChangeGrid);
-            MouseClick += new MouseEventHandler(ChangeGrid);
         }
         private void ResizeGrid()
         {
@@ -279,7 +278,7 @@
                 set
                 {
                     _size = value;
-                    Rectangle = new Rectangle(_position, new(_size, _size));
+                    Rectangle = new(_position, new(_size, _size));
                 }
             }
             public Point Position
@@ -288,7 +287,7 @@
                 set
                 {
                     _position = value;
-                    Rectangle = new Rectangle(_position, new(_size, _size));
+                    Rectangle = new(_position, new(_size, _size));
                 }
             }
         }

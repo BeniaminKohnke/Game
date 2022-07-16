@@ -13,7 +13,7 @@ namespace GameAPI
     public class GameWorld
     {
         private readonly Thread t_update;
-        private readonly ConcurrentBag<GameObject> _gameObjects;// = new();
+        private readonly ConcurrentBag<GameObject> _gameObjects;
         private readonly PositionComparer _comparer = new();
         private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
@@ -29,10 +29,22 @@ namespace GameAPI
             _gameObjects = new()
             {
                 Player,
-                new GameObject(_loader, 20, 20, Types.Tree, Grids.Tree1),
-                new GameObject(_loader, 40, 40, Types.Tree, Grids.Tree1),
-                new GameObject(_loader, -50, -20, Types.Building, Grids.Building1),
+                //new(_loader, 20, 20, Types.Tree, Grids.Tree1),
+                //new(_loader, 40, 40, Types.Tree, Grids.Tree1),
+                new(_loader, -50, -20, Types.Building, Grids.Building1),
+                //new(_loader, 40, -20, Types.Rock, Grids.Rock1),
             };
+
+            var random = new Random();
+            for(int i = 0; i < 30; i++)
+            {
+                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Tree, Grids.Tree1));
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Rock, Grids.Rock1));
+            }
 
             t_update = new(new ThreadStart(Update));
             t_update.Start();

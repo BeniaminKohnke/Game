@@ -16,7 +16,7 @@ namespace SpriteMaker
             {
                 if (control is RadioButton button)
                 {
-                    button.CheckedChanged += new EventHandler(ChangeGridValue);
+                    button.CheckedChanged += new(ChangeGridValue);
                 }
             }
 
@@ -59,7 +59,7 @@ namespace SpriteMaker
                             }
                         case "GUI":
                             {
-                                var dir = $@"{FolderPathBox.Text}\Inerface";
+                                var dir = $@"{FolderPathBox.Text}\Interface";
                                 if (!Directory.Exists(dir))
                                 {
                                     Directory.CreateDirectory(dir);
