@@ -107,24 +107,31 @@ namespace GameAPI.DSL
             {
                 if(!_gui.States[Controls.CodeEditor])
                 {
-                    if (e.Code == Keyboard.Key.Up)
+                    switch(e.Code)
                     {
-                        _gameWorld.Player.EnqueueMovement(Directions.Up);
-                    }
+                        case Keyboard.Key.Up:
+                            EnqueueMovement(Directions.Up);
+                            break;
+                        case Keyboard.Key.Down:
+                            EnqueueMovement(Directions.Down);
+                            break;
+                        case Keyboard.Key.Right:
+                            EnqueueMovement(Directions.Right);
+                            break;
+                        case Keyboard.Key.Left:
+                            EnqueueMovement(Directions.Left);
+                            break;
 
-                    if (e.Code == Keyboard.Key.Down)
-                    {
-                        _gameWorld.Player.EnqueueMovement(Directions.Down);
-                    }
-
-                    if (e.Code == Keyboard.Key.Right)
-                    {
-                        _gameWorld.Player.EnqueueMovement(Directions.Right);
-                    }
-
-                    if (e.Code == Keyboard.Key.Left)
-                    {
-                        _gameWorld.Player.EnqueueMovement(Directions.Left);
+                        void EnqueueMovement(Directions direction)
+                        {
+                            if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
+                            {
+                                for (int i = 0; i < movementSpeed; i++)
+                                {
+                                    _gameWorld.Player.EnqueueMovement(direction);
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -133,29 +140,29 @@ namespace GameAPI.DSL
                     _codeHandler.CreateScript(string.Empty);
                 }
 
-                if (e.Code == Keyboard.Key.F6)
+                if(e.Code == Keyboard.Key.F6)
                 {
                     _codeHandler.AllowRunningScripts = true;
                 }
 
-                if (e.Code == Keyboard.Key.F7)
+                if(e.Code == Keyboard.Key.F7)
                 {
                     _codeHandler.AbortScripts();
                 }
 
-                if (e.Code == Keyboard.Key.Escape)
+                if(e.Code == Keyboard.Key.Escape)
                 {
                     _gameWorld.IsActive = false;
                     _codeHandler.IsActive = false;
                     _window.Close();
                 }
 
-                if (e.Code == Keyboard.Key.F1)
+                if(e.Code == Keyboard.Key.F1)
                 {
                     _gui.States[Controls.CodeEditor] = !_gui.States[Controls.CodeEditor];
                 }
 
-                if (_gui.States[Controls.CodeEditor])
+                if(_gui.States[Controls.CodeEditor])
                 {
                     if(e.Shift)
                     {

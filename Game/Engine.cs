@@ -46,7 +46,7 @@ namespace Game
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
         {
-            var gameObjects = gameWorld.GetObjects(GetObjectsOptions.FromPlayer | GetObjectsOptions.Ordered, drawDistance);
+            var gameObjects = gameWorld.GetObjects(GetObjectsOptions.FromPlayer | GetObjectsOptions.AddPlayerItems | GetObjectsOptions.Ordered | GetObjectsOptions.OnlyActive, drawDistance);
             foreach (var gameObject in gameObjects)
             {
                 var (state, sprite) = _gameObjectsSprites[gameObject.Id];

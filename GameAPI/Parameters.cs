@@ -6,7 +6,15 @@
         Player,
         Rock,
         Tree,
-        Building
+        Building,
+        Item,
+    }
+
+    public enum ItemTypes
+    {
+        None,
+        Mele,
+        Ranged,
     }
 
     public enum Grids
@@ -48,6 +56,19 @@
         Down,
         Left,
         Right,
+    }
+
+    public enum ObjectsParameters
+    {
+        Health,
+        MovementSpeed,
+        BluntDamage,
+        ThrustDamage,
+        SlashDamage,
+        BluntDamageResistance,
+        ThrustDamageResistance,
+        SlashDamageResistance,
+        DamageAgainstEnemiesMultiplier,
     }
 
     public static class Parameters

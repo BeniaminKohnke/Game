@@ -8,6 +8,8 @@ namespace GameAPI
         None = 0,
         FromPlayer = 2,
         Ordered = 8,
+        OnlyActive = 16,
+        AddPlayerItems = 32,
     }
 
     public class GameWorld
@@ -23,7 +25,11 @@ namespace GameAPI
         {
             Player = new(_loader, 0, 0)
             {
-                MovementSpeed = 1,
+                ObjectParameters = new()
+                {
+                    [ObjectsParameters.MovementSpeed] = 1,
+                    [ObjectsParameters.Health] = 100,
+                }
             };
 
             _gameObjects = new()
@@ -55,24 +61,34 @@ namespace GameAPI
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
             var objects = _gameObjects.ToList();
-            if (options.HasFlag(GetObjectsOptions.FromPlayer))
+            if(options.HasFlag(GetObjectsOptions.FromPlayer))
             {
                 var squaredRadius = Math.Pow(radius ?? Player.ScanRadius, 2);
-                foreach (var go in _gameObjects)
+                foreach(var go in _gameObjects)
                 {
                     var deltaX = Player.Position.x - go.Position.x;
                     var deltaY = Player.Position.y - go.Position.y;
 
-                    if ((deltaX * deltaX) + (deltaY * deltaY) > squaredRadius)
+                    if((deltaX * deltaX) + (deltaY * deltaY) > squaredRadius)
                     {
                         objects.Remove(go);
                     }
                 };
             }
 
-            if (options.HasFlag(GetObjectsOptions.Ordered))
+            if(options.HasFlag(GetObjectsOptions.AddPlayerItems))
             {
-                return objects.OrderBy(go => go, _comparer).ToList();
+                objects = objects.Concat(Player.Items).ToList();
+            }
+
+            if(options.HasFlag(GetObjectsOptions.OnlyActive))
+            {
+                objects = objects.Where(go => go.IsActive).ToList();
+            }
+
+            if(options.HasFlag(GetObjectsOptions.Ordered))
+            {
+                objects = objects.OrderBy(go => go, _comparer).ToList();
             }
 
             return objects;
@@ -90,37 +106,62 @@ namespace GameAPI
         {
             foreach(var main in _gameObjects)
             {
-                var direction = main.DequeueMovement(_loader);
-                while (direction != Directions.None)
+                if(main.ObjectParameters.ContainsKey(ObjectsParameters.MovementSpeed))
                 {
-                    var newRectangle = direction switch
+                    var direction = main.DequeueMovement(_loader);
+                    while (direction != Directions.None)
                     {
-                        Directions.Up => main.CopyWithShift(0, -main.MovementSpeed),
-                        Directions.Down => main.CopyWithShift(0, main.MovementSpeed),
-                        Directions.Left => main.CopyWithShift(-main.MovementSpeed, 0),
-                        Directions.Right => main.CopyWithShift(main.MovementSpeed, 0),
-                        _ => null,
-                    };
-
-                    if (newRectangle != null)
-                    {
-                        var canMove = true;
-                        foreach(var other in _gameObjects)
+                        var newRectangle = direction switch
                         {
-                            if(main.Id != other.Id && newRectangle.CheckCollision(other))
+                            Directions.Up => main.CopyWithShift(0, -1),
+                            Directions.Down => main.CopyWithShift(0, 1),
+                            Directions.Left => main.CopyWithShift(-1, 0),
+                            Directions.Right => main.CopyWithShift(1, 0),
+                            _ => null,
+                        };
+
+                        if (newRectangle != null)
+                        {
+                            var canMove = true;
+                            foreach (var other in _gameObjects)
                             {
-                                canMove = false;
-                                break;
+                                if (main.Id != other.Id && newRectangle.CheckCollision(other))
+                                {
+                                    canMove = false;
+                                    break;
+                                }
+                            }
+
+                            if (canMove)
+                            {
+                                main.Position = newRectangle.Position;
                             }
                         }
 
-                        if (canMove)
-                        {
-                            main.Position = newRectangle.Position;
-                        }
+                        direction = main.DequeueMovement(_loader);
                     }
+                }
+            }
+        }
 
-                    direction = main.DequeueMovement(_loader);
+        public void HandleItemCollision()
+        {
+            var item = Player.Items.ElementAtOrDefault(Player.SelectedItem - 1);
+            if(item != null && item.IsActive && item.IsUsed)
+            {
+                switch(item.ItemType)
+                {
+                    case ItemTypes.Mele:
+                        {
+                            foreach (var gameObject in _gameObjects)
+                            {
+                                if (item.CheckCollision(gameObject))
+                                {
+
+                                }
+                            }
+                            break;
+                        }
                 }
             }
         }

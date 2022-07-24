@@ -7,9 +7,9 @@ namespace GameAPI.DSL
         public bool IsActive { get; private set; }
         private Thread? t_script;
 
-        protected abstract void Do(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters);
+        protected abstract void Do(GameWorld gameWorld, ConcurrentDictionary<string, object> parameters);
 
-        public void Invoke(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters)
+        public void Invoke(GameWorld gameWorld, ConcurrentDictionary<string, object> parameters)
         {
             try
             {

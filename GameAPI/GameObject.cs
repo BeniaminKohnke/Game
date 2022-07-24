@@ -7,19 +7,20 @@ namespace GameAPI
         private static uint _lastId = 0;
         public readonly uint Id = _lastId++;
 
+        public Dictionary<ObjectsParameters, object> ObjectParameters { get; set; } = new();
         private readonly ConcurrentQueue<Directions> _movement = new();
         private readonly ConcurrentDictionary<Animations, States[]> _animations = new();
 
-        public int MovementSpeed { get; set; } = 0;
-        public Types ObjectType { get; private set; }
         public Grids Grid { get; private set; }
         public States State { get; private set; } = States.NoAction1;
+        public Types ObjectType { get; private set; }
+        public bool IsActive { get; set; } = true;
 
         public GameObject(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader.GetGrid(grid, States.NoAction1), x, y)
         {
             ObjectType = type;
             Grid = grid;
-
+            
             var states = loader.GetStates(grid);
             if(states != null)
             {

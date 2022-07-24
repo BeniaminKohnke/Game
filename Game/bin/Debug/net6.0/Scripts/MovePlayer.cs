@@ -11,7 +11,7 @@ namespace GameAPI.DSL
 		{
 		}
 
-		protected override void Do(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters)
+		protected override void Do(GameWorld gameWorld, ConcurrentDictionary<string, object> parameters)
 		{
 			gameWorld.Player.EnqueueMovement((Directions)new Random().Next(0, 5));
 		}

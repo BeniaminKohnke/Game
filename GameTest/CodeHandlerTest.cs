@@ -10,26 +10,26 @@ namespace GameTest
         [TestMethod]
         public void InvokePlayerScriptsTest()
         {
-            var handler = new CodeHandler();
-            var gameWorld = new GameWorld();
-            handler.InvokePlayerScripts(gameWorld);
+            //var gameWorld = new GameWorld();
+            //var handler = new CodeHandler(gameWorld);
+            //handler.InvokePlayerScripts();
         }
 
         [TestMethod]
         public void CompileScriptsTest()
         {
-            var handler = new CodeHandler();
-            handler.CompileScripts();
+            //var handler = new CodeHandler();
+            //handler.CompileScripts();
         }
 
         [TestMethod]
         public void LoadScriptsTest()
         {
-            var handler = new CodeHandler();
-            handler.LoadScripts();
+            //var handler = new CodeHandler();
+            //handler.LoadScripts();
 
-            var gameWorld = new GameWorld();
-            handler.InvokePlayerScripts(gameWorld);
+            //var gameWorld = new GameWorld();
+            //handler.InvokePlayerScripts(gameWorld);
         }
     }
 }

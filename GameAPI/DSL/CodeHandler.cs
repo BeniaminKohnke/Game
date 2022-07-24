@@ -11,7 +11,7 @@ namespace GameAPI.DSL
         private bool _recompile = false;
         private readonly GameWorld _gameWorld;
         private readonly Thread t_update;
-        private readonly ConcurrentDictionary<string, (Types, object)> _dynamicObjects = new();
+        private readonly ConcurrentDictionary<string, object> _dynamicObjects = new();
         private readonly Dictionary<string, PlayerScript> _activeScripts = new();
         private readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary);
         private readonly MetadataReference[] _references = new[]

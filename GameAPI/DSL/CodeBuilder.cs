@@ -40,7 +40,7 @@ namespace GameAPI.DSL
             builder.AppendLine("\t\t{");
             builder.AppendLine("\t\t}\n");
 
-            builder.AppendLine($"\t\tprotected override void Do(GameWorld gameWorld, ConcurrentDictionary<string, (Types, object)> parameters)");
+            builder.AppendLine($"\t\tprotected override void Do(GameWorld gameWorld, ConcurrentDictionary<string, object> parameters)");
             builder.AppendLine("\t\t{");
 
             //test
