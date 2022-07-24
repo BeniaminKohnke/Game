@@ -28,16 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.KeywordLabel = new System.Windows.Forms.Label();
-            this.KeywordBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.HeightBox = new System.Windows.Forms.NumericUpDown();
             this.WidthBox = new System.Windows.Forms.NumericUpDown();
             this.LoadButton = new System.Windows.Forms.Button();
-            this.RefreshButton = new System.Windows.Forms.Button();
             this.FolderPathLabel = new System.Windows.Forms.Label();
             this.FolderPathBox = new System.Windows.Forms.TextBox();
-            this.ExistingTexturesBox = new System.Windows.Forms.ListBox();
             this.ChoiceBox = new System.Windows.Forms.GroupBox();
             this.TransparentColliderButton = new System.Windows.Forms.RadioButton();
             this.FillingColliderButton = new System.Windows.Forms.RadioButton();
@@ -48,12 +44,14 @@
             this.SaveButton = new System.Windows.Forms.Button();
             this.Pages = new System.Windows.Forms.TabControl();
             this.FilePage = new System.Windows.Forms.TabPage();
+            this.TypeGroupBox = new System.Windows.Forms.ComboBox();
+            this.ItemGroupBox = new System.Windows.Forms.ComboBox();
             this.OptionsBox = new System.Windows.Forms.ComboBox();
             this.ToolsPage = new System.Windows.Forms.TabPage();
-            this.WidthLabel = new System.Windows.Forms.Label();
-            this.HeightLabel = new System.Windows.Forms.Label();
-            this.PixelSizeLabel = new System.Windows.Forms.Label();
             this.PixelSizeBox = new System.Windows.Forms.NumericUpDown();
+            this.PixelSizeLabel = new System.Windows.Forms.Label();
+            this.HeightLabel = new System.Windows.Forms.Label();
+            this.WidthLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             this.ChoiceBox.SuspendLayout();
@@ -62,23 +60,6 @@
             this.ToolsPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PixelSizeBox)).BeginInit();
             this.SuspendLayout();
-            // 
-            // KeywordLabel
-            // 
-            this.KeywordLabel.AutoSize = true;
-            this.KeywordLabel.Location = new System.Drawing.Point(6, 112);
-            this.KeywordLabel.Name = "KeywordLabel";
-            this.KeywordLabel.Size = new System.Drawing.Size(83, 15);
-            this.KeywordLabel.TabIndex = 26;
-            this.KeywordLabel.Text = "Keyword filter:";
-            // 
-            // KeywordBox
-            // 
-            this.KeywordBox.Location = new System.Drawing.Point(6, 130);
-            this.KeywordBox.Name = "KeywordBox";
-            this.KeywordBox.Size = new System.Drawing.Size(206, 23);
-            this.KeywordBox.TabIndex = 25;
-            this.KeywordBox.TextChanged += new System.EventHandler(this.KeywordBox_TextChanged);
             // 
             // XLabel
             // 
@@ -125,16 +106,6 @@
             this.LoadButton.UseVisualStyleBackColor = true;
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             // 
-            // RefreshButton
-            // 
-            this.RefreshButton.Location = new System.Drawing.Point(146, 6);
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(64, 23);
-            this.RefreshButton.TabIndex = 20;
-            this.RefreshButton.Text = "Refresh";
-            this.RefreshButton.UseVisualStyleBackColor = true;
-            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
-            // 
             // FolderPathLabel
             // 
             this.FolderPathLabel.AutoSize = true;
@@ -150,15 +121,6 @@
             this.FolderPathBox.Name = "FolderPathBox";
             this.FolderPathBox.Size = new System.Drawing.Size(206, 23);
             this.FolderPathBox.TabIndex = 18;
-            // 
-            // ExistingTexturesBox
-            // 
-            this.ExistingTexturesBox.FormattingEnabled = true;
-            this.ExistingTexturesBox.ItemHeight = 15;
-            this.ExistingTexturesBox.Location = new System.Drawing.Point(6, 159);
-            this.ExistingTexturesBox.Name = "ExistingTexturesBox";
-            this.ExistingTexturesBox.Size = new System.Drawing.Size(206, 169);
-            this.ExistingTexturesBox.TabIndex = 17;
             // 
             // ChoiceBox
             // 
@@ -264,11 +226,9 @@
             // 
             // FilePage
             // 
+            this.FilePage.Controls.Add(this.TypeGroupBox);
+            this.FilePage.Controls.Add(this.ItemGroupBox);
             this.FilePage.Controls.Add(this.OptionsBox);
-            this.FilePage.Controls.Add(this.ExistingTexturesBox);
-            this.FilePage.Controls.Add(this.KeywordLabel);
-            this.FilePage.Controls.Add(this.RefreshButton);
-            this.FilePage.Controls.Add(this.KeywordBox);
             this.FilePage.Controls.Add(this.LoadButton);
             this.FilePage.Controls.Add(this.FolderPathLabel);
             this.FilePage.Controls.Add(this.FolderPathBox);
@@ -281,6 +241,22 @@
             this.FilePage.Text = "Files";
             this.FilePage.UseVisualStyleBackColor = true;
             // 
+            // TypeGroupBox
+            // 
+            this.TypeGroupBox.FormattingEnabled = true;
+            this.TypeGroupBox.Location = new System.Drawing.Point(6, 144);
+            this.TypeGroupBox.Name = "TypeGroupBox";
+            this.TypeGroupBox.Size = new System.Drawing.Size(207, 23);
+            this.TypeGroupBox.TabIndex = 29;
+            // 
+            // ItemGroupBox
+            // 
+            this.ItemGroupBox.FormattingEnabled = true;
+            this.ItemGroupBox.Location = new System.Drawing.Point(7, 115);
+            this.ItemGroupBox.Name = "ItemGroupBox";
+            this.ItemGroupBox.Size = new System.Drawing.Size(206, 23);
+            this.ItemGroupBox.TabIndex = 28;
+            // 
             // OptionsBox
             // 
             this.OptionsBox.FormattingEnabled = true;
@@ -292,6 +268,7 @@
             this.OptionsBox.Size = new System.Drawing.Size(206, 23);
             this.OptionsBox.TabIndex = 27;
             this.OptionsBox.Text = "API";
+            this.OptionsBox.SelectedIndexChanged += new System.EventHandler(this.OptionsBox_SelectedIndexChanged);
             // 
             // ToolsPage
             // 
@@ -311,33 +288,6 @@
             this.ToolsPage.Text = "Tools";
             this.ToolsPage.UseVisualStyleBackColor = true;
             // 
-            // WidthLabel
-            // 
-            this.WidthLabel.AutoSize = true;
-            this.WidthLabel.Location = new System.Drawing.Point(6, 289);
-            this.WidthLabel.Name = "WidthLabel";
-            this.WidthLabel.Size = new System.Drawing.Size(42, 15);
-            this.WidthLabel.TabIndex = 25;
-            this.WidthLabel.Text = "Width:";
-            // 
-            // HeightLabel
-            // 
-            this.HeightLabel.AutoSize = true;
-            this.HeightLabel.Location = new System.Drawing.Point(122, 289);
-            this.HeightLabel.Name = "HeightLabel";
-            this.HeightLabel.Size = new System.Drawing.Size(46, 15);
-            this.HeightLabel.TabIndex = 26;
-            this.HeightLabel.Text = "Height:";
-            // 
-            // PixelSizeLabel
-            // 
-            this.PixelSizeLabel.AutoSize = true;
-            this.PixelSizeLabel.Location = new System.Drawing.Point(6, 266);
-            this.PixelSizeLabel.Name = "PixelSizeLabel";
-            this.PixelSizeLabel.Size = new System.Drawing.Size(57, 15);
-            this.PixelSizeLabel.TabIndex = 27;
-            this.PixelSizeLabel.Text = "Pixel size:";
-            // 
             // PixelSizeBox
             // 
             this.PixelSizeBox.Location = new System.Drawing.Point(122, 264);
@@ -355,6 +305,33 @@
             0,
             0});
             this.PixelSizeBox.ValueChanged += new System.EventHandler(this.PixelSizeBox_ValueChanged);
+            // 
+            // PixelSizeLabel
+            // 
+            this.PixelSizeLabel.AutoSize = true;
+            this.PixelSizeLabel.Location = new System.Drawing.Point(6, 266);
+            this.PixelSizeLabel.Name = "PixelSizeLabel";
+            this.PixelSizeLabel.Size = new System.Drawing.Size(57, 15);
+            this.PixelSizeLabel.TabIndex = 27;
+            this.PixelSizeLabel.Text = "Pixel size:";
+            // 
+            // HeightLabel
+            // 
+            this.HeightLabel.AutoSize = true;
+            this.HeightLabel.Location = new System.Drawing.Point(122, 289);
+            this.HeightLabel.Name = "HeightLabel";
+            this.HeightLabel.Size = new System.Drawing.Size(46, 15);
+            this.HeightLabel.TabIndex = 26;
+            this.HeightLabel.Text = "Height:";
+            // 
+            // WidthLabel
+            // 
+            this.WidthLabel.AutoSize = true;
+            this.WidthLabel.Location = new System.Drawing.Point(6, 289);
+            this.WidthLabel.Name = "WidthLabel";
+            this.WidthLabel.Size = new System.Drawing.Size(42, 15);
+            this.WidthLabel.TabIndex = 25;
+            this.WidthLabel.Text = "Width:";
             // 
             // OptionsMenu
             // 
@@ -382,17 +359,12 @@
         }
 
         #endregion
-
-        private Label KeywordLabel;
-        private TextBox KeywordBox;
         private Label XLabel;
         private NumericUpDown HeightBox;
         private NumericUpDown WidthBox;
         private Button LoadButton;
-        private Button RefreshButton;
         private Label FolderPathLabel;
         private TextBox FolderPathBox;
-        private ListBox ExistingTexturesBox;
         private GroupBox ChoiceBox;
         private RadioButton TransparentColliderButton;
         private RadioButton FillingColliderButton;
@@ -409,5 +381,7 @@
         private Label HeightLabel;
         private Label WidthLabel;
         private NumericUpDown PixelSizeBox;
+        private ComboBox TypeGroupBox;
+        private ComboBox ItemGroupBox;
     }
 }

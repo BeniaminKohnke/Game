@@ -5,100 +5,38 @@ namespace SpriteMaker
 {
     public partial class OptionsMenu : Form
     {
-        private readonly Dictionary<string, string> _paths = new();
         private readonly Grid _grid;
         public OptionsMenu(Grid grid)
         {
             InitializeComponent();
             _grid = grid;
 
-            foreach (var control in ChoiceBox.Controls)
+            foreach(var control in ChoiceBox.Controls)
             {
-                if (control is RadioButton button)
+                if(control is RadioButton button)
                 {
                     button.CheckedChanged += new(ChangeGridValue);
                 }
             }
 
             FolderPathBox.Text = $@"C:\Users\benia\Documents\GitHub\Game\Game\bin\Debug\net6.0\Textures";
+            OptionsBox_SelectedIndexChanged(null, null);
         }
-
-        private void RefreshButton_Click(object sender, EventArgs e)
+        private string CreateFilePath() => OptionsBox.Text switch
         {
-            try
-            {
-                ExistingTexturesBox.Items.Clear();
-                if (!string.IsNullOrEmpty(FolderPathBox.Text))
-                {
-                    switch(OptionsBox.Text)
-                    {
-                        case "API":
-                            {
-                                foreach (var folder in Enum.GetValues(typeof(Grids)))
-                                {
-                                    var dir = $@"{FolderPathBox.Text}\{folder}";
-                                    if (!Directory.Exists(dir))
-                                    {
-                                        Directory.CreateDirectory(dir);
-                                    }
-
-                                    foreach (var file in Enum.GetValues(typeof(States)))
-                                    {
-                                        var path = $@"{dir}\{file}.sm";
-                                        if (!File.Exists(path))
-                                        {
-                                            File.Create(path);
-                                        }
-
-                                        var position = $"{Enum.GetName(typeof(Grids), folder)}->{Enum.GetName(typeof(States), file)}";
-                                        ExistingTexturesBox.Items.Add(position);
-                                        _paths[position] = path;
-                                    }
-                                }
-                                break;
-                            }
-                        case "GUI":
-                            {
-                                var dir = $@"{FolderPathBox.Text}\Interface";
-                                if (!Directory.Exists(dir))
-                                {
-                                    Directory.CreateDirectory(dir);
-                                }
-
-                                foreach (var file in Enum.GetValues(typeof(Controls)))
-                                {
-                                    var path = $@"{dir}\{file}.sm";
-                                    if (!File.Exists(path))
-                                    {
-                                        File.Create(path);
-                                    }
-
-                                    var name = file.ToString();
-                                    if(!string.IsNullOrEmpty(name))
-                                    {
-                                        ExistingTexturesBox.Items.Add(name);
-                                        _paths[name] = path;
-                                    }
-                                }
-                                break;
-                            }
-                    }
-                }
-            }
-            catch
-            {
-
-            }
-        }
+            "API" => $@"{FolderPathBox.Text}\{ItemGroupBox.Text}\{TypeGroupBox.Text}.sm",
+            "GUI" => $@"{FolderPathBox.Text}\Interface\{TypeGroupBox.Text}.sm",
+            _ => string.Empty,
+        };
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
             try
             {
-                var fileName = ExistingTexturesBox.SelectedItem?.ToString();
-                if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
+                var filePath = CreateFilePath();
+                if(!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
                 {
-                    var grid = File.ReadAllLines(_paths[fileName]).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
+                    var grid = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
                     _grid.SetGrid(grid);
                     HeightBox.Value = _grid.GridHeight;
                     WidthBox.Value = _grid.GridWidth;
@@ -114,10 +52,15 @@ namespace SpriteMaker
         {
             try
             {
-                var fileName = ExistingTexturesBox.SelectedItem.ToString();
-                if (!string.IsNullOrEmpty(fileName) && _paths.ContainsKey(fileName))
+                var filePath = CreateFilePath();
+                if(!string.IsNullOrEmpty(filePath))
                 {
-                    File.WriteAllLines(_paths[fileName], _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
+                    if(!File.Exists(filePath))
+                    {
+                        File.Create(filePath).Close();
+                    }
+
+                    File.WriteAllLines(filePath, _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
                 }
             }
             catch
@@ -132,44 +75,66 @@ namespace SpriteMaker
 
         private void PixelSizeBox_ValueChanged(object sender, EventArgs e) => _grid.PixelSize = (byte)PixelSizeBox.Value;
 
-        private void KeywordBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                ExistingTexturesBox.Items.Clear();
-                _paths.Keys.Where(k => k.Contains(KeywordBox.Text))?.ToList().ForEach(e => ExistingTexturesBox.Items.Add(e));
-            }
-            catch
-            {
-
-            }
-        }
-
         private void ChangeGridValue(object? sender, EventArgs e)
         {
-            if (TransparentButton.Checked)
+            if(TransparentButton.Checked)
             {
                 _grid.Value = 7;
             }
-            else if (FillingButton.Checked)
+            else if(FillingButton.Checked)
             {
                 _grid.Value = 5;
             }
-            else if (ColliderButton.Checked)
+            else if(ColliderButton.Checked)
             {
                 _grid.Value = 3;
             }
-            else if (ContourButton.Checked)
+            else if(ContourButton.Checked)
             {
                 _grid.Value = 4;
             }
-            else if (FillingColliderButton.Checked)
+            else if(FillingColliderButton.Checked)
             {
                 _grid.Value = 2;
             }
-            else if (TransparentColliderButton.Checked)
+            else if(TransparentColliderButton.Checked)
             {
                 _grid.Value = 6;
+            }
+        }
+
+        private void OptionsBox_SelectedIndexChanged(object? sender, EventArgs? e)
+        {
+            ItemGroupBox.Text = string.Empty;
+            TypeGroupBox.Text = string.Empty;
+
+            switch (OptionsBox.Text)
+            {
+                case "API":
+                    {
+                        ItemGroupBox.Items.Clear();
+                        foreach(var item in Enum.GetValues(typeof(Grids)))
+                        {
+                            ItemGroupBox.Items.Add(item);
+                        }
+
+                        TypeGroupBox.Items.Clear();
+                        foreach(var item in Enum.GetValues(typeof(States)))
+                        {
+                            TypeGroupBox.Items.Add(item);
+                        }
+                        break;
+                    }
+                case "GUI":
+                    {
+                        ItemGroupBox.Items.Clear();
+                        TypeGroupBox.Items.Clear();
+                        foreach(var item in Enum.GetValues(typeof(Controls)))
+                        {
+                            TypeGroupBox.Items.Add(item);
+                        }
+                        break;
+                    }
             }
         }
     }
