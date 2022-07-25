@@ -55,11 +55,6 @@ namespace SpriteMaker
                 var filePath = CreateFilePath();
                 if(!string.IsNullOrEmpty(filePath))
                 {
-                    if(!File.Exists(filePath))
-                    {
-                        File.Create(filePath).Close();
-                    }
-
                     File.WriteAllLines(filePath, _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
                 }
             }

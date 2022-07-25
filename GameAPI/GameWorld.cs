@@ -29,6 +29,7 @@ namespace GameAPI
                 {
                     [ObjectsParameters.MovementSpeed] = 1,
                     [ObjectsParameters.Health] = 100,
+                    [ObjectsParameters.ScanRadius] = 100,
                 }
             };
 
@@ -63,7 +64,7 @@ namespace GameAPI
             var objects = _gameObjects.ToList();
             if(options.HasFlag(GetObjectsOptions.FromPlayer))
             {
-                var squaredRadius = Math.Pow(radius ?? Player.ScanRadius, 2);
+                var squaredRadius = Math.Pow(radius ?? Player.ObjectParameters[ObjectsParameters.ScanRadius] as int? ?? 0, 2);
                 foreach(var go in _gameObjects)
                 {
                     var deltaX = Player.Position.x - go.Position.x;

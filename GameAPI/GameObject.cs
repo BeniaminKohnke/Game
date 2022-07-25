@@ -5,12 +5,11 @@ namespace GameAPI
     public class GameObject : Rectangle
     {
         private static uint _lastId = 0;
-        public readonly uint Id = _lastId++;
-
         public Dictionary<ObjectsParameters, object> ObjectParameters { get; set; } = new();
         private readonly ConcurrentQueue<Directions> _movement = new();
         private readonly ConcurrentDictionary<Animations, States[]> _animations = new();
 
+        public uint Id { get; } = _lastId++;
         public Grids Grid { get; private set; }
         public States State { get; private set; } = States.NoAction1;
         public Types ObjectType { get; private set; }
@@ -24,18 +23,18 @@ namespace GameAPI
             var states = loader.GetStates(grid);
             if(states != null)
             {
-                foreach (var animation in Parameters.Animations)
+                foreach(var animation in Parameters.Animations)
                 {
                     var animationStates = new List<States>();
-                    foreach (var state in animation.Value)
+                    foreach(var state in animation.Value)
                     {
-                        if (states.ContainsKey(state))
+                        if(states.ContainsKey(state))
                         {
                             animationStates.Add(state);
                         }
                     }
 
-                    if (animationStates.Any())
+                    if(animationStates.Any())
                     {
                         _animations[animation.Key] = animationStates.ToArray();
                     }
@@ -45,7 +44,7 @@ namespace GameAPI
 
         public void EnqueueMovement(Directions direction) => _movement.Enqueue(direction);
 
-        public Directions DequeueMovement(GridLoader shapeLoader)
+        public Directions DequeueMovement(GridLoader loader)
         {
             if(_movement.TryDequeue(out var direction))
             {
@@ -68,7 +67,7 @@ namespace GameAPI
                 
                 if(changeAnimation)
                 {
-                    SetGrid(shapeLoader.GetGrid(Grid, State));
+                    SetGrid(loader.GetGrid(Grid, State));
                 }
 
                 return direction;
@@ -81,7 +80,7 @@ namespace GameAPI
             if(_animations.TryGetValue(animation, out var states))
             {
                 var index = Array.IndexOf(states, State) + 1;
-                State = index < states.Length ? states[index] : states[0];
+                State = states[index < states.Length ? index : 0];
                 return true;
             }
             return false;
