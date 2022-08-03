@@ -33,9 +33,9 @@
             set
             {
                 _pixelSize = value;
-                for (int i = 0; i < GRID_SIZE; i++)
+                for(int i = 0; i < GRID_SIZE; i++)
                 {
-                    for (int j = 0; j < GRID_SIZE; j++)
+                    for(int j = 0; j < GRID_SIZE; j++)
                     {
                         _pixels[i][j].Size = _pixelSize;
                         _pixels[i][j].Position = new(j * _pixelSize, i * _pixelSize);
@@ -73,13 +73,13 @@
         }
         private void ResizeGrid()
         {
-            for (int i = 0; i < GRID_SIZE; i++)
+            for(int i = 0; i < GRID_SIZE; i++)
             {
                 for(int j = 0; j < GRID_SIZE; j++)
                 {
                     if(i < _height && j < _width)
                     {
-                        if (_pixels[i][j].Value == 0)
+                        if(_pixels[i][j].Value == 0)
                         {
                             _pixels[i][j].Value = 7;
                         }
@@ -98,21 +98,20 @@
             _width = (ushort)grid[0].Length;
             ResizeGrid();
 
-            for (int i = 0; i < _height; i++)
+            for(int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < _width; j++)
+                for(int j = 0; j < _width; j++)
                 {
                     _pixels[i][j].Value = grid[i][j];
                 }
             }
         }
-
         public byte[][] GetGrid()
         {
             var grid = new byte[_height][].Select(l => l = new byte[_width]).ToArray();
-            for (int i = 0; i < _height; i++)
+            for(int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < _width; j++)
+                for(int j = 0; j < _width; j++)
                 {
                     grid[i][j] = _pixels[i][j].Value;
                 }
@@ -244,6 +243,36 @@
             }
 
             Invalidate();
+        }
+
+        public void AddColumn()
+        {
+            var oldGrid = _pixels.Select(r => r.Select(r => r.Value).ToList()).ToList();
+            oldGrid.ForEach(r => { r.Insert(0, 7); r.RemoveAt(r.Count - 1); });
+
+            _width++;
+            for(int i = 0; i < _height; i++)
+            {
+                for(int j = 0; j < _width; j++)
+                {
+                    _pixels[i][j].Value = oldGrid[i][j];
+                }
+            }
+        }
+
+        public void AddRow()
+        {
+            var oldGrid = _pixels.Select(r => r.Select(r => r.Value).ToList()).ToList();
+            oldGrid.Insert(0, (new byte[GRID_SIZE]).Select(p => (byte)7).ToList());
+
+            _height++;
+            for (int i = 0; i < _height; i++)
+            {
+                for (int j = 0; j < _width; j++)
+                {
+                    _pixels[i][j].Value = oldGrid[i][j];
+                }
+            }
         }
 
         private record Pixel

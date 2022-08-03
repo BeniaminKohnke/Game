@@ -4,7 +4,7 @@ namespace GameAPI
 {
     public class GameObject : Rectangle
     {
-        private static uint _lastId = 0;
+        private static uint _lastId = 1;
         public Dictionary<ObjectsParameters, object> ObjectParameters { get; set; } = new();
         private readonly ConcurrentQueue<Directions> _movement = new();
         private readonly ConcurrentDictionary<Animations, States[]> _animations = new();

@@ -132,5 +132,9 @@ namespace SpriteMaker
                     }
             }
         }
+
+        private void InsertColumnButton_Click(object sender, EventArgs e) => _grid.AddColumn();
+
+        private void InsertRowButton_Click(object sender, EventArgs e) => _grid.AddRow();
     }
 }

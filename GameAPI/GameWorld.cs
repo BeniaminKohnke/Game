@@ -100,6 +100,7 @@ namespace GameAPI
             while(IsActive)
             {
                 HandleCollisions();
+                HandleItemsActions();
             }
         }
 
@@ -145,7 +146,7 @@ namespace GameAPI
             }
         }
 
-        public void HandleItemCollision()
+        public void HandleItemsActions()
         {
             var item = Player.Items.ElementAtOrDefault(Player.SelectedItem - 1);
             if(item != null && item.IsActive && item.IsUsed)
@@ -154,11 +155,30 @@ namespace GameAPI
                 {
                     case ItemTypes.Mele:
                         {
-                            foreach (var gameObject in _gameObjects)
+                            foreach(var gameObject in _gameObjects)
                             {
-                                if (item.CheckCollision(gameObject))
+                                if(item.CheckCollision(gameObject))
                                 {
+                                    if(gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is ushort health)
+                                    {
+                                        DealDamage(ObjectsParameters.SlashDamage, ObjectsParameters.SlashDamageResistance);
+                                        DealDamage(ObjectsParameters.BluntDamage, ObjectsParameters.BluntDamageResistance);
+                                        DealDamage(ObjectsParameters.ThrustDamage, ObjectsParameters.ThrustDamageResistance);
 
+                                        gameObject.ObjectParameters[ObjectsParameters.Health] = health;
+                                        void DealDamage(ObjectsParameters damageType, ObjectsParameters resistanceType)
+                                        {
+                                            if (item.ObjectParameters.TryGetValue(damageType, out value) && value is ushort damage)
+                                            {
+                                                if (!(gameObject.ObjectParameters.TryGetValue(resistanceType, out value) && value is ushort resistance))
+                                                {
+                                                    resistance = 0;
+                                                }
+
+                                                health -= (ushort)((1 - resistance) * damage);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             break;

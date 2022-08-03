@@ -48,10 +48,12 @@
             this.ItemGroupBox = new System.Windows.Forms.ComboBox();
             this.OptionsBox = new System.Windows.Forms.ComboBox();
             this.ToolsPage = new System.Windows.Forms.TabPage();
+            this.InsertColumnButton = new System.Windows.Forms.Button();
             this.PixelSizeBox = new System.Windows.Forms.NumericUpDown();
             this.PixelSizeLabel = new System.Windows.Forms.Label();
             this.HeightLabel = new System.Windows.Forms.Label();
             this.WidthLabel = new System.Windows.Forms.Label();
+            this.InsertRowButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             this.ChoiceBox.SuspendLayout();
@@ -272,6 +274,8 @@
             // 
             // ToolsPage
             // 
+            this.ToolsPage.Controls.Add(this.InsertRowButton);
+            this.ToolsPage.Controls.Add(this.InsertColumnButton);
             this.ToolsPage.Controls.Add(this.PixelSizeBox);
             this.ToolsPage.Controls.Add(this.PixelSizeLabel);
             this.ToolsPage.Controls.Add(this.HeightLabel);
@@ -287,6 +291,16 @@
             this.ToolsPage.TabIndex = 1;
             this.ToolsPage.Text = "Tools";
             this.ToolsPage.UseVisualStyleBackColor = true;
+            // 
+            // InsertColumnButton
+            // 
+            this.InsertColumnButton.Location = new System.Drawing.Point(6, 102);
+            this.InsertColumnButton.Name = "InsertColumnButton";
+            this.InsertColumnButton.Size = new System.Drawing.Size(89, 23);
+            this.InsertColumnButton.TabIndex = 29;
+            this.InsertColumnButton.Text = "Insert column";
+            this.InsertColumnButton.UseVisualStyleBackColor = true;
+            this.InsertColumnButton.Click += new System.EventHandler(this.InsertColumnButton_Click);
             // 
             // PixelSizeBox
             // 
@@ -332,6 +346,16 @@
             this.WidthLabel.Size = new System.Drawing.Size(42, 15);
             this.WidthLabel.TabIndex = 25;
             this.WidthLabel.Text = "Width:";
+            // 
+            // InsertRowButton
+            // 
+            this.InsertRowButton.Location = new System.Drawing.Point(6, 131);
+            this.InsertRowButton.Name = "InsertRowButton";
+            this.InsertRowButton.Size = new System.Drawing.Size(89, 23);
+            this.InsertRowButton.TabIndex = 30;
+            this.InsertRowButton.Text = "Insert row";
+            this.InsertRowButton.UseVisualStyleBackColor = true;
+            this.InsertRowButton.Click += new System.EventHandler(this.InsertRowButton_Click);
             // 
             // OptionsMenu
             // 
@@ -383,5 +407,7 @@
         private NumericUpDown PixelSizeBox;
         private ComboBox TypeGroupBox;
         private ComboBox ItemGroupBox;
+        private Button InsertColumnButton;
+        private Button InsertRowButton;
     }
 }

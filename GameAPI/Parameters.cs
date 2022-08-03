@@ -27,6 +27,9 @@
         Tree2,
         Tree3,
         Building1,
+        Pickaxe,
+        Axe,
+        Sword,
     }
 
     public enum States
@@ -34,6 +37,9 @@
         NoAction1,
         NoAction2,
         NoAction3,
+        Action1,
+        Action2,
+        Action3,
         MovingLeft1,
         MovingLeft2,
         MovingLeft3,
@@ -60,6 +66,7 @@
 
     public enum ObjectsParameters
     {
+        None,
         Health,
         MovementSpeed,
         BluntDamage,
@@ -68,7 +75,6 @@
         BluntDamageResistance,
         ThrustDamageResistance,
         SlashDamageResistance,
-        DamageAgainstEnemiesMultiplier,
         ScanRadius,
     }
 
