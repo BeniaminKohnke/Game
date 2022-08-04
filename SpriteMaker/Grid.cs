@@ -205,7 +205,7 @@
                         if (_pixels[i][j].Position.X <= args.X
                             && args.X < _pixels[i][j].Position.X + _pixels[i][j].Size
                             && _pixels[i][j].Position.Y - _pixels[i][j].Size < args.Y
-                            && args.Y <= _pixels[i][j].Position.Y + 5)
+                            && args.Y <= _pixels[i][j].Position.Y + PixelSize)
                         {
                             return _pixels[i][j];
                         }

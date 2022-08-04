@@ -12,16 +12,16 @@ namespace SpriteMaker
         {
             InitializeComponent();
 
-            this.IsMdiContainer = true;
+            IsMdiContainer = true;
             _menu = new(_grid)
             {
                 MdiParent = this,
                 Location = new(0, 0),
             };
             _menu.Show();
-            this.TexturePanel.Controls.Add(_menu);
-            this.TexturePanel.Controls.Add(_grid);
-            this.AutoScroll = true;
+            TexturePanel.Controls.Add(_menu);
+            TexturePanel.Controls.Add(_grid);
+            AutoScroll = true;
         }
     }
 }

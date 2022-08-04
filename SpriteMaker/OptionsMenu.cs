@@ -22,18 +22,19 @@ namespace SpriteMaker
             FolderPathBox.Text = $@"C:\Users\benia\Documents\GitHub\Game\Game\bin\Debug\net6.0\Textures";
             OptionsBox_SelectedIndexChanged(null, null);
         }
-        private string CreateFilePath() => OptionsBox.Text switch
-        {
-            "API" => $@"{FolderPathBox.Text}\{ItemGroupBox.Text}\{TypeGroupBox.Text}.sm",
-            "GUI" => $@"{FolderPathBox.Text}\Interface\{TypeGroupBox.Text}.sm",
-            _ => string.Empty,
-        };
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
             try
             {
-                var filePath = CreateFilePath();
+                var dir = OptionsBox.Text switch
+                {
+                    "API" => $@"{FolderPathBox.Text}\{ItemGroupBox.Text}",
+                    "GUI" => $@"{FolderPathBox.Text}\Interface",
+                    _ => string.Empty,
+                };
+
+                var filePath = $@"{dir}\{TypeGroupBox.Text}.sm";
                 if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
                 {
                     var grid = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
@@ -52,10 +53,21 @@ namespace SpriteMaker
         {
             try
             {
-                var filePath = CreateFilePath();
-                if (!string.IsNullOrEmpty(filePath))
+                var dir = OptionsBox.Text switch
                 {
-                    File.WriteAllLines(filePath, _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
+                    "API" => $@"{FolderPathBox.Text}\{ItemGroupBox.Text}",
+                    "GUI" => $@"{FolderPathBox.Text}\Interface",
+                    _ => string.Empty,
+                };
+
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    File.WriteAllLines($@"{dir}\{TypeGroupBox.Text}.sm", _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
                 }
             }
             catch

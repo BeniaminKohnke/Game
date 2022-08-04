@@ -1,4 +1,6 @@
-﻿namespace GameAPI.DSL
+﻿using GameAPI.GameObjects;
+
+namespace GameAPI.DSL
 {
     public static class ScriptFunctions
     {

@@ -15,6 +15,7 @@ namespace Game
         private readonly CodeHandler _codeHandler;
         private readonly GUI _gui = new();
         private readonly Clock _renderClock = new();
+        private readonly Clock _logicClock = new();
         private Time _lastRenderTime = Time.Zero;
         private Time _renderFrameTime = Time.FromSeconds(1.0f / 144.0f);
         private readonly Font _font;
@@ -121,6 +122,9 @@ namespace GameAPI.DSL
                         case Keyboard.Key.Left:
                             EnqueueMovement(Directions.Left);
                             break;
+                        case Keyboard.Key.Space:
+                            _gameWorld.Player.SetItemState(true);
+                            break;
 
                             void EnqueueMovement(Directions direction)
                             {
@@ -177,13 +181,34 @@ namespace GameAPI.DSL
                     }
                 }
             });
+
+            _window.KeyReleased += new EventHandler<KeyEventArgs>((sender, e) =>
+            {
+                if (!_gui.States[Controls.CodeEditor])
+                {
+                    switch (e.Code)
+                    {
+                        case Keyboard.Key.Up:
+                        case Keyboard.Key.Down:
+                        case Keyboard.Key.Right:
+                        case Keyboard.Key.Left:
+                            _gameWorld.Player.IsMoving = false;
+                            break;
+                        case Keyboard.Key.Space:
+                            _gameWorld.Player.SetItemState(false);
+                            break;
+                    }
+                }
+            });
         }
 
         public void Run()
         {
             _renderClock.Restart();
+            _logicClock.Restart();
             while (_window.IsOpen)
             {
+                _gameWorld.DeltaTime = _logicClock.Restart().AsMicroseconds() / 100000d;
                 _window.DispatchEvents();
 
                 _lastRenderTime += _renderClock.Restart();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using GameAPI.GameObjects;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace GameAPI
@@ -20,21 +21,35 @@ namespace GameAPI
         private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
         public bool IsActive { get; set; } = true;
+        public double DeltaTime { get; set; } = 0f;
 
         public GameWorld()
         {
+            var pickaxe = new Item(_loader, 0, 0, Types.Item, Grids.Pickaxe)
+            {
+                ItemType = ItemTypes.Mele,
+                ObjectParameters = new Dictionary<ObjectsParameters, object>
+                {
+                    [ObjectsParameters.ThrustDamage] = (ushort)30,
+                },
+            };
+
             Player = new(_loader, 0, 0)
             {
                 ObjectParameters = new()
                 {
                     [ObjectsParameters.MovementSpeed] = 1,
-                    [ObjectsParameters.Health] = 100,
+                    [ObjectsParameters.Health] = (short)100,
                     [ObjectsParameters.ScanRadius] = 100,
                 }
             };
 
+            Player.Items.Add(pickaxe);
+            Player.SelectedItemId = pickaxe.Id;
+
             _gameObjects = new()
             {
+                pickaxe,
                 Player,
                 //new(_loader, 20, 20, Types.Tree, Grids.Tree1),
                 //new(_loader, 40, 40, Types.Tree, Grids.Tree1),
@@ -50,7 +65,13 @@ namespace GameAPI
 
             for (int i = 0; i < 30; i++)
             {
-                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Rock, Grids.Rock1));
+                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Rock, Grids.Rock1)
+                {
+                    ObjectParameters = new Dictionary<ObjectsParameters, object>
+                    {
+                        [ObjectsParameters.Health] = (short)100,
+                    }
+                });
             }
 
             t_update = new(new ThreadStart(Update));
@@ -99,14 +120,38 @@ namespace GameAPI
         {
             while (IsActive)
             {
+                foreach (var go in _gameObjects)
+                {
+                    if (go.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
+                    {
+                        if (health < 0)
+                        {
+                            go.IsActive = false;
+                        }
+                    }
+
+                    if (go.IsActive)
+                    {
+                        go.Update(DeltaTime);
+                    }
+                }
                 HandleCollisions();
-                HandleItemsActions();
+
+                var item = Player.Items.FirstOrDefault(i => i.Id == Player.SelectedItemId);
+                if (item != null)
+                {
+                    if (item.Uses > 0)
+                    {
+                        item.Uses--;
+                        HandleItemActions(item, Player.Id);
+                    }
+                }
             }
         }
 
         private void HandleCollisions()
         {
-            foreach (var main in _gameObjects)
+            foreach (var main in _gameObjects.Where(go => go.IsActive && go is not Item))
             {
                 if (main.ObjectParameters.ContainsKey(ObjectsParameters.MovementSpeed))
                 {
@@ -125,7 +170,7 @@ namespace GameAPI
                         if (newRectangle != null)
                         {
                             var canMove = true;
-                            foreach (var other in _gameObjects)
+                            foreach (var other in _gameObjects.Where(go => go.IsActive && go is not Item))
                             {
                                 if (main.Id != other.Id && newRectangle.CheckCollision(other))
                                 {
@@ -146,9 +191,8 @@ namespace GameAPI
             }
         }
 
-        public void HandleItemsActions()
+        public void HandleItemActions(Item item, uint usingObjectId)
         {
-            var item = Player.Items.ElementAtOrDefault(Player.SelectedItem - 1);
             if (item != null && item.IsActive && item.IsUsed)
             {
                 switch (item.ItemType)
@@ -157,14 +201,14 @@ namespace GameAPI
                         {
                             foreach (var gameObject in _gameObjects)
                             {
-                                if (item.CheckCollision(gameObject))
+                                if (gameObject.Id != item.Id && gameObject.Id != usingObjectId && item.CheckCollision(gameObject))
                                 {
-                                    if (gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is ushort health)
+                                    if (gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
                                     {
                                         DealDamage(ObjectsParameters.SlashDamage, ObjectsParameters.SlashDamageResistance);
                                         DealDamage(ObjectsParameters.BluntDamage, ObjectsParameters.BluntDamageResistance);
                                         DealDamage(ObjectsParameters.ThrustDamage, ObjectsParameters.ThrustDamageResistance);
-
+        
                                         gameObject.ObjectParameters[ObjectsParameters.Health] = health;
                                         void DealDamage(ObjectsParameters damageType, ObjectsParameters resistanceType)
                                         {
@@ -174,8 +218,8 @@ namespace GameAPI
                                                 {
                                                     resistance = 0;
                                                 }
-
-                                                health -= (ushort)((1 - resistance) * damage);
+        
+                                                health -= (short)((1 - resistance) * damage);
                                             }
                                         }
                                     }
@@ -184,6 +228,7 @@ namespace GameAPI
                             break;
                         }
                 }
+        
             }
         }
 
