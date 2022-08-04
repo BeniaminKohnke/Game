@@ -8,9 +8,9 @@ namespace GameAPI
         private (int x, int y) _topLeft;
         private (int x, int y) _bottomRight;
 
-        public (int x, int y) Position 
+        public (int x, int y) Position
         {
-            get => _topLeft; 
+            get => _topLeft;
             set
             {
                 _topLeft = value;
@@ -41,17 +41,17 @@ namespace GameAPI
 
         public bool CheckCollision(Rectangle other)
         {
-            if(_grid != null && other.SizeX != 0)
+            if (_grid != null && other.SizeX != 0)
             {
-                if ((Math.Max(_bottomRight.x, other._bottomRight.x) - Math.Min(_topLeft.x, other._topLeft.x) - 1 <= SizeX + other.SizeX) 
+                if ((Math.Max(_bottomRight.x, other._bottomRight.x) - Math.Min(_topLeft.x, other._topLeft.x) - 1 <= SizeX + other.SizeX)
                     && (Math.Max(_bottomRight.y, other._bottomRight.y) - Math.Min(_topLeft.y, other._topLeft.y) - 1 <= SizeY + other.SizeY))
                 {
                     var positions = new Dictionary<int, int>();
-                    for(int i = 0; i < SizeX; i++)
+                    for (int i = 0; i < SizeX; i++)
                     {
-                        for(int j = 0; j < SizeY; j++)
+                        for (int j = 0; j < SizeY; j++)
                         {
-                            if(6 % this[i, j] == 0)
+                            if (6 % this[i, j] == 0)
                             {
                                 positions[_topLeft.x + i] = _topLeft.y + j;
                             }

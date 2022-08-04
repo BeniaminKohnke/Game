@@ -6,7 +6,7 @@
 
         static ScriptFunctions()
         {
-            if(!Directory.Exists(s_playerNotesFolder))
+            if (!Directory.Exists(s_playerNotesFolder))
             {
                 Directory.CreateDirectory(s_playerNotesFolder);
             }
@@ -14,34 +14,34 @@
 
         public static void SaveNote(object name, object content)
         {
-            if(name is string && content is string)
+            if (name is string && content is string)
             {
                 File.WriteAllText($@"{s_playerNotesFolder}\{name as string}.txt", content as string);
             }
         }
 
-        public static string LoadNote(object name) => name is string ? 
-            File.Exists($@"{s_playerNotesFolder}\{name as string}.txt") ? 
-                File.ReadAllText($@"{s_playerNotesFolder}\{name as string}.txt") 
-                : string.Empty 
+        public static string LoadNote(object name) => name is string ?
+            File.Exists($@"{s_playerNotesFolder}\{name as string}.txt") ?
+                File.ReadAllText($@"{s_playerNotesFolder}\{name as string}.txt")
+                : string.Empty
             : string.Empty;
 
         public static void Use(Player player, object item)
         {
-            if(item is GameObject go)
+            if (item is GameObject go)
             {
-                if(go.ObjectType == Types.Item)
+                if (go.ObjectType == Types.Item)
                 {
 
                 }
             }
 
-            if(item is int id)
+            if (item is int id)
             {
 
             }
 
-            if(item is string name)
+            if (item is string name)
             {
 
             }

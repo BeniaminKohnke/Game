@@ -7,7 +7,7 @@ using SFML.Window;
 namespace Game
 {
     public class Core
-    { 
+    {
         private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], string.Empty, Styles.Default);
         private readonly View _view;
         private readonly Engine _engine;
@@ -105,9 +105,9 @@ namespace GameAPI.DSL
 
             _window.KeyPressed += new EventHandler<KeyEventArgs>((sender, e) =>
             {
-                if(!_gui.States[Controls.CodeEditor])
+                if (!_gui.States[Controls.CodeEditor])
                 {
-                    switch(e.Code)
+                    switch (e.Code)
                     {
                         case Keyboard.Key.Up:
                             EnqueueMovement(Directions.Up);
@@ -122,55 +122,55 @@ namespace GameAPI.DSL
                             EnqueueMovement(Directions.Left);
                             break;
 
-                        void EnqueueMovement(Directions direction)
-                        {
-                            if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
+                            void EnqueueMovement(Directions direction)
                             {
-                                for (int i = 0; i < movementSpeed; i++)
+                                if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
                                 {
-                                    _gameWorld.Player.EnqueueMovement(direction);
+                                    for (int i = 0; i < movementSpeed; i++)
+                                    {
+                                        _gameWorld.Player.EnqueueMovement(direction);
+                                    }
                                 }
                             }
-                        }
                     }
                 }
 
-                if(e.Code == Keyboard.Key.F5)
+                if (e.Code == Keyboard.Key.F5)
                 {
                     _codeHandler.CreateScript(string.Empty);
                 }
 
-                if(e.Code == Keyboard.Key.F6)
+                if (e.Code == Keyboard.Key.F6)
                 {
                     _codeHandler.AllowRunningScripts = true;
                 }
 
-                if(e.Code == Keyboard.Key.F7)
+                if (e.Code == Keyboard.Key.F7)
                 {
                     _codeHandler.AbortScripts();
                 }
 
-                if(e.Code == Keyboard.Key.Escape)
+                if (e.Code == Keyboard.Key.Escape)
                 {
                     _gameWorld.IsActive = false;
                     _codeHandler.IsActive = false;
                     _window.Close();
                 }
 
-                if(e.Code == Keyboard.Key.F1)
+                if (e.Code == Keyboard.Key.F1)
                 {
                     _gui.States[Controls.CodeEditor] = !_gui.States[Controls.CodeEditor];
                 }
 
-                if(_gui.States[Controls.CodeEditor])
+                if (_gui.States[Controls.CodeEditor])
                 {
-                    if(e.Shift)
+                    if (e.Shift)
                     {
 
                     }
                     else
                     {
-                        if(_scriptsCharsNormal.ContainsKey(e.Code))
+                        if (_scriptsCharsNormal.ContainsKey(e.Code))
                         {
                             _text.DisplayedString += _scriptsCharsNormal[e.Code];
                         }

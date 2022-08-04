@@ -33,13 +33,13 @@ namespace Game
                         if (texture.Length > 0)
                         {
                             var grid = File.ReadAllLines(filePath).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
-                            if(grid.Length > 0 && grid[0].Length > 0)
+                            if (grid.Length > 0 && grid[0].Length > 0)
                             {
                                 var image = new Image((uint)grid[0].Length, (uint)grid.Length);
 
-                                for(int i = 0; i < grid.Length; i++)
+                                for (int i = 0; i < grid.Length; i++)
                                 {
-                                    for(int j = 0; j < grid[i].Length; j++)
+                                    for (int j = 0; j < grid[i].Length; j++)
                                     {
                                         image.SetPixel((uint)j, (uint)i, grid[i][j] switch
                                         {
@@ -67,7 +67,7 @@ namespace Game
 
         public void Draw(RenderWindow window, int x, int y)
         {
-            foreach(var (control, sprite) in _controls)
+            foreach (var (control, sprite) in _controls)
             {
                 if (States[control])
                 {

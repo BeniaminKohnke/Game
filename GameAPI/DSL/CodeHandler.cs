@@ -39,14 +39,14 @@ namespace GameAPI.DSL
 
         private void Update()
         {
-            while(IsActive)
+            while (IsActive)
             {
-                if(_recompile)
+                if (_recompile)
                 {
                     CompileScripts();
                     _recompile = false;
                 }
-                if(AllowRunningScripts)
+                if (AllowRunningScripts)
                 {
                     RunScripts();
                 }

@@ -48,12 +48,14 @@
             this.ItemGroupBox = new System.Windows.Forms.ComboBox();
             this.OptionsBox = new System.Windows.Forms.ComboBox();
             this.ToolsPage = new System.Windows.Forms.TabPage();
+            this.InsertRowButton = new System.Windows.Forms.Button();
             this.InsertColumnButton = new System.Windows.Forms.Button();
             this.PixelSizeBox = new System.Windows.Forms.NumericUpDown();
             this.PixelSizeLabel = new System.Windows.Forms.Label();
             this.HeightLabel = new System.Windows.Forms.Label();
             this.WidthLabel = new System.Windows.Forms.Label();
-            this.InsertRowButton = new System.Windows.Forms.Button();
+            this.DeleteColumnButton = new System.Windows.Forms.Button();
+            this.DeleteRowButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             this.ChoiceBox.SuspendLayout();
@@ -274,6 +276,8 @@
             // 
             // ToolsPage
             // 
+            this.ToolsPage.Controls.Add(this.DeleteRowButton);
+            this.ToolsPage.Controls.Add(this.DeleteColumnButton);
             this.ToolsPage.Controls.Add(this.InsertRowButton);
             this.ToolsPage.Controls.Add(this.InsertColumnButton);
             this.ToolsPage.Controls.Add(this.PixelSizeBox);
@@ -291,6 +295,16 @@
             this.ToolsPage.TabIndex = 1;
             this.ToolsPage.Text = "Tools";
             this.ToolsPage.UseVisualStyleBackColor = true;
+            // 
+            // InsertRowButton
+            // 
+            this.InsertRowButton.Location = new System.Drawing.Point(6, 131);
+            this.InsertRowButton.Name = "InsertRowButton";
+            this.InsertRowButton.Size = new System.Drawing.Size(89, 23);
+            this.InsertRowButton.TabIndex = 30;
+            this.InsertRowButton.Text = "Insert row";
+            this.InsertRowButton.UseVisualStyleBackColor = true;
+            this.InsertRowButton.Click += new System.EventHandler(this.InsertRowButton_Click);
             // 
             // InsertColumnButton
             // 
@@ -347,15 +361,25 @@
             this.WidthLabel.TabIndex = 25;
             this.WidthLabel.Text = "Width:";
             // 
-            // InsertRowButton
+            // DeleteColumnButton
             // 
-            this.InsertRowButton.Location = new System.Drawing.Point(6, 131);
-            this.InsertRowButton.Name = "InsertRowButton";
-            this.InsertRowButton.Size = new System.Drawing.Size(89, 23);
-            this.InsertRowButton.TabIndex = 30;
-            this.InsertRowButton.Text = "Insert row";
-            this.InsertRowButton.UseVisualStyleBackColor = true;
-            this.InsertRowButton.Click += new System.EventHandler(this.InsertRowButton_Click);
+            this.DeleteColumnButton.Location = new System.Drawing.Point(112, 102);
+            this.DeleteColumnButton.Name = "DeleteColumnButton";
+            this.DeleteColumnButton.Size = new System.Drawing.Size(101, 23);
+            this.DeleteColumnButton.TabIndex = 31;
+            this.DeleteColumnButton.Text = "Delete column";
+            this.DeleteColumnButton.UseVisualStyleBackColor = true;
+            this.DeleteColumnButton.Click += new System.EventHandler(this.DeleteColumnButton_Click);
+            // 
+            // DeleteRowButton
+            // 
+            this.DeleteRowButton.Location = new System.Drawing.Point(112, 131);
+            this.DeleteRowButton.Name = "DeleteRowButton";
+            this.DeleteRowButton.Size = new System.Drawing.Size(101, 23);
+            this.DeleteRowButton.TabIndex = 32;
+            this.DeleteRowButton.Text = "Delete row";
+            this.DeleteRowButton.UseVisualStyleBackColor = true;
+            this.DeleteRowButton.Click += new System.EventHandler(this.DeleteRowButton_Click);
             // 
             // OptionsMenu
             // 
@@ -409,5 +433,7 @@
         private ComboBox ItemGroupBox;
         private Button InsertColumnButton;
         private Button InsertRowButton;
+        private Button DeleteRowButton;
+        private Button DeleteColumnButton;
     }
 }

@@ -11,9 +11,9 @@ namespace SpriteMaker
             InitializeComponent();
             _grid = grid;
 
-            foreach(var control in ChoiceBox.Controls)
+            foreach (var control in ChoiceBox.Controls)
             {
-                if(control is RadioButton button)
+                if (control is RadioButton button)
                 {
                     button.CheckedChanged += new(ChangeGridValue);
                 }
@@ -34,7 +34,7 @@ namespace SpriteMaker
             try
             {
                 var filePath = CreateFilePath();
-                if(!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
                 {
                     var grid = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray()).ToArray();
                     _grid.SetGrid(grid);
@@ -53,7 +53,7 @@ namespace SpriteMaker
             try
             {
                 var filePath = CreateFilePath();
-                if(!string.IsNullOrEmpty(filePath))
+                if (!string.IsNullOrEmpty(filePath))
                 {
                     File.WriteAllLines(filePath, _grid.GetGrid().Select(l => string.Join('\t', l.Where(v => v != 0))).Where(l => !string.IsNullOrEmpty(l)));
                 }
@@ -72,27 +72,27 @@ namespace SpriteMaker
 
         private void ChangeGridValue(object? sender, EventArgs e)
         {
-            if(TransparentButton.Checked)
+            if (TransparentButton.Checked)
             {
                 _grid.Value = 7;
             }
-            else if(FillingButton.Checked)
+            else if (FillingButton.Checked)
             {
                 _grid.Value = 5;
             }
-            else if(ColliderButton.Checked)
+            else if (ColliderButton.Checked)
             {
                 _grid.Value = 3;
             }
-            else if(ContourButton.Checked)
+            else if (ContourButton.Checked)
             {
                 _grid.Value = 4;
             }
-            else if(FillingColliderButton.Checked)
+            else if (FillingColliderButton.Checked)
             {
                 _grid.Value = 2;
             }
-            else if(TransparentColliderButton.Checked)
+            else if (TransparentColliderButton.Checked)
             {
                 _grid.Value = 6;
             }
@@ -108,13 +108,13 @@ namespace SpriteMaker
                 case "API":
                     {
                         ItemGroupBox.Items.Clear();
-                        foreach(var item in Enum.GetValues(typeof(Grids)))
+                        foreach (var item in Enum.GetValues(typeof(Grids)))
                         {
                             ItemGroupBox.Items.Add(item);
                         }
 
                         TypeGroupBox.Items.Clear();
-                        foreach(var item in Enum.GetValues(typeof(States)))
+                        foreach (var item in Enum.GetValues(typeof(States)))
                         {
                             TypeGroupBox.Items.Add(item);
                         }
@@ -124,7 +124,7 @@ namespace SpriteMaker
                     {
                         ItemGroupBox.Items.Clear();
                         TypeGroupBox.Items.Clear();
-                        foreach(var item in Enum.GetValues(typeof(Controls)))
+                        foreach (var item in Enum.GetValues(typeof(Controls)))
                         {
                             TypeGroupBox.Items.Add(item);
                         }
@@ -133,8 +133,36 @@ namespace SpriteMaker
             }
         }
 
-        private void InsertColumnButton_Click(object sender, EventArgs e) => _grid.AddColumn();
+        private void InsertColumnButton_Click(object sender, EventArgs e)
+        {
+            if (_grid.TryAddColumn())
+            {
+                WidthBox.Value++;
+            }
+        }
 
-        private void InsertRowButton_Click(object sender, EventArgs e) => _grid.AddRow();
+        private void InsertRowButton_Click(object sender, EventArgs e)
+        {
+            if (_grid.TryAddRow())
+            {
+                HeightBox.Value++;
+            }
+        }
+
+        private void DeleteColumnButton_Click(object sender, EventArgs e)
+        {
+            if (_grid.TryDeleteColumn())
+            {
+                WidthBox.Value--;
+            }
+        }
+
+        private void DeleteRowButton_Click(object sender, EventArgs e)
+        {
+            if (_grid.TryDeleteRow())
+            {
+                HeightBox.Value--;
+            }
+        }
     }
 }

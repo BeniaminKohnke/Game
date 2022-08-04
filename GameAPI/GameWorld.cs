@@ -43,7 +43,7 @@ namespace GameAPI
             };
 
             var random = new Random();
-            for(int i = 0; i < 30; i++)
+            for (int i = 0; i < 30; i++)
             {
                 _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Tree, Grids.Tree1));
             }
@@ -62,32 +62,32 @@ namespace GameAPI
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
             var objects = _gameObjects.ToList();
-            if(options.HasFlag(GetObjectsOptions.FromPlayer))
+            if (options.HasFlag(GetObjectsOptions.FromPlayer))
             {
                 var squaredRadius = Math.Pow(radius ?? Player.ObjectParameters[ObjectsParameters.ScanRadius] as int? ?? 0, 2);
-                foreach(var go in _gameObjects)
+                foreach (var go in _gameObjects)
                 {
                     var deltaX = Player.Position.x - go.Position.x;
                     var deltaY = Player.Position.y - go.Position.y;
 
-                    if((deltaX * deltaX) + (deltaY * deltaY) > squaredRadius)
+                    if ((deltaX * deltaX) + (deltaY * deltaY) > squaredRadius)
                     {
                         objects.Remove(go);
                     }
                 };
             }
 
-            if(options.HasFlag(GetObjectsOptions.AddPlayerItems))
+            if (options.HasFlag(GetObjectsOptions.AddPlayerItems))
             {
                 objects = objects.Concat(Player.Items).ToList();
             }
 
-            if(options.HasFlag(GetObjectsOptions.OnlyActive))
+            if (options.HasFlag(GetObjectsOptions.OnlyActive))
             {
                 objects = objects.Where(go => go.IsActive).ToList();
             }
 
-            if(options.HasFlag(GetObjectsOptions.Ordered))
+            if (options.HasFlag(GetObjectsOptions.Ordered))
             {
                 objects = objects.OrderBy(go => go, _comparer).ToList();
             }
@@ -97,7 +97,7 @@ namespace GameAPI
 
         private void Update()
         {
-            while(IsActive)
+            while (IsActive)
             {
                 HandleCollisions();
                 HandleItemsActions();
@@ -106,9 +106,9 @@ namespace GameAPI
 
         private void HandleCollisions()
         {
-            foreach(var main in _gameObjects)
+            foreach (var main in _gameObjects)
             {
-                if(main.ObjectParameters.ContainsKey(ObjectsParameters.MovementSpeed))
+                if (main.ObjectParameters.ContainsKey(ObjectsParameters.MovementSpeed))
                 {
                     var direction = main.DequeueMovement(_loader);
                     while (direction != Directions.None)
@@ -149,17 +149,17 @@ namespace GameAPI
         public void HandleItemsActions()
         {
             var item = Player.Items.ElementAtOrDefault(Player.SelectedItem - 1);
-            if(item != null && item.IsActive && item.IsUsed)
+            if (item != null && item.IsActive && item.IsUsed)
             {
-                switch(item.ItemType)
+                switch (item.ItemType)
                 {
                     case ItemTypes.Mele:
                         {
-                            foreach(var gameObject in _gameObjects)
+                            foreach (var gameObject in _gameObjects)
                             {
-                                if(item.CheckCollision(gameObject))
+                                if (item.CheckCollision(gameObject))
                                 {
-                                    if(gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is ushort health)
+                                    if (gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is ushort health)
                                     {
                                         DealDamage(ObjectsParameters.SlashDamage, ObjectsParameters.SlashDamageResistance);
                                         DealDamage(ObjectsParameters.BluntDamage, ObjectsParameters.BluntDamageResistance);

@@ -19,22 +19,22 @@ namespace GameAPI
         {
             ObjectType = type;
             Grid = grid;
-            
+
             var states = loader.GetStates(grid);
-            if(states != null)
+            if (states != null)
             {
-                foreach(var animation in Parameters.Animations)
+                foreach (var animation in Parameters.Animations)
                 {
                     var animationStates = new List<States>();
-                    foreach(var state in animation.Value)
+                    foreach (var state in animation.Value)
                     {
-                        if(states.ContainsKey(state))
+                        if (states.ContainsKey(state))
                         {
                             animationStates.Add(state);
                         }
                     }
 
-                    if(animationStates.Any())
+                    if (animationStates.Any())
                     {
                         _animations[animation.Key] = animationStates.ToArray();
                     }
@@ -46,10 +46,10 @@ namespace GameAPI
 
         public Directions DequeueMovement(GridLoader loader)
         {
-            if(_movement.TryDequeue(out var direction))
+            if (_movement.TryDequeue(out var direction))
             {
                 var changeAnimation = false;
-                switch(direction)
+                switch (direction)
                 {
                     case Directions.Up:
                         TrySetNextState(Animations.MovingRight);
@@ -64,8 +64,8 @@ namespace GameAPI
                         TrySetNextState(Animations.MovingRight);
                         break;
                 }
-                
-                if(changeAnimation)
+
+                if (changeAnimation)
                 {
                     SetGrid(loader.GetGrid(Grid, State));
                 }
@@ -77,7 +77,7 @@ namespace GameAPI
 
         private bool TrySetNextState(Animations animation)
         {
-            if(_animations.TryGetValue(animation, out var states))
+            if (_animations.TryGetValue(animation, out var states))
             {
                 var index = Array.IndexOf(states, State) + 1;
                 State = states[index < states.Length ? index : 0];

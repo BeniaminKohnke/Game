@@ -16,7 +16,7 @@ namespace SpriteMaker
             _menu = new(_grid)
             {
                 MdiParent = this,
-                Location = new(0,0),
+                Location = new(0, 0),
             };
             _menu.Show();
             this.TexturePanel.Controls.Add(_menu);

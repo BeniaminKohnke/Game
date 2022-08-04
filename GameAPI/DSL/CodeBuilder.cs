@@ -12,7 +12,7 @@ namespace GameAPI.DSL
 
         static CodeBuilder()
         {
-            if(!Directory.Exists(ScriptsFolderPath))
+            if (!Directory.Exists(ScriptsFolderPath))
             {
                 Directory.CreateDirectory(ScriptsFolderPath);
             }
@@ -56,7 +56,7 @@ namespace GameAPI.DSL
             builder.AppendLine("}");
 
             var filePath = $@"{ScriptsFolderPath}\{scriptName}.cs";
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
