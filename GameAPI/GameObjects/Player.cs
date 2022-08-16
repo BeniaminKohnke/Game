@@ -20,6 +20,16 @@ namespace GameAPI.GameObjects
             base.EnqueueMovement(direction);
         }
 
+        public void SetSelctedItem(bool next)
+        {
+            var items = Items.ToArray();
+            var position = Array.IndexOf(items, items.FirstOrDefault(i => i.Id == SelectedItemId)) + (next ? 1 : -1);
+            if (0 <= position && position < items.Length)
+            {
+                SelectedItemId = items[position].Id;
+            }
+        }
+
         public void SetItemState(bool isUsed)
         {
             var item = Items.FirstOrDefault(i => i.Id == SelectedItemId);
@@ -29,16 +39,13 @@ namespace GameAPI.GameObjects
             }
         }
 
-        public override void Update(double deltaTime)
+        public override void Update(double deltaTime, GridLoader loader)
         {
             foreach (var item in Items)
             {
                 if (item.IsActive)
                 {
-                    if (item.LastDirection != LastDirection)
-                    {
-                        item.LastDirection = LastDirection;
-                    }
+                    item.LastDirection = LastDirection;
                     item.Position = Position;
                 }
             }

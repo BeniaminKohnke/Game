@@ -68,10 +68,10 @@
         MovementSpeed,
         BluntDamage,
         ThrustDamage,
-        SlashDamage,
+        CuttingDamage,
         BluntDamageResistance,
         ThrustDamageResistance,
-        SlashDamageResistance,
+        CuttingDamageResistance,
         ScanRadius,
     }
 

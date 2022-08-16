@@ -22,40 +22,27 @@ namespace Game
 
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsNormal = new()
         {
-            { Keyboard.Key.A, 'a' },
-            { Keyboard.Key.B, 'b' },
-            { Keyboard.Key.C, 'c' },
-            { Keyboard.Key.D, 'd' },
-            { Keyboard.Key.E, 'e' },
-            { Keyboard.Key.F, 'f' },
-            { Keyboard.Key.G, 'g' },
-            { Keyboard.Key.H, 'h' },
-            { Keyboard.Key.I, 'i' },
-            { Keyboard.Key.J, 'j' },
-            { Keyboard.Key.K, 'k' },
-            { Keyboard.Key.L, 'l' },
-            { Keyboard.Key.M, 'm' },
-            { Keyboard.Key.N, 'n' },
-            { Keyboard.Key.O, 'o' },
-            { Keyboard.Key.P, 'p' },
-            { Keyboard.Key.Q, 'q' },
-            { Keyboard.Key.R, 'r' },
-            { Keyboard.Key.S, 's' },
-            { Keyboard.Key.T, 't' },
-            { Keyboard.Key.U, 'u' },
-            { Keyboard.Key.V, 'v' },
-            { Keyboard.Key.W, 'w' },
-            { Keyboard.Key.X, 'x' },
-            { Keyboard.Key.Y, 'y' },
-            { Keyboard.Key.Z, 'z' },
-            { Keyboard.Key.Space, ' ' },
-            { Keyboard.Key.Enter, '\n' },
-            { Keyboard.Key.Tab, '\t' },
+            [Keyboard.Key.A] = 'a', [Keyboard.Key.B] = 'b', [Keyboard.Key.C] = 'c', [Keyboard.Key.D] = 'd',
+            [Keyboard.Key.E] = 'e', [Keyboard.Key.F] = 'f', [Keyboard.Key.G] = 'g', [Keyboard.Key.H] = 'h',
+            [Keyboard.Key.I] = 'i', [Keyboard.Key.J] = 'j', [Keyboard.Key.K] = 'k', [Keyboard.Key.L] = 'l',
+            [Keyboard.Key.M] = 'm', [Keyboard.Key.N] = 'n', [Keyboard.Key.O] = 'o', [Keyboard.Key.P] = 'p',
+            [Keyboard.Key.Q] = 'q', [Keyboard.Key.R] = 'r', [Keyboard.Key.S] = 's', [Keyboard.Key.T] = 't',
+            [Keyboard.Key.U] = 'u', [Keyboard.Key.V] = 'v', [Keyboard.Key.W] = 'w', [Keyboard.Key.X] = 'x',
+            [Keyboard.Key.Y] = 'y', [Keyboard.Key.Z] = 'z', 
+            [Keyboard.Key.Space] = ' ', 
+            [Keyboard.Key.Enter] = '\n',
+            [Keyboard.Key.Tab] = '\t',
         };
 
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsShift = new()
         {
-
+            [Keyboard.Key.A] = 'A', [Keyboard.Key.B] = 'B', [Keyboard.Key.C] = 'C', [Keyboard.Key.D] = 'D',
+            [Keyboard.Key.E] = 'E', [Keyboard.Key.F] = 'F', [Keyboard.Key.G] = 'G', [Keyboard.Key.H] = 'H',
+            [Keyboard.Key.I] = 'I', [Keyboard.Key.J] = 'J', [Keyboard.Key.K] = 'K', [Keyboard.Key.L] = 'L',
+            [Keyboard.Key.M] = 'M', [Keyboard.Key.N] = 'N', [Keyboard.Key.O] = 'O', [Keyboard.Key.P] = 'P',
+            [Keyboard.Key.Q] = 'Q', [Keyboard.Key.R] = 'R', [Keyboard.Key.S] = 'S', [Keyboard.Key.T] = 'T',
+            [Keyboard.Key.U] = 'U', [Keyboard.Key.V] = 'V', [Keyboard.Key.W] = 'W', [Keyboard.Key.X] = 'X',
+            [Keyboard.Key.Y] = 'Y', [Keyboard.Key.Z] = 'Z',
         };
 
         //debug
@@ -125,6 +112,12 @@ namespace GameAPI.DSL
                         case Keyboard.Key.Space:
                             _gameWorld.Player.SetItemState(true);
                             break;
+                        case Keyboard.Key.Num1:
+                            _gameWorld.Player.SetSelctedItem(false);
+                            break;
+                        case Keyboard.Key.Num2:
+                            _gameWorld.Player.SetSelctedItem(true);
+                            break;
 
                             void EnqueueMovement(Directions direction)
                             {
@@ -170,7 +163,10 @@ namespace GameAPI.DSL
                 {
                     if (e.Shift)
                     {
-
+                        if (_scriptsCharsNormal.ContainsKey(e.Code))
+                        {
+                            _text.DisplayedString += _scriptsCharsShift[e.Code];
+                        }
                     }
                     else
                     {

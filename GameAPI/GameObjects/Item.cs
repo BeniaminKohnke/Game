@@ -3,42 +3,17 @@
     public class Item : GameObject
     {
         private byte _frameCounter = 0;
-        private Directions _lastDirection;
         private double _lastChange = 0f;
 
         public byte Uses { get; set; } = 0;
         public bool IsUsed { get; set; } = false;
         public ItemTypes ItemType { get; set; } = ItemTypes.None;
 
-        public override Directions LastDirection
-        {
-            get => _lastDirection;
-            set
-            {
-                _lastDirection = value;
-                switch (LastDirection)
-                {
-                    case Directions.Up:
-                        ResetState(Animations.MovingRight);
-                        break;
-                    case Directions.Down:
-                        ResetState(Animations.MovingLeft);
-                        break;
-                    case Directions.Left:
-                        ResetState(Animations.MovingLeft);
-                        break;
-                    case Directions.Right:
-                        ResetState(Animations.MovingRight);
-                        break;
-                }
-            }
-        }
-
         public Item(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader, x, y, type, grid)
         {
         }
 
-        public override void Update(double deltaTime)
+        public override void Update(double deltaTime, GridLoader loader)
         {
             switch (LastDirection)
             {
@@ -70,9 +45,11 @@
                     }
                     else
                     {
-                        ResetState(animation);
+                        State = States.NoAction1;
                         _frameCounter = 0;
                     }
+
+                    SetGrid(loader.GetGrid(Grid, State));
                     _lastChange = 0;
                 }
             }

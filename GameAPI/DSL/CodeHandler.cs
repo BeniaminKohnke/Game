@@ -75,7 +75,6 @@ namespace GameAPI.DSL
                 var dllFileName = $"{csFile.Replace($@"{CodeBuilder.ScriptsFolderPath}\", string.Empty).Replace(".cs", string.Empty)}";
                 var compilation = CSharpCompilation.Create(dllFileName, new[] { SyntaxFactory.ParseSyntaxTree(File.ReadAllText(csFile), null, string.Empty) }, _references, _compilationOptions);
 
-
                 var types = new List<Type>();
                 using (var dllStream = new MemoryStream())
                 {

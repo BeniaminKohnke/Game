@@ -33,6 +33,14 @@ namespace GameAPI
                     [ObjectsParameters.ThrustDamage] = (ushort)30,
                 },
             };
+            var axe = new Item(_loader, 0, 0, Types.Item, Grids.Axe)
+            {
+                ItemType = ItemTypes.Mele,
+                ObjectParameters = new Dictionary<ObjectsParameters, object>
+                {
+                    [ObjectsParameters.CuttingDamage] = (ushort)30,
+                }
+            };
 
             Player = new(_loader, 0, 0)
             {
@@ -44,11 +52,13 @@ namespace GameAPI
                 }
             };
 
+            Player.Items.Add(axe);
             Player.Items.Add(pickaxe);
-            Player.SelectedItemId = pickaxe.Id;
+            Player.SelectedItemId = axe.Id;
 
             _gameObjects = new()
             {
+                axe,
                 pickaxe,
                 Player,
                 //new(_loader, 20, 20, Types.Tree, Grids.Tree1),
@@ -60,7 +70,14 @@ namespace GameAPI
             var random = new Random();
             for (int i = 0; i < 30; i++)
             {
-                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Tree, Grids.Tree1));
+                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Tree, Grids.Tree1)
+                {
+                    ObjectParameters = new Dictionary<ObjectsParameters, object>
+                    {
+                        [ObjectsParameters.Health] = (short)100,
+                        [ObjectsParameters.ThrustDamageResistance] = (byte)100,
+                    }
+                });
             }
 
             for (int i = 0; i < 30; i++)
@@ -70,6 +87,7 @@ namespace GameAPI
                     ObjectParameters = new Dictionary<ObjectsParameters, object>
                     {
                         [ObjectsParameters.Health] = (short)100,
+                        [ObjectsParameters.CuttingDamageResistance] = (byte)100,
                     }
                 });
             }
@@ -124,7 +142,7 @@ namespace GameAPI
                 {
                     if (go.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
                     {
-                        if (health < 0)
+                        if (health <= 0)
                         {
                             go.IsActive = false;
                         }
@@ -132,7 +150,7 @@ namespace GameAPI
 
                     if (go.IsActive)
                     {
-                        go.Update(DeltaTime);
+                        go.Update(DeltaTime, _loader);
                     }
                 }
                 HandleCollisions();
@@ -151,7 +169,7 @@ namespace GameAPI
 
         private void HandleCollisions()
         {
-            foreach (var main in _gameObjects.Where(go => go.IsActive && go is not Item))
+            foreach (var main in _gameObjects.Where(go => go.IsActive && go.ObjectType != Types.Item))
             {
                 if (main.ObjectParameters.ContainsKey(ObjectsParameters.MovementSpeed))
                 {
@@ -170,7 +188,7 @@ namespace GameAPI
                         if (newRectangle != null)
                         {
                             var canMove = true;
-                            foreach (var other in _gameObjects.Where(go => go.IsActive && go is not Item))
+                            foreach (var other in _gameObjects.Where(go => go.IsActive && go.ObjectType != Types.Item))
                             {
                                 if (main.Id != other.Id && newRectangle.CheckCollision(other))
                                 {
@@ -205,7 +223,7 @@ namespace GameAPI
                                 {
                                     if (gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
                                     {
-                                        DealDamage(ObjectsParameters.SlashDamage, ObjectsParameters.SlashDamageResistance);
+                                        DealDamage(ObjectsParameters.CuttingDamage, ObjectsParameters.CuttingDamageResistance);
                                         DealDamage(ObjectsParameters.BluntDamage, ObjectsParameters.BluntDamageResistance);
                                         DealDamage(ObjectsParameters.ThrustDamage, ObjectsParameters.ThrustDamageResistance);
         
@@ -214,12 +232,12 @@ namespace GameAPI
                                         {
                                             if (item.ObjectParameters.TryGetValue(damageType, out value) && value is ushort damage)
                                             {
-                                                if (!(gameObject.ObjectParameters.TryGetValue(resistanceType, out value) && value is ushort resistance))
+                                                if (!(gameObject.ObjectParameters.TryGetValue(resistanceType, out value) && value is byte resistance))
                                                 {
                                                     resistance = 0;
                                                 }
         
-                                                health -= (short)((1 - resistance) * damage);
+                                                health -= (short)(((100 - resistance) * 0.01f) * damage);
                                             }
                                         }
                                     }

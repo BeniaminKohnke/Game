@@ -43,17 +43,17 @@ namespace GameAPI
         {
             if (_grid != null && other.SizeX != 0)
             {
-                if ((Math.Max(_bottomRight.x, other._bottomRight.x) - Math.Min(_topLeft.x, other._topLeft.x) - 1 <= SizeX + other.SizeX)
-                    && (Math.Max(_bottomRight.y, other._bottomRight.y) - Math.Min(_topLeft.y, other._topLeft.y) - 1 <= SizeY + other.SizeY))
+                if ((Math.Abs(Math.Max(_bottomRight.x, other._bottomRight.x) - Math.Min(_topLeft.x, other._topLeft.x)) - 1 <= SizeX + other.SizeX)
+                    && (Math.Abs(Math.Max(_bottomRight.y, other._bottomRight.y) - Math.Min(_topLeft.y, other._topLeft.y)) - 1 <= SizeY + other.SizeY))
                 {
-                    var positions = new Dictionary<int, int>();
+                    var positions = new List<(int x, int y)>();
                     for (int i = 0; i < SizeX; i++)
                     {
                         for (int j = 0; j < SizeY; j++)
                         {
                             if (6 % this[i, j] == 0)
                             {
-                                positions[_topLeft.x + i] = _topLeft.y + j;
+                                positions.Add((_topLeft.x + i, _topLeft.y + j));
                             }
                         }
                     }
@@ -64,8 +64,7 @@ namespace GameAPI
                         {
                             if (6 % other[i, j] == 0)
                             {
-                                var position = other._topLeft.x + i;
-                                if (positions.ContainsKey(position) && positions[position] == other._topLeft.y + j)
+                                if (positions.Contains((other._topLeft.x + i, other._topLeft.y + j)))
                                 {
                                     return true;
                                 }

@@ -43,7 +43,7 @@ namespace GameAPI.GameObjects
             }
         }
 
-        public virtual void Update(double deltaTime)
+        public virtual void Update(double deltaTime, GridLoader loader)
         {
 
         }
