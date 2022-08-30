@@ -4,9 +4,12 @@ namespace GameAPI.DSL
 {
     public static class CodeBuilder
     {
-        public static string[] CallOrder { get; private set; }
-        public static readonly string ScriptsFolderPath = $@"{Directory.GetCurrentDirectory()}\Scripts";
-        public static readonly string CallOrderFilePath = $@"{Directory.GetCurrentDirectory()}\Scripts\CallOrder.txt";
+        public static string[] CallOrder 
+        { 
+            get => File.ReadAllLines(CallOrderFilePath).Select(l => l.Replace("()", "Script")).ToArray(); 
+        }
+        public static string ScriptsFolderPath { get; } = $@"{Directory.GetCurrentDirectory()}\Scripts";
+        public static string CallOrderFilePath { get; } = $@"{Directory.GetCurrentDirectory()}\Scripts\CallOrder.txt";
         private static string AddToDynamicObjects(string name, string type, string obj, string tabs) =>
             $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters[{name}] = ({type}, {obj});{"\n"}{tabs}{"}"}";
 
@@ -16,11 +19,7 @@ namespace GameAPI.DSL
             {
                 Directory.CreateDirectory(ScriptsFolderPath);
             }
-
-            CallOrder = GetCallOrder();
         }
-
-        public static string[] GetCallOrder() => File.ReadAllLines(CallOrderFilePath).Select(l => l.Replace("()", "Script")).ToArray();
 
         public static bool CompileToCSharp(string code)
         {

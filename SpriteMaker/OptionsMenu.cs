@@ -1,4 +1,4 @@
-﻿using Game;
+﻿using Game.GUI;
 using GameAPI;
 
 namespace SpriteMaker
@@ -136,7 +136,7 @@ namespace SpriteMaker
                     {
                         ItemGroupBox.Items.Clear();
                         TypeGroupBox.Items.Clear();
-                        foreach (var item in Enum.GetValues(typeof(Controls)))
+                        foreach (var item in Enum.GetValues(typeof(Textures)))
                         {
                             TypeGroupBox.Items.Add(item);
                         }

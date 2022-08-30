@@ -8,92 +8,25 @@ namespace Game
 {
     public class Core
     {
-        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], string.Empty, Styles.Default);
+        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], string.Empty, Styles.Fullscreen);
         private readonly View _view;
         private readonly Engine _engine;
         private readonly GameWorld _gameWorld = new();
-        private readonly CodeHandler _codeHandler;
-        private readonly GUI _gui = new();
         private readonly Clock _renderClock = new();
         private readonly Clock _logicClock = new();
         private Time _lastRenderTime = Time.Zero;
         private Time _renderFrameTime = Time.FromSeconds(1.0f / 144.0f);
-        private readonly Font _font;
 
-        private readonly Dictionary<Keyboard.Key, char> _scriptsCharsNormal = new()
-        {
-            [Keyboard.Key.A] = 'a', [Keyboard.Key.B] = 'b', [Keyboard.Key.C] = 'c', [Keyboard.Key.D] = 'd',
-            [Keyboard.Key.E] = 'e', [Keyboard.Key.F] = 'f', [Keyboard.Key.G] = 'g', [Keyboard.Key.H] = 'h',
-            [Keyboard.Key.I] = 'i', [Keyboard.Key.J] = 'j', [Keyboard.Key.K] = 'k', [Keyboard.Key.L] = 'l',
-            [Keyboard.Key.M] = 'm', [Keyboard.Key.N] = 'n', [Keyboard.Key.O] = 'o', [Keyboard.Key.P] = 'p',
-            [Keyboard.Key.Q] = 'q', [Keyboard.Key.R] = 'r', [Keyboard.Key.S] = 's', [Keyboard.Key.T] = 't',
-            [Keyboard.Key.U] = 'u', [Keyboard.Key.V] = 'v', [Keyboard.Key.W] = 'w', [Keyboard.Key.X] = 'x',
-            [Keyboard.Key.Y] = 'y', [Keyboard.Key.Z] = 'z', 
-            [Keyboard.Key.Space] = ' ', 
-            [Keyboard.Key.Enter] = '\n',
-            [Keyboard.Key.Tab] = '\t',
-        };
-
-        private readonly Dictionary<Keyboard.Key, char> _scriptsCharsShift = new()
-        {
-            [Keyboard.Key.A] = 'A', [Keyboard.Key.B] = 'B', [Keyboard.Key.C] = 'C', [Keyboard.Key.D] = 'D',
-            [Keyboard.Key.E] = 'E', [Keyboard.Key.F] = 'F', [Keyboard.Key.G] = 'G', [Keyboard.Key.H] = 'H',
-            [Keyboard.Key.I] = 'I', [Keyboard.Key.J] = 'J', [Keyboard.Key.K] = 'K', [Keyboard.Key.L] = 'L',
-            [Keyboard.Key.M] = 'M', [Keyboard.Key.N] = 'N', [Keyboard.Key.O] = 'O', [Keyboard.Key.P] = 'P',
-            [Keyboard.Key.Q] = 'Q', [Keyboard.Key.R] = 'R', [Keyboard.Key.S] = 'S', [Keyboard.Key.T] = 'T',
-            [Keyboard.Key.U] = 'U', [Keyboard.Key.V] = 'V', [Keyboard.Key.W] = 'W', [Keyboard.Key.X] = 'X',
-            [Keyboard.Key.Y] = 'Y', [Keyboard.Key.Z] = 'Z',
-        };
-
-        //debug
-        private readonly Text _text;
         public Core()
         {
-            _font = new Font($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
-
-            _text = new()
-            {
-                Font = _font,
-                DisplayedString = string.Empty,
-                CharacterSize = 100,
-                Scale = new(0.01f, 0.01f),
-            };
-
-            _text.DisplayedString =
-@"
-using GameAPI;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-
-namespace GameAPI.DSL
-{
-	public class MovePlayerScript : PlayerScript
-	{
-		public MovePlayerScript()
-		{
-		}
-
-		protected override void Do(GameWorld gameWorld, 
-            ConcurrentDictionary<string, 
-            (Types, object)> parameters)
-		{
-			gameWorld.Player.EnqueueMovement(
-                (Directions)new Random().Next(0, 5));
-		}
-	}
-}
-
-";
-
-            _codeHandler = new(_gameWorld);
             _engine = new(_gameWorld);
             _view = new(new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y), new(240, 144));
             _window.SetView(_view);
 
+            _window.KeyPressed += _engine.GameInterface.InterfaceHandler;
             _window.KeyPressed += new EventHandler<KeyEventArgs>((sender, e) =>
             {
-                if (!_gui.States[Controls.CodeEditor])
+                if (!_engine.GameInterface.IsMenu)
                 {
                     switch (e.Code)
                     {
@@ -132,55 +65,57 @@ namespace GameAPI.DSL
                     }
                 }
 
-                if (e.Code == Keyboard.Key.F5)
-                {
-                    _codeHandler.CreateScript(string.Empty);
-                }
-
-                if (e.Code == Keyboard.Key.F6)
-                {
-                    _codeHandler.AllowRunningScripts = true;
-                }
-
-                if (e.Code == Keyboard.Key.F7)
-                {
-                    _codeHandler.AbortScripts();
-                }
-
                 if (e.Code == Keyboard.Key.Escape)
                 {
+                    _engine.GameInterface.IsMenu = !_engine.GameInterface.IsMenu;
+                }
+
+                if (e.Code == Keyboard.Key.Tilde)
+                {
                     _gameWorld.IsActive = false;
-                    _codeHandler.IsActive = false;
                     _window.Close();
                 }
 
-                if (e.Code == Keyboard.Key.F1)
-                {
-                    _gui.States[Controls.CodeEditor] = !_gui.States[Controls.CodeEditor];
-                }
+                //if (e.Code == Keyboard.Key.F1)
+                //{
+                //    _engine.GameInterface.CodeEditor.IsActive = !_engine.GameInterface.CodeEditor.IsActive;
+                //}
+                //
+                //if (_engine.GameInterface.CodeEditor.IsActive)
+                //{
+                //    if (e.Shift)
+                //    {
+                //        if (_scriptsCharsNormal.ContainsKey(e.Code))
+                //        {
+                //            _engine.GameInterface.CodeEditor.EditedText += _scriptsCharsShift[e.Code];
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (_scriptsCharsNormal.ContainsKey(e.Code))
+                //        {
+                //            _engine.GameInterface.CodeEditor.EditedText += _scriptsCharsNormal[e.Code];
+                //        }
+                //    }
+                //}
 
-                if (_gui.States[Controls.CodeEditor])
-                {
-                    if (e.Shift)
-                    {
-                        if (_scriptsCharsNormal.ContainsKey(e.Code))
-                        {
-                            _text.DisplayedString += _scriptsCharsShift[e.Code];
-                        }
-                    }
-                    else
-                    {
-                        if (_scriptsCharsNormal.ContainsKey(e.Code))
-                        {
-                            _text.DisplayedString += _scriptsCharsNormal[e.Code];
-                        }
-                    }
-                }
+                //if (_engine.GameInterface.Equipment.IsActive)
+                //{
+                //    if (e.Code == Keyboard.Key.Up)
+                //    {
+                //        _engine.GameInterface.Equipment.CursorCurrentPosition--;
+                //    }
+                //
+                //    if (e.Code == Keyboard.Key.Down)
+                //    {
+                //        _engine.GameInterface.Equipment.CursorCurrentPosition++;
+                //    }
+                //}
             });
 
             _window.KeyReleased += new EventHandler<KeyEventArgs>((sender, e) =>
             {
-                if (!_gui.States[Controls.CodeEditor])
+                //if (!_engine.GameInterface.CodeEditor.IsActive)
                 {
                     switch (e.Code)
                     {
@@ -213,15 +148,9 @@ namespace GameAPI.DSL
                     _lastRenderTime = Time.Zero;
 
                     _window.Clear();
-                    _view.Center = new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
+                    _view.Center = _engine.GameInterface.IsMenu ? new(120, 72) : new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
                     _window.SetView(_view);
                     _engine.Draw(_window, 200, _gameWorld);
-                    _gui.Draw(_window, _gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
-                    _text.Position = new(_gameWorld.Player.Position.x - 117, _gameWorld.Player.Position.y - 68);
-                    if (_gui.States[Controls.CodeEditor])
-                    {
-                        _window.Draw(_text);
-                    }
                     _window.Display();
                     _window.SetTitle($"X:{_gameWorld.Player.Position.x} Y:{_gameWorld.Player.Position.y}");
                 }

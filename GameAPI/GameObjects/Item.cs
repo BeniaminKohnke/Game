@@ -5,6 +5,7 @@
         private byte _frameCounter = 0;
         private double _lastChange = 0f;
 
+        public string Name { get; set; } = string.Empty;
         public byte Uses { get; set; } = 0;
         public bool IsUsed { get; set; } = false;
         public ItemTypes ItemType { get; set; } = ItemTypes.None;

@@ -30,6 +30,8 @@
         Pickaxe,
         Axe,
         Sword,
+        ItemRock,
+        ItemWood,
     }
 
     public enum States
@@ -73,6 +75,7 @@
         ThrustDamageResistance,
         CuttingDamageResistance,
         ScanRadius,
+        Loot,
     }
 
     public static class Parameters

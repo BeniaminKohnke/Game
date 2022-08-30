@@ -86,7 +86,7 @@ namespace GameAPI.DSL
                     }
                 }
 
-                foreach (var position in CodeBuilder.GetCallOrder())
+                foreach (var position in CodeBuilder.CallOrder)
                 {
                     var script = types.FirstOrDefault(t => t.Name.Equals(position));
                     if (script != null)

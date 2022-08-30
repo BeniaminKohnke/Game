@@ -1,4 +1,5 @@
 ﻿using GameAPI.GameObjects;
+using MoreLinq;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
@@ -16,7 +17,7 @@ namespace GameAPI
     public class GameWorld
     {
         private readonly Thread t_update;
-        private readonly ConcurrentBag<GameObject> _gameObjects;
+        private ConcurrentBag<GameObject> _gameObjects;
         private readonly PositionComparer _comparer = new();
         private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
@@ -28,6 +29,7 @@ namespace GameAPI
             var pickaxe = new Item(_loader, 0, 0, Types.Item, Grids.Pickaxe)
             {
                 ItemType = ItemTypes.Mele,
+                Name = "Pickaxe",
                 ObjectParameters = new Dictionary<ObjectsParameters, object>
                 {
                     [ObjectsParameters.ThrustDamage] = (ushort)30,
@@ -36,6 +38,7 @@ namespace GameAPI
             var axe = new Item(_loader, 0, 0, Types.Item, Grids.Axe)
             {
                 ItemType = ItemTypes.Mele,
+                Name = "Axe",
                 ObjectParameters = new Dictionary<ObjectsParameters, object>
                 {
                     [ObjectsParameters.CuttingDamage] = (ushort)30,
@@ -70,24 +73,46 @@ namespace GameAPI
             var random = new Random();
             for (int i = 0; i < 30; i++)
             {
-                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Tree, Grids.Tree1)
+                var x = random.Next(-200, 200);
+                var y = random.Next(-200, 200);
+                _gameObjects.Add(new(_loader, x, y, Types.Tree, Grids.Tree1)
                 {
-                    ObjectParameters = new Dictionary<ObjectsParameters, object>
+                    ObjectParameters = new()
                     {
                         [ObjectsParameters.Health] = (short)100,
                         [ObjectsParameters.ThrustDamageResistance] = (byte)100,
+                        [ObjectsParameters.Loot] = new Item[]
+                        {
+                            new(_loader, x + random.Next(-2, 2), y + random.Next(-2, 2) + 20, Types.Item, Grids.ItemWood)
+                            {
+                                IsActive = false,
+                                IsUsed = false,
+                                Name = "Wood",
+                            }
+                        }
                     }
                 });
             }
 
             for (int i = 0; i < 30; i++)
             {
-                _gameObjects.Add(new(_loader, random.Next(-200, 200), random.Next(-200, 200), Types.Rock, Grids.Rock1)
+                var x = random.Next(-200, 200);
+                var y = random.Next(-200, 200);
+                _gameObjects.Add(new(_loader, x, y, Types.Rock, Grids.Rock1)
                 {
-                    ObjectParameters = new Dictionary<ObjectsParameters, object>
+                    ObjectParameters = new()
                     {
                         [ObjectsParameters.Health] = (short)100,
                         [ObjectsParameters.CuttingDamageResistance] = (byte)100,
+                        [ObjectsParameters.Loot] = new Item[]
+                        {
+                            new(_loader, x + random.Next(-2, 2), y + random.Next(-2, 2), Types.Item, Grids.ItemRock)
+                            {
+                                IsActive = false,
+                                IsUsed = false,
+                                Name = "Rock",
+                            }
+                        }
                     }
                 });
             }
@@ -138,6 +163,7 @@ namespace GameAPI
         {
             while (IsActive)
             {
+                var objectsToRemove = new List<uint>();
                 foreach (var go in _gameObjects)
                 {
                     if (go.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
@@ -145,6 +171,15 @@ namespace GameAPI
                         if (health <= 0)
                         {
                             go.IsActive = false;
+                            objectsToRemove.Add(go.Id);
+                            if (go.ObjectParameters.TryGetValue(ObjectsParameters.Loot, out var v) && v is Item[] items)
+                            {
+                                foreach (var i in items)
+                                {
+                                    i.IsActive = true;
+                                    _gameObjects.Add(i);
+                                }
+                            }
                         }
                     }
 
@@ -164,6 +199,8 @@ namespace GameAPI
                         HandleItemActions(item, Player.Id);
                     }
                 }
+
+                _gameObjects = new ConcurrentBag<GameObject>(_gameObjects.Where(go => !objectsToRemove.Contains(go.Id)));
             }
         }
 
@@ -188,11 +225,19 @@ namespace GameAPI
                         if (newRectangle != null)
                         {
                             var canMove = true;
-                            foreach (var other in _gameObjects.Where(go => go.IsActive && go.ObjectType != Types.Item))
+                            foreach (var other in _gameObjects.Where(go => go.IsActive && !Player.Items.Contains(go)))
                             {
                                 if (main.Id != other.Id && newRectangle.CheckCollision(other))
                                 {
-                                    canMove = false;
+                                    if (other is not Item)
+                                    {
+                                        canMove = false;
+                                    }
+                                    else if(main is Player && other is Item item)
+                                    {
+                                        other.IsActive = false;
+                                        Player.Items.Add(item);
+                                    }
                                     break;
                                 }
                             }
