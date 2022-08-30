@@ -8,7 +8,17 @@ namespace Game.GUI
 {
     internal sealed class CodeEditor : Page
     {
-        private readonly string[] _scriptsNames = new string[20];
+        private enum MenuActions
+        {
+            None,
+            Add_Rename,
+            Edit,
+            Save,
+            Delete,
+            Compile,
+        }
+
+        private readonly (Text name, string code)[] _scripts = new (Text, string)[20];
         private readonly CodeHandler _codeHandler;
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsNormal = new()
         {
@@ -75,41 +85,10 @@ namespace Game.GUI
         private readonly Sprite _textEditorSprite = new();
         private readonly Sprite _menuSprite = new();
         private readonly Sprite _menuCursorSprite = new();
-        private readonly Text _text = new();
-        private readonly Text[] _menuOptions = new Text[]
-        {
-            new()
-            {
-                DisplayedString = "Add or rename",
-                CharacterSize = 200,
-                Scale = new(0.01f, 0.01f),
-            },
-            new()
-            {
-                DisplayedString = "Edit",
-                CharacterSize = 200,
-                Scale = new(0.01f, 0.01f),
-            },
-            new()
-            {
-                DisplayedString = "Save",
-                CharacterSize = 200,
-                Scale = new(0.01f, 0.01f),
-            },
-            new()
-            {
-                DisplayedString = "Delete",
-                CharacterSize = 200,
-                Scale = new(0.01f, 0.01f),
-            },
-            new()
-            {
-                DisplayedString = "Compile",
-                CharacterSize = 200,
-                Scale = new(0.01f, 0.01f),
-            },
-        };
+        private readonly Text _currentScriptText = new();
+        private readonly Text[] _menuOptions;
         private bool _isMenuActive = false;
+        private MenuActions _menuAction = MenuActions.None;
         private sbyte _cursorCurrentPosition = 0;
         public sbyte CursorCurrentPosition
         {
@@ -120,7 +99,7 @@ namespace Game.GUI
         public sbyte MenuCursorCurrentPosition
         {
             get => _menuCursorCurrentPosition;
-            set => _menuCursorCurrentPosition = (sbyte)(value > 3 ? 0 : (value < 0 ? 3 : value));
+            set => _menuCursorCurrentPosition = (sbyte)(value > 4 ? 0 : (value < 0 ? 4 : value));
         }
         internal string EditedText { get; set; } = string.Empty;
 
@@ -136,11 +115,20 @@ namespace Game.GUI
             {
                 _textEditorSprite.Texture = new(Engine.CreateImage(grid));
             }
+            
+            for (var i = 0; i < 20; i++)
+            {
+                _scripts[i].name = new()
+                {
+                    Font = font,
+                    CharacterSize = 100,
+                    Scale = new(0.01f, 0.01f),
+                };
+            }
 
-            _text = new()
+            _currentScriptText = new()
             {
                 Font = font,
-                DisplayedString = "100",
                 CharacterSize = 100,
                 Position = new(34, 11),
                 Scale = new(0.01f, 0.01f),
@@ -165,7 +153,18 @@ namespace Game.GUI
                 _menuSprite.Texture = new(Engine.CreateImage(grid));
             }
 
-            _menuOptions.ForEach(p => p.Font = font);
+            var options = new List<Text>();
+            foreach (var position in Enum.GetValues(typeof(MenuActions)).Flatten().Skip(1))
+            {
+                options.Add(new()
+                {
+                    Font = font,
+                    DisplayedString = position.ToString(),
+                    CharacterSize = 200,
+                    Scale = new(0.01f, 0.01f),
+                });
+            }
+            _menuOptions = options.ToArray();
         }
 
         internal override void Draw(RenderWindow window, GameWorld world)
@@ -173,7 +172,15 @@ namespace Game.GUI
             window.Draw(_textEditorSprite);
             _cursorSprite.Position = new(2, 13 + CursorCurrentPosition * 6);
             window.Draw(_cursorSprite);
-            window.Draw(_text);
+
+            for (var i = 0; i < _scripts.Length; i++)
+            {
+                _scripts[i].name.Position = new(4, 16 + i * 6);
+                window.Draw(_scripts[i].name);
+            }
+
+            _currentScriptText.DisplayedString = _scripts[CursorCurrentPosition].code;
+            window.Draw(_currentScriptText);
 
             if (_isMenuActive)
             {
@@ -185,7 +192,7 @@ namespace Game.GUI
                 
                 for (var i = 0; i < _menuOptions.Length; i++)
                 {
-                    _menuOptions[i].Position = new(_menuSprite.Position.X + 8, _menuSprite.Position.Y + i * 6 + 2);
+                    _menuOptions[i].Position = new(_menuSprite.Position.X + 3, _menuSprite.Position.Y + i * 6 + 2);
                     window.Draw(_menuOptions[i]);
                 }
             }
@@ -193,87 +200,148 @@ namespace Game.GUI
 
         internal override void HandleInput(KeyEventArgs args)
         {
-            if (_isMenuActive)
+            switch (_menuAction)
             {
-                if (args.Code == Keyboard.Key.Enter)
-                {
-                    switch (_menuOptions[MenuCursorCurrentPosition].DisplayedString)
+                case MenuActions.None:
+                    if (_isMenuActive)
                     {
-                        case "Add or rename":
-                            RenameScript();
-                            break;
-                        case "Delete":
-                            DeleteScript();
-                            break;
-                        case "Save":
-                            SaveScript();
-                            break;
-                        case "Compile":
-                            CompileScript();
-                            break;
+                        if (args.Code == Keyboard.Key.Enter)
+                        {
+                            switch (_menuOptions[MenuCursorCurrentPosition].DisplayedString)
+                            {
+                                case "Add_Rename":
+                                    _menuAction = MenuActions.Add_Rename;
+                                    _isMenuActive = false;
+                                    break;
+                                case "Edit":
+                                    _menuAction = MenuActions.Edit;
+                                    _isMenuActive = false;
+                                    break;
+                                case "Delete":
+                                    _menuAction = MenuActions.Delete;
+                                    _isMenuActive = false;
+                                    break;
+                                case "Save":
+                                    _menuAction = MenuActions.Save;
+                                    _isMenuActive = false;
+                                    break;
+                                case "Compile":
+                                    _menuAction = MenuActions.Compile;
+                                    _isMenuActive = false;
+                                    break;
+                            }
+                        }
+
+                        if (args.Code == Keyboard.Key.Up)
+                        {
+                            MenuCursorCurrentPosition--;
+                        }
+
+                        if (args.Code == Keyboard.Key.Down)
+                        {
+                            MenuCursorCurrentPosition++;
+                        }
                     }
-                }
+                    else
+                    {
+                        if (args.Code == Keyboard.Key.Enter)
+                        {
+                            _isMenuActive = true;
+                        }
 
-                if (args.Code == Keyboard.Key.Up)
-                {
-                    MenuCursorCurrentPosition--;
-                }
+                        if (args.Code == Keyboard.Key.Up)
+                        {
+                            CursorCurrentPosition--;
+                        }
 
-                if (args.Code == Keyboard.Key.Down)
-                {
-                    MenuCursorCurrentPosition++;
-                }
+                        if (args.Code == Keyboard.Key.Down)
+                        {
+                            CursorCurrentPosition++;
+                        }
+                    }
+                    break;
+                case MenuActions.Add_Rename:
+                    if (args.Code == Keyboard.Key.Backspace)
+                    {
+                        var text = _scripts[CursorCurrentPosition].name.DisplayedString;
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            _scripts[CursorCurrentPosition].name.DisplayedString = new(text.Take(text.Length - 1).ToArray());
+                        }
+                    }
+
+                    if (args.Shift)
+                    {
+                        if (_scriptsCharsShift.TryGetValue(args.Code, out var character))
+                        {
+                            _scripts[CursorCurrentPosition].name.DisplayedString += character;
+                        }
+                    }
+                    else
+                    {
+                        if (_scriptsCharsNormal.TryGetValue(args.Code, out var character))
+                        {
+                            _scripts[CursorCurrentPosition].name.DisplayedString += character;
+                        }
+                    }
+                    break;
+                case MenuActions.Edit:
+                    if (args.Code == Keyboard.Key.Backspace)
+                    {
+                        var text = _scripts[CursorCurrentPosition].code;
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            _scripts[CursorCurrentPosition].code = new(text.Take(text.Length - 1).ToArray());
+                        }
+                    }
+                    
+                    if (args.Shift)
+                    {
+                        if (_scriptsCharsShift.TryGetValue(args.Code, out var character))
+                        { 
+                            _scripts[CursorCurrentPosition].code += character;
+                        }
+                    }
+                    else
+                    {
+                        if (_scriptsCharsNormal.TryGetValue(args.Code, out var character))
+                        {
+                            _scripts[CursorCurrentPosition].code += character;
+                        }
+                    }
+                    break;
+                case MenuActions.Save:
+                    break;
+                case MenuActions.Delete:
+                    {
+                        var scriptName = _scripts[CursorCurrentPosition].name.DisplayedString;
+                        if (!string.IsNullOrEmpty(scriptName))
+                        {
+                            _codeHandler.DeleteScript(scriptName);
+                        }
+                    }
+                    break;
+                case MenuActions.Compile:
+                    {
+                        var scriptName = _scripts[CursorCurrentPosition].name.DisplayedString;
+                        if (!string.IsNullOrEmpty(scriptName))
+                        {
+                            _codeHandler.DeleteScript(scriptName);
+                        }
+                    }
+                    break;
             }
-            else
-            {
-                if (args.Code == Keyboard.Key.Enter)
-                {
-                    _isMenuActive = true;
-                }
-
-                if (args.Code == Keyboard.Key.Up)
-                {
-                    CursorCurrentPosition--;
-                }
-
-                if (args.Code == Keyboard.Key.Down)
-                {
-                    CursorCurrentPosition++;
-                }
-            }
-        }
-
-        public void RenameScript()
-        {
-            if (true)
-            {
-
-            }
-        }
-
-        public void DeleteScript()
-        {
-
-        }
-
-        public void SaveScript()
-        {
-
-        }
-
-        public void CompileScript()
-        {
-
         }
 
         internal override void Reset()
         {
             CursorCurrentPosition = 0;
+            _menuAction = MenuActions.None;
         }
 
         internal override void Release()
         {
-            throw new NotImplementedException();
+            _codeHandler.IsActive = false;
         }
     }
 }

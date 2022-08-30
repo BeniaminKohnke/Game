@@ -71,6 +71,11 @@ namespace Game
             GameInterface.Draw(window, gameWorld);
         }
 
+        public void Release()
+        {
+            GameInterface.Release();
+        }
+
         internal static Image CreateImage(byte[][] pixels)
         {
             var image = new Image((uint)pixels[0].Length, (uint)pixels.Length);

@@ -1,4 +1,5 @@
 ﻿using GameAPI;
+using MoreLinq;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -112,5 +113,7 @@ namespace Game.GUI
                 page.Draw(window, gameWorld);
             }
         }
+
+        public void Release() => _pages.ForEach(p => p.Value.Release());
     }
 }

@@ -106,6 +106,11 @@ namespace GameAPI.DSL
             _recompile = true;
         }
 
+        public void DeleteScript(string scriptName)
+        {
+
+        }
+
         public void AbortScripts()
         {
             AllowRunningScripts = false;

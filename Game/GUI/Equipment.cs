@@ -99,7 +99,7 @@ namespace Game.GUI
 
         internal override void Release()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

@@ -72,6 +72,7 @@ namespace Game
 
                 if (e.Code == Keyboard.Key.Tilde)
                 {
+                    _engine.Release();
                     _gameWorld.IsActive = false;
                     _window.Close();
                 }

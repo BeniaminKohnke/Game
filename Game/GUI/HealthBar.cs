@@ -47,12 +47,10 @@ namespace Game.GUI
         }
 
         internal override void HandleInput(KeyEventArgs args) => throw new Exception("In-game interface cannot handle input");
-
+        internal override void Reset() => throw new Exception("In-game interface cannot be reset");
         internal override void Release()
         {
-            throw new NotImplementedException();
+            
         }
-
-        internal override void Reset() => throw new Exception("In-game interface cannot be reset");
     }
 }
