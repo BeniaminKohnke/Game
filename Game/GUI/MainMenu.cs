@@ -1,22 +1,32 @@
 ﻿using GameAPI;
+using MoreLinq;
 using SFML.Graphics;
 using SFML.Window;
 
 namespace Game.GUI
 {
+    public enum MenuOptions
+    {
+        None,
+        Resume,
+        Options,
+        Exit,
+    }
+
     internal sealed class MainMenu : Page
     {
         private readonly Sprite _cursorSprite = new();
         private readonly Sprite _menuSprite = new();
-        private readonly (int x, int y) _cursorPosition = (2, 13);
+        private readonly Text[] _menuOptions;
         private sbyte _cursorCurrentPosition = 0;
         public sbyte CursorCurrentPosition
         {
             get => _cursorCurrentPosition;
             set => _cursorCurrentPosition = (sbyte)(value > 20 ? 0 : (value < 0 ? 20 : value));
         }
+        public MenuOptions PerformedAction { get; set; } = MenuOptions.None;
 
-        internal MainMenu()
+        internal MainMenu(Font font)
         {
             var grid = File
                 .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.MainMenu}.sm")
@@ -35,13 +45,32 @@ namespace Game.GUI
             {
                 _cursorSprite.Texture = new(Engine.CreateImage(grid));
             }
+
+            var options = new List<Text>();
+            foreach (var position in Enum.GetValues(typeof(MenuOptions)).Flatten().Skip(1))
+            {
+                options.Add(new()
+                {
+                    Font = font,
+                    DisplayedString = position.ToString(),
+                    CharacterSize = 200,
+                    Scale = new(0.01f, 0.01f),
+                });
+            }
+            _menuOptions = options.ToArray();
         }
 
         internal override void Draw(RenderWindow window, GameWorld world)
         {
             window.Draw(_menuSprite);
-            _cursorSprite.Position = new(_cursorPosition.x, _cursorPosition.y + CursorCurrentPosition * 6);
+            _cursorSprite.Position = new(2, 13 + CursorCurrentPosition * 6);
             window.Draw(_cursorSprite);
+
+            for (var i = 0; i < _menuOptions.Length; i++)
+            {
+                _menuOptions[i].Position = new(4, i * 6 + 16);
+                window.Draw(_menuOptions[i]);
+            }
         }
 
         internal override bool HandleInput(KeyEventArgs args)
@@ -54,6 +83,26 @@ namespace Game.GUI
             if (args.Code == Keyboard.Key.Down)
             {
                 CursorCurrentPosition++;
+            }
+
+            if (args.Code == Keyboard.Key.Enter)
+            {
+                switch (_menuOptions[CursorCurrentPosition].DisplayedString)
+                {
+                    case "Resume":
+                        PerformedAction = MenuOptions.Resume;
+                        Reset();
+                        break;
+                    case "Options":
+                        PerformedAction = MenuOptions.Options;
+                        break;
+                    case "Exit":
+                        PerformedAction = MenuOptions.Exit;
+                        break;
+                    default:
+                        PerformedAction = MenuOptions.None;
+                        break;
+                }
             }
 
             return false;

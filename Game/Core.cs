@@ -114,6 +114,13 @@ namespace Game
                     _window.Display();
                     _window.SetTitle($"X:{_gameWorld.Player.Position.x} Y:{_gameWorld.Player.Position.y}");
                 }
+
+                if (_engine.GameInterface.PerformedAction == GUI.MenuOptions.Exit)
+                {
+                    _engine.Release();
+                    _gameWorld.IsActive = false;
+                    _window.Close();
+                }
             }
         }
     }

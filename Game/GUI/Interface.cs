@@ -48,6 +48,17 @@ namespace Game.GUI
                 }
             }
         }
+        public MenuOptions PerformedAction
+        {
+            get => (_pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu) ? mainMenu.PerformedAction : MenuOptions.None;
+            set
+            {
+                if (_pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu)
+                {
+                    mainMenu.PerformedAction = value;
+                }
+            }
+        }
 
         public EventHandler<KeyEventArgs> InterfaceHandler { get; }
 
@@ -56,7 +67,7 @@ namespace Game.GUI
             var font = new Font($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
             _pages = new()
             {
-                [Textures.MainMenu] = new MainMenu(),
+                [Textures.MainMenu] = new MainMenu(font),
                 [Textures.HealthBar] = new HealthBar(font),
                 [Textures.EquipmentWindow] = new Equipment(font),
                 [Textures.CodeEditor] = new CodeEditor(font, world),
@@ -96,7 +107,12 @@ namespace Game.GUI
                         }
 
                         _currentPage = _postions[_cursorIndex];
-                        
+
+                        if (!_isInsidePage && e.Code == Keyboard.Key.Down)
+                        {
+                            _isInsidePage = true;
+                        }
+
                         if (e.Code == Keyboard.Key.Enter)
                         {
                             _isInsidePage = true;
@@ -113,6 +129,13 @@ namespace Game.GUI
 
         public void Draw(RenderWindow window, GameWorld gameWorld)
         {
+            if (PerformedAction == MenuOptions.Resume)
+            {
+                _isInsidePage = false;
+                IsMenu = false;
+                PerformedAction = MenuOptions.None;
+            }
+
             if (_pages.TryGetValue(_currentPage, out var page) || _pages.TryGetValue(Textures.MainMenu, out page))
             {
                 page.Draw(window, gameWorld);

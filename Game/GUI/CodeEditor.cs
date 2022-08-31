@@ -18,7 +18,7 @@ namespace Game.GUI
             Compile,
         }
 
-        private readonly (Text name, string code)[] _scripts = new (Text, string)[20];
+        private readonly (Text name, string code)[] _scripts = new (Text, string)[21];
         private readonly CodeHandler _codeHandler;
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsNormal = new()
         {
@@ -116,7 +116,7 @@ namespace Game.GUI
                 _textEditorSprite.Texture = new(Engine.CreateImage(grid));
             }
             
-            for (var i = 0; i < 20; i++)
+            for (var i = 0; i < 21; i++)
             {
                 _scripts[i].name = new()
                 {
