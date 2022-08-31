@@ -1,5 +1,6 @@
 ﻿using Game.GUI;
 using GameAPI;
+using GameAPI.GameObjects;
 using SFML.Graphics;
 using System.Collections.Concurrent;
 
@@ -7,6 +8,7 @@ namespace Game
 {
     public class Engine
     {
+        private readonly Font _font = new Font($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
         private readonly ConcurrentDictionary<Grids, ConcurrentDictionary<States, Texture>> _textures = new();
         private readonly ConcurrentDictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
         public Interface GameInterface { get; }
@@ -36,6 +38,15 @@ namespace Game
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
         {
+            {
+                if (!(gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health))
+                {
+                    health = 100;
+                }
+
+                drawDistance = (int)(drawDistance * (health / 100f));
+            }
+
             var gameObjects = gameWorld.GetObjects(GetObjectsOptions.FromPlayer | GetObjectsOptions.AddPlayerItems | GetObjectsOptions.Ordered | GetObjectsOptions.OnlyActive, drawDistance);
             foreach (var gameObject in gameObjects)
             {
@@ -63,6 +74,20 @@ namespace Game
                 else
                 {
                     sprite.Position = new(gameObject.Position.x, gameObject.Position.y);
+                }
+
+                if (gameObject is not Player && gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
+                {
+                    var text = new Text()
+                    {
+                        Font = _font,
+                        DisplayedString = health.ToString(),
+                        Position = new(gameObject.Position.x + (gameObject.SizeX / 2) - 3, gameObject.Position.y + gameObject.SizeY),
+                        CharacterSize = 200,
+                        Scale = new(0.01f, 0.01f),
+                    };
+
+                    window.Draw(text);
                 }
 
                 window.Draw(sprite);

@@ -129,7 +129,7 @@ namespace Game.GUI
             _currentScriptText = new()
             {
                 Font = font,
-                CharacterSize = 100,
+                CharacterSize = 200,
                 Position = new(34, 11),
                 Scale = new(0.01f, 0.01f),
             };
@@ -198,13 +198,20 @@ namespace Game.GUI
             }
         }
 
-        internal override void HandleInput(KeyEventArgs args)
+        internal override bool HandleInput(KeyEventArgs args)
         {
             switch (_menuAction)
             {
                 case MenuActions.None:
                     if (_isMenuActive)
                     {
+                        if (args.Code == Keyboard.Key.Escape)
+                        {
+                            _isMenuActive = false;
+                            _menuAction = MenuActions.None;
+                            return true;
+                        }
+
                         if (args.Code == Keyboard.Key.Enter)
                         {
                             switch (_menuOptions[MenuCursorCurrentPosition].DisplayedString)
@@ -261,6 +268,13 @@ namespace Game.GUI
                     }
                     break;
                 case MenuActions.Add_Rename:
+                    if (args.Code == Keyboard.Key.Escape)
+                    {
+                        _isMenuActive = true;
+                        _menuAction = MenuActions.None;
+                        return true;
+                    }
+
                     if (args.Code == Keyboard.Key.Backspace)
                     {
                         var text = _scripts[CursorCurrentPosition].name.DisplayedString;
@@ -286,6 +300,13 @@ namespace Game.GUI
                     }
                     break;
                 case MenuActions.Edit:
+                    if (args.Code == Keyboard.Key.Escape)
+                    {
+                        _isMenuActive = true;
+                        _menuAction = MenuActions.None;
+                        return true;
+                    }
+
                     if (args.Code == Keyboard.Key.Backspace)
                     {
                         var text = _scripts[CursorCurrentPosition].code;
@@ -311,8 +332,21 @@ namespace Game.GUI
                     }
                     break;
                 case MenuActions.Save:
+                    if (args.Code == Keyboard.Key.Escape)
+                    {
+                        _isMenuActive = true;
+                        _menuAction = MenuActions.None;
+                        return true;
+                    }
                     break;
                 case MenuActions.Delete:
+                    if (args.Code == Keyboard.Key.Escape)
+                    {
+                        _isMenuActive = true;
+                        _menuAction = MenuActions.None;
+                        return true;
+                    }
+
                     {
                         var scriptName = _scripts[CursorCurrentPosition].name.DisplayedString;
                         if (!string.IsNullOrEmpty(scriptName))
@@ -322,6 +356,13 @@ namespace Game.GUI
                     }
                     break;
                 case MenuActions.Compile:
+                    if (args.Code == Keyboard.Key.Escape)
+                    {
+                        _isMenuActive = true;
+                        _menuAction = MenuActions.None;
+                        return true;
+                    }
+
                     {
                         var scriptName = _scripts[CursorCurrentPosition].name.DisplayedString;
                         if (!string.IsNullOrEmpty(scriptName))
@@ -331,12 +372,15 @@ namespace Game.GUI
                     }
                     break;
             }
+
+            return false;
         }
 
         internal override void Reset()
         {
             CursorCurrentPosition = 0;
             _menuAction = MenuActions.None;
+            _isMenuActive = false;
         }
 
         internal override void Release()

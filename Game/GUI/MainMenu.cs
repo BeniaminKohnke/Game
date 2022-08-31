@@ -44,7 +44,7 @@ namespace Game.GUI
             window.Draw(_cursorSprite);
         }
 
-        internal override void HandleInput(KeyEventArgs args)
+        internal override bool HandleInput(KeyEventArgs args)
         {
             if (args.Code == Keyboard.Key.Up)
             {
@@ -55,6 +55,8 @@ namespace Game.GUI
             {
                 CursorCurrentPosition++;
             }
+
+            return false;
         }
 
         internal override void Reset()

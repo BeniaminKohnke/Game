@@ -60,7 +60,7 @@ namespace Game.GUI
                         DisplayedString = $"[{item.ItemType}]\n{string.Join("\n", item.ObjectParameters.Select(p => $"{p.Key} : {p.Value}"))}",
                         Position = new(_cursorPosition.x + 35, _cursorPosition.y),
                         Font = _font,
-                        CharacterSize = 120,
+                        CharacterSize = 200,
                         Scale = new(0.01f, 0.01f),
                     };
                     window.Draw(specification);
@@ -79,7 +79,7 @@ namespace Game.GUI
             }
         }
 
-        internal override void HandleInput(KeyEventArgs args)
+        internal override bool HandleInput(KeyEventArgs args)
         {
             if (args.Code == Keyboard.Key.Up)
             {
@@ -90,6 +90,8 @@ namespace Game.GUI
             {
                 CursorCurrentPosition++;
             }
+
+            return false;
         }
 
         internal override void Reset()

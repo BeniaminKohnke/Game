@@ -50,7 +50,7 @@ namespace GameAPI
                 ObjectParameters = new()
                 {
                     [ObjectsParameters.MovementSpeed] = 1,
-                    [ObjectsParameters.Health] = (short)100,
+                    [ObjectsParameters.Health] = (short)30,
                     [ObjectsParameters.ScanRadius] = 100,
                 }
             };

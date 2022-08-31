@@ -65,58 +65,17 @@ namespace Game
                     }
                 }
 
-                if (e.Code == Keyboard.Key.Escape)
-                {
-                    _engine.GameInterface.IsMenu = !_engine.GameInterface.IsMenu;
-                }
-
                 if (e.Code == Keyboard.Key.Tilde)
                 {
                     _engine.Release();
                     _gameWorld.IsActive = false;
                     _window.Close();
                 }
-
-                //if (e.Code == Keyboard.Key.F1)
-                //{
-                //    _engine.GameInterface.CodeEditor.IsActive = !_engine.GameInterface.CodeEditor.IsActive;
-                //}
-                //
-                //if (_engine.GameInterface.CodeEditor.IsActive)
-                //{
-                //    if (e.Shift)
-                //    {
-                //        if (_scriptsCharsNormal.ContainsKey(e.Code))
-                //        {
-                //            _engine.GameInterface.CodeEditor.EditedText += _scriptsCharsShift[e.Code];
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (_scriptsCharsNormal.ContainsKey(e.Code))
-                //        {
-                //            _engine.GameInterface.CodeEditor.EditedText += _scriptsCharsNormal[e.Code];
-                //        }
-                //    }
-                //}
-
-                //if (_engine.GameInterface.Equipment.IsActive)
-                //{
-                //    if (e.Code == Keyboard.Key.Up)
-                //    {
-                //        _engine.GameInterface.Equipment.CursorCurrentPosition--;
-                //    }
-                //
-                //    if (e.Code == Keyboard.Key.Down)
-                //    {
-                //        _engine.GameInterface.Equipment.CursorCurrentPosition++;
-                //    }
-                //}
             });
 
             _window.KeyReleased += new EventHandler<KeyEventArgs>((sender, e) =>
             {
-                //if (!_engine.GameInterface.CodeEditor.IsActive)
+                if (!_engine.GameInterface.IsMenu)
                 {
                     switch (e.Code)
                     {

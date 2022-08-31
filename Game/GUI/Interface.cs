@@ -68,9 +68,9 @@ namespace Game.GUI
                 {
                     if (_isInsidePage)
                     {
-                        if (_pages.TryGetValue(_currentPage, out var page))
+                        if (_pages.TryGetValue(_currentPage, out var page) && page.HandleInput(e))
                         {
-                            page.HandleInput(e);
+                            return;
                         }
                     }
                     else
@@ -102,6 +102,11 @@ namespace Game.GUI
                             _isInsidePage = true;
                         }
                     }
+                }
+
+                if (e.Code == Keyboard.Key.Escape)
+                {
+                    IsMenu = !IsMenu;
                 }
             });
         }
