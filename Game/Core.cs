@@ -1,5 +1,4 @@
-﻿using GameAPI.DSL;
-using GameAPI;
+﻿using GameAPI;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -8,7 +7,7 @@ namespace Game
 {
     public class Core
     {
-        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], string.Empty, Styles.Fullscreen);
+        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], "Thesis", Styles.Fullscreen);
         private readonly View _view;
         private readonly Engine _engine;
         private readonly GameWorld _gameWorld = new();
@@ -46,10 +45,34 @@ namespace Game
                             _gameWorld.Player.SetItemState(true);
                             break;
                         case Keyboard.Key.Num1:
-                            _gameWorld.Player.SetSelctedItem(false);
+                            _gameWorld.Player.SetSelctedItem(1);
                             break;
                         case Keyboard.Key.Num2:
-                            _gameWorld.Player.SetSelctedItem(true);
+                            _gameWorld.Player.SetSelctedItem(2);
+                            break;
+                        case Keyboard.Key.Num3:
+                            _gameWorld.Player.SetSelctedItem(3);
+                            break;
+                        case Keyboard.Key.Num4:
+                            _gameWorld.Player.SetSelctedItem(4);
+                            break;
+                        case Keyboard.Key.Num5:
+                            _gameWorld.Player.SetSelctedItem(5);
+                            break;
+                        case Keyboard.Key.Num6:
+                            _gameWorld.Player.SetSelctedItem(6);
+                            break;
+                        case Keyboard.Key.Num7:
+                            _gameWorld.Player.SetSelctedItem(7);
+                            break;
+                        case Keyboard.Key.Num8:
+                            _gameWorld.Player.SetSelctedItem(8);
+                            break;
+                        case Keyboard.Key.Num9:
+                            _gameWorld.Player.SetSelctedItem(9);
+                            break;
+                        case Keyboard.Key.Num0:
+                            _gameWorld.Player.SetSelctedItem(10);
                             break;
 
                             void EnqueueMovement(Directions direction)
@@ -99,7 +122,12 @@ namespace Game
             _logicClock.Restart();
             while (_window.IsOpen)
             {
-                _gameWorld.DeltaTime = _logicClock.Restart().AsMicroseconds() / 100000d;
+                var deltaTime = _logicClock.Restart().AsMilliseconds();
+                if (_gameWorld.IsActive)
+                {
+                    _gameWorld.Update(deltaTime);
+                }
+
                 _window.DispatchEvents();
 
                 _lastRenderTime += _renderClock.Restart();
@@ -112,7 +140,6 @@ namespace Game
                     _window.SetView(_view);
                     _engine.Draw(_window, 200, _gameWorld);
                     _window.Display();
-                    _window.SetTitle($"X:{_gameWorld.Player.Position.x} Y:{_gameWorld.Player.Position.y}");
                 }
 
                 if (_engine.GameInterface.PerformedAction == GUI.MenuOptions.Exit)

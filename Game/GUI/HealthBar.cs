@@ -6,20 +6,18 @@ namespace Game.GUI
 {
     internal sealed class HealthBar : Page
     {
-        private readonly Sprite _helthBarSprite = new();
+        private readonly Sprite _healthBarSprite = new();
         private readonly Text _healthValueText;
-        private readonly (int x, int y) _barPosition = (87, 53);
-        private readonly (int x, int y) _valuePosition = (95, 55);
 
         internal HealthBar(Font font)
         {
             var grid = File
-                .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.HealthBar}.sm")
+                .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.HealthBar}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
                 .ToArray();
             if (grid.Length > 0 && grid[0].Length > 0)
             {
-                _helthBarSprite.Texture = new(Engine.CreateImage(grid));
+                _healthBarSprite.Texture = new(Engine.CreateImage(grid));
             }
 
             _healthValueText = new()
@@ -39,11 +37,11 @@ namespace Game.GUI
             }
 
             _healthValueText.DisplayedString = health.ToString();
-            _healthValueText.Position = new(_valuePosition.x + world.Player.Position.x, _valuePosition.y + world.Player.Position.y);
+            _healthValueText.Position = new(95 + world.Player.Position.x, 60 + world.Player.Position.y);
             window.Draw(_healthValueText);
 
-            _helthBarSprite.Position = new(_barPosition.x + world.Player.Position.x, _barPosition.y + world.Player.Position.y);
-            window.Draw(_helthBarSprite);
+            _healthBarSprite.Position = new(87 + world.Player.Position.x, 58 + world.Player.Position.y);
+            window.Draw(_healthBarSprite);
         }
 
         internal override bool HandleInput(KeyEventArgs args) => throw new Exception("In-game interface cannot handle input");

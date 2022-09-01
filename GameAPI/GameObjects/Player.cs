@@ -4,11 +4,12 @@ namespace GameAPI.GameObjects
 {
     public class Player : GameObject
     {
+        public readonly uint[] ItemsMenu = new uint[10];
         public uint SelectedItemId { get; set; } = 0;
+        public byte SelectedPosition { get; set; } = 0;
         public ConcurrentBag<Item> Items { get; } = new();
-
         public bool IsMoving { get; set; } = false;
-
+        
         public Player(GridLoader loader, int x, int y) : base(loader, x, y, Types.Player, Grids.Player)
         {
             LastDirection = Directions.Right;
@@ -20,14 +21,11 @@ namespace GameAPI.GameObjects
             base.EnqueueMovement(direction);
         }
 
-        public void SetSelctedItem(bool next)
+        public void SetSelctedItem(byte position)
         {
-            var items = Items.ToArray();
-            var position = Array.IndexOf(items, items.FirstOrDefault(i => i.Id == SelectedItemId)) + (next ? 1 : -1);
-            if (0 <= position && position < items.Length)
-            {
-                SelectedItemId = items[position].Id;
-            }
+            SelectedPosition = position;
+            SelectedPosition--;
+            SelectedItemId = ItemsMenu[SelectedPosition];
         }
 
         public void SetItemState(bool isUsed)

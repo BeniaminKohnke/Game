@@ -29,7 +29,7 @@ namespace Game.GUI
         internal MainMenu(Font font)
         {
             var grid = File
-                .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.MainMenu}.sm")
+                .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.MainMenu}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
                 .ToArray();
             if (grid.Length > 0 && grid[0].Length > 0)
@@ -38,7 +38,7 @@ namespace Game.GUI
             }
 
             grid = File
-                .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.Cursor}.sm")
+                .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.Cursor}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
                 .ToArray();
             if (grid.Length > 0 && grid[0].Length > 0)

@@ -6,6 +6,7 @@ namespace SpriteMaker
     public partial class OptionsMenu : Form
     {
         private readonly Grid _grid;
+
         public OptionsMenu(Grid grid)
         {
             InitializeComponent();
@@ -31,6 +32,7 @@ namespace SpriteMaker
                 {
                     "API" => $@"{FolderPathBox.Text}\{ItemGroupBox.Text}",
                     "GUI" => $@"{FolderPathBox.Text}\Interface",
+                    "Icons" => $@"{FolderPathBox.Text}\Icons",
                     _ => string.Empty,
                 };
 
@@ -57,6 +59,7 @@ namespace SpriteMaker
                 {
                     "API" => $@"{FolderPathBox.Text}\{ItemGroupBox.Text}",
                     "GUI" => $@"{FolderPathBox.Text}\Interface",
+                    "Icons" => $@"{FolderPathBox.Text}\Icons",
                     _ => string.Empty,
                 };
 
@@ -137,6 +140,16 @@ namespace SpriteMaker
                         ItemGroupBox.Items.Clear();
                         TypeGroupBox.Items.Clear();
                         foreach (var item in Enum.GetValues(typeof(Textures)))
+                        {
+                            TypeGroupBox.Items.Add(item);
+                        }
+                        break;
+                    }
+                case "Icons":
+                    {
+                        ItemGroupBox.Items.Clear();
+                        TypeGroupBox.Items.Clear();
+                        foreach (var item in Enum.GetValues(typeof(Icons)))
                         {
                             TypeGroupBox.Items.Add(item);
                         }

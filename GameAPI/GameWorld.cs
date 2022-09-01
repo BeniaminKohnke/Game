@@ -16,13 +16,11 @@ namespace GameAPI
 
     public class GameWorld
     {
-        private readonly Thread t_update;
         private ConcurrentBag<GameObject> _gameObjects;
         private readonly PositionComparer _comparer = new();
         private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
         public bool IsActive { get; set; } = true;
-        public double DeltaTime { get; set; } = 0f;
 
         public GameWorld()
         {
@@ -58,6 +56,8 @@ namespace GameAPI
             Player.Items.Add(axe);
             Player.Items.Add(pickaxe);
             Player.SelectedItemId = axe.Id;
+            Player.ItemsMenu[0] = axe.Id;
+            Player.ItemsMenu[1] = pickaxe.Id;
 
             _gameObjects = new()
             {
@@ -116,9 +116,6 @@ namespace GameAPI
                     }
                 });
             }
-
-            t_update = new(new ThreadStart(Update));
-            t_update.Start();
         }
 
         public ConcurrentDictionary<Grids, ConcurrentDictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _loader.GetGrids();
@@ -159,9 +156,9 @@ namespace GameAPI
             return objects;
         }
 
-        private void Update()
+        public void Update(float deltaTime)
         {
-            while (IsActive)
+            if (IsActive)
             {
                 var objectsToRemove = new List<uint>();
                 foreach (var go in _gameObjects)
@@ -185,7 +182,7 @@ namespace GameAPI
 
                     if (go.IsActive)
                     {
-                        go.Update(DeltaTime, _loader);
+                        go.Update(deltaTime, _loader);
                     }
                 }
                 HandleCollisions();

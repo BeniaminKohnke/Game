@@ -108,7 +108,7 @@ namespace Game.GUI
             _codeHandler = new(world);
 
             var grid = File
-                .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.CodeEditor}.sm")
+                .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.CodeEditor}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
                 .ToArray();
             if (grid.Length > 0 && grid[0].Length > 0)
@@ -135,7 +135,7 @@ namespace Game.GUI
             };
 
             grid = File
-                .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.Cursor}.sm")
+                .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.Cursor}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
                 .ToArray();
             if (grid.Length > 0 && grid[0].Length > 0)
@@ -145,7 +145,7 @@ namespace Game.GUI
             }
 
             grid = File
-                .ReadAllLines($@"{Interface.TexturesDirectory}\{Textures.CodeEditorMenu}.sm")
+                .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.CodeEditorMenu}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
                 .ToArray();
             if (grid.Length > 0 && grid[0].Length > 0)

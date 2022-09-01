@@ -48,14 +48,14 @@
             this.ItemGroupBox = new System.Windows.Forms.ComboBox();
             this.OptionsBox = new System.Windows.Forms.ComboBox();
             this.ToolsPage = new System.Windows.Forms.TabPage();
+            this.DeleteRowButton = new System.Windows.Forms.Button();
+            this.DeleteColumnButton = new System.Windows.Forms.Button();
             this.InsertRowButton = new System.Windows.Forms.Button();
             this.InsertColumnButton = new System.Windows.Forms.Button();
             this.PixelSizeBox = new System.Windows.Forms.NumericUpDown();
             this.PixelSizeLabel = new System.Windows.Forms.Label();
             this.HeightLabel = new System.Windows.Forms.Label();
             this.WidthLabel = new System.Windows.Forms.Label();
-            this.DeleteColumnButton = new System.Windows.Forms.Button();
-            this.DeleteRowButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.HeightBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthBox)).BeginInit();
             this.ChoiceBox.SuspendLayout();
@@ -266,7 +266,8 @@
             this.OptionsBox.FormattingEnabled = true;
             this.OptionsBox.Items.AddRange(new object[] {
             "API",
-            "GUI"});
+            "GUI",
+            "Icons"});
             this.OptionsBox.Location = new System.Drawing.Point(7, 42);
             this.OptionsBox.Name = "OptionsBox";
             this.OptionsBox.Size = new System.Drawing.Size(206, 23);
@@ -295,6 +296,26 @@
             this.ToolsPage.TabIndex = 1;
             this.ToolsPage.Text = "Tools";
             this.ToolsPage.UseVisualStyleBackColor = true;
+            // 
+            // DeleteRowButton
+            // 
+            this.DeleteRowButton.Location = new System.Drawing.Point(112, 131);
+            this.DeleteRowButton.Name = "DeleteRowButton";
+            this.DeleteRowButton.Size = new System.Drawing.Size(101, 23);
+            this.DeleteRowButton.TabIndex = 32;
+            this.DeleteRowButton.Text = "Delete row";
+            this.DeleteRowButton.UseVisualStyleBackColor = true;
+            this.DeleteRowButton.Click += new System.EventHandler(this.DeleteRowButton_Click);
+            // 
+            // DeleteColumnButton
+            // 
+            this.DeleteColumnButton.Location = new System.Drawing.Point(112, 102);
+            this.DeleteColumnButton.Name = "DeleteColumnButton";
+            this.DeleteColumnButton.Size = new System.Drawing.Size(101, 23);
+            this.DeleteColumnButton.TabIndex = 31;
+            this.DeleteColumnButton.Text = "Delete column";
+            this.DeleteColumnButton.UseVisualStyleBackColor = true;
+            this.DeleteColumnButton.Click += new System.EventHandler(this.DeleteColumnButton_Click);
             // 
             // InsertRowButton
             // 
@@ -360,26 +381,6 @@
             this.WidthLabel.Size = new System.Drawing.Size(42, 15);
             this.WidthLabel.TabIndex = 25;
             this.WidthLabel.Text = "Width:";
-            // 
-            // DeleteColumnButton
-            // 
-            this.DeleteColumnButton.Location = new System.Drawing.Point(112, 102);
-            this.DeleteColumnButton.Name = "DeleteColumnButton";
-            this.DeleteColumnButton.Size = new System.Drawing.Size(101, 23);
-            this.DeleteColumnButton.TabIndex = 31;
-            this.DeleteColumnButton.Text = "Delete column";
-            this.DeleteColumnButton.UseVisualStyleBackColor = true;
-            this.DeleteColumnButton.Click += new System.EventHandler(this.DeleteColumnButton_Click);
-            // 
-            // DeleteRowButton
-            // 
-            this.DeleteRowButton.Location = new System.Drawing.Point(112, 131);
-            this.DeleteRowButton.Name = "DeleteRowButton";
-            this.DeleteRowButton.Size = new System.Drawing.Size(101, 23);
-            this.DeleteRowButton.TabIndex = 32;
-            this.DeleteRowButton.Text = "Delete row";
-            this.DeleteRowButton.UseVisualStyleBackColor = true;
-            this.DeleteRowButton.Click += new System.EventHandler(this.DeleteRowButton_Click);
             // 
             // OptionsMenu
             // 

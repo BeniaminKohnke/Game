@@ -12,19 +12,33 @@ namespace Game.GUI
         CodeEditorMenu,
         EquipmentWindow,
         HealthBar,
+        ItemsBar,
         Cursor,
+        ItemsBarCursor,
+    }
+
+    public enum Icons
+    {
+        Pickaxe,
+        Axe,
     }
 
     public sealed class Interface
     {
-        internal static string TexturesDirectory = $@"{Directory.GetCurrentDirectory()}\Textures\Interface";
+        internal static string _texturesDirectory = $@"{Directory.GetCurrentDirectory()}\Textures\Interface";
+        internal static string _iconsDirectory = $@"{Directory.GetCurrentDirectory()}\Textures\Icons";
         private readonly Dictionary<Textures, Page> _pages;
         private Textures _currentPage = Textures.MainMenu;
-        private readonly Textures[] _postions = new[]
+        private readonly Textures[] _menuPostions = new[]
         {
             Textures.MainMenu,
             Textures.CodeEditor,
             Textures.EquipmentWindow,
+        };
+        private readonly Textures[] _inGameInterfacePositions = new[]
+        {
+            Textures.HealthBar,
+            Textures.ItemsBar,
         };
         private sbyte _cursorIndex = 0; 
         private bool _isMenu = true;
@@ -44,7 +58,7 @@ namespace Game.GUI
                 }
                 else
                 {
-                    _currentPage = (_isMenu = value) ? Textures.MainMenu : Textures.HealthBar;
+                    _currentPage = (_isMenu = value) ? Textures.MainMenu : Textures.Cursor;
                 }
             }
         }
@@ -71,6 +85,7 @@ namespace Game.GUI
                 [Textures.HealthBar] = new HealthBar(font),
                 [Textures.EquipmentWindow] = new Equipment(font),
                 [Textures.CodeEditor] = new CodeEditor(font, world),
+                [Textures.ItemsBar] = new ItemsBar(),
             };
 
             InterfaceHandler = new((sender, e) =>
@@ -103,10 +118,10 @@ namespace Game.GUI
 
                         if (_cursorIndex < 0)
                         {
-                            _cursorIndex = (sbyte)(_postions.Length - 1);
+                            _cursorIndex = (sbyte)(_menuPostions.Length - 1);
                         }
 
-                        _currentPage = _postions[_cursorIndex];
+                        _currentPage = _menuPostions[_cursorIndex];
 
                         if (!_isInsidePage && e.Code == Keyboard.Key.Down)
                         {
@@ -136,9 +151,27 @@ namespace Game.GUI
                 PerformedAction = MenuOptions.None;
             }
 
-            if (_pages.TryGetValue(_currentPage, out var page) || _pages.TryGetValue(Textures.MainMenu, out page))
+            if (_currentPage == Textures.Cursor)
             {
-                page.Draw(window, gameWorld);
+                foreach (var position in _inGameInterfacePositions)
+                {
+                    if (_pages.TryGetValue(position, out var page))
+                    {
+                        page.Draw(window, gameWorld);
+                    }
+                }
+            }
+            else
+            {
+                if (_pages.TryGetValue(_currentPage, out var page))
+                {
+                    page.Draw(window, gameWorld);
+                }
+                else if (_pages.TryGetValue(Textures.MainMenu, out page))
+                {
+                    _currentPage = Textures.MainMenu;
+                    page.Draw(window, gameWorld);
+                }
             }
         }
 
