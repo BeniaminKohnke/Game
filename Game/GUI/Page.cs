@@ -9,6 +9,5 @@ namespace Game.GUI
         internal abstract void Draw(RenderWindow window, GameWorld world);
         internal abstract bool HandleInput(KeyEventArgs args);
         internal abstract void Reset();
-        internal abstract void Release();
     }
 }

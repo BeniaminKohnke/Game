@@ -79,11 +79,6 @@ namespace Game.GUI
             throw new NotImplementedException();
         }
 
-        internal override void Release()
-        {
-            
-        }
-
         internal override void Reset()
         {
             throw new NotImplementedException();

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace GameAPI.DSL
 {
-	public class MovePlayerScript : PlayerScript
+	public class MovePlayer : PlayerScript
 	{
-		public MovePlayerScript()
+		public MovePlayer()
 		{
 		}
 

@@ -8,7 +8,6 @@ namespace GameAPI.DSL
 {
     public class CodeHandler
     {
-        private bool _recompile = false;
         private readonly GameWorld _gameWorld;
         private readonly Thread t_update;
         private readonly ConcurrentDictionary<string, object> _dynamicObjects = new();
@@ -27,11 +26,10 @@ namespace GameAPI.DSL
         };
         public bool AllowRunningScripts { get; set; } = false;
         public bool IsActive { get; set; } = true;
+        public bool RecompileScripts { get; set; } = false;
 
         public CodeHandler(GameWorld gameWorld)
         {
-            CodeBuilder.CompileToCSharp("MovePlayer");
-
             _gameWorld = gameWorld;
             t_update = new(new ThreadStart(Update));
             t_update.Start();
@@ -41,10 +39,11 @@ namespace GameAPI.DSL
         {
             while (IsActive)
             {
-                if (_recompile)
+                if (RecompileScripts)
                 {
                     CompileScripts();
-                    _recompile = false;
+                    RecompileScripts = false;
+                    AllowRunningScripts = false;
                 }
                 if (AllowRunningScripts)
                 {
@@ -99,16 +98,6 @@ namespace GameAPI.DSL
                     }
                 }
             }
-        }
-
-        public void CreateScript(string code)
-        {
-            _recompile = true;
-        }
-
-        public void DeleteScript(string scriptName)
-        {
-
         }
 
         public void AbortScripts()

@@ -1,4 +1,5 @@
 ﻿using GameAPI;
+using GameAPI.DSL;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -7,10 +8,11 @@ namespace Game
 {
     public class Core
     {
-        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], "Thesis", Styles.Fullscreen);
+        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], "Thesis", Styles.Default);
         private readonly View _view;
         private readonly Engine _engine;
         private readonly GameWorld _gameWorld = new();
+        private readonly CodeHandler _codeHandler;
         private readonly Clock _renderClock = new();
         private readonly Clock _logicClock = new();
         private Time _lastRenderTime = Time.Zero;
@@ -18,6 +20,7 @@ namespace Game
 
         public Core()
         {
+            _codeHandler = new(_gameWorld);
             _engine = new(_gameWorld);
             _view = new(new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y), new(240, 144));
             _window.SetView(_view);
@@ -74,6 +77,15 @@ namespace Game
                         case Keyboard.Key.Num0:
                             _gameWorld.Player.SetSelctedItem(10);
                             break;
+                        case Keyboard.Key.F1:
+                            _codeHandler.RecompileScripts = true;
+                            break;
+                        case Keyboard.Key.F2:
+                            _codeHandler.AllowRunningScripts = true;
+                            break;
+                        case Keyboard.Key.F3:
+                            _codeHandler.AbortScripts();
+                            break;
 
                             void EnqueueMovement(Directions direction)
                             {
@@ -90,7 +102,7 @@ namespace Game
 
                 if (e.Code == Keyboard.Key.Tilde)
                 {
-                    _engine.Release();
+                    _codeHandler.IsActive = false;
                     _gameWorld.IsActive = false;
                     _window.Close();
                 }
@@ -123,11 +135,7 @@ namespace Game
             while (_window.IsOpen)
             {
                 var deltaTime = _logicClock.Restart().AsMilliseconds();
-                if (_gameWorld.IsActive)
-                {
-                    _gameWorld.Update(deltaTime);
-                }
-
+                _gameWorld.Update(deltaTime);
                 _window.DispatchEvents();
 
                 _lastRenderTime += _renderClock.Restart();
@@ -144,7 +152,7 @@ namespace Game
 
                 if (_engine.GameInterface.PerformedAction == GUI.MenuOptions.Exit)
                 {
-                    _engine.Release();
+                    _codeHandler.IsActive = false;
                     _gameWorld.IsActive = false;
                     _window.Close();
                 }

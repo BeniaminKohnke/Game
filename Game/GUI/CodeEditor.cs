@@ -12,14 +12,13 @@ namespace Game.GUI
         {
             None,
             Add_Rename,
-            Edit,
-            Save,
             Delete,
-            Compile,
+            Save,
+            Edit,
+            Verify,
         }
 
-        private readonly (Text name, string code)[] _scripts = new (Text, string)[21];
-        private readonly CodeHandler _codeHandler;
+        private readonly (Text name, string code, byte verificationId)[] _scripts = new (Text, string, byte)[21];
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsNormal = new()
         {
             [Keyboard.Key.A] = 'a',
@@ -85,6 +84,7 @@ namespace Game.GUI
         private readonly Sprite _textEditorSprite = new();
         private readonly Sprite _menuSprite = new();
         private readonly Sprite _menuCursorSprite = new();
+        private readonly Sprite[] _verificationIcons = new Sprite[3];
         private readonly Text _currentScriptText = new();
         private readonly Text[] _menuOptions;
         private bool _isMenuActive = false;
@@ -105,8 +105,6 @@ namespace Game.GUI
 
         internal CodeEditor(Font font, GameWorld world)
         {
-            _codeHandler = new(world);
-
             var grid = File
                 .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.CodeEditor}.sm")
                 .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
@@ -115,21 +113,25 @@ namespace Game.GUI
             {
                 _textEditorSprite.Texture = new(Engine.CreateImage(grid));
             }
-            
+
+            var scripts = CodeBuilder.GetExistingScripts();
             for (var i = 0; i < 21; i++)
             {
                 _scripts[i].name = new()
                 {
                     Font = font,
+                    DisplayedString = i == 0 ? "CallOrder" : (scripts.Length > i - 1 ? scripts[i - 1].name : string.Empty),
                     CharacterSize = 100,
                     Scale = new(0.01f, 0.01f),
                 };
+                _scripts[i].verificationId = 2;
+                _scripts[i].code = i == 0 ? string.Join("\n", CodeBuilder.CallOrder) : (scripts.Length > i - 1 ? scripts[i - 1].code : string.Empty);
             }
 
             _currentScriptText = new()
             {
                 Font = font,
-                CharacterSize = 200,
+                CharacterSize = 150,
                 Position = new(34, 11),
                 Scale = new(0.01f, 0.01f),
             };
@@ -151,6 +153,23 @@ namespace Game.GUI
             if (grid.Length > 0 && grid[0].Length > 0)
             {
                 _menuSprite.Texture = new(Engine.CreateImage(grid));
+            }
+
+            var iconsTextures = new[] { Textures.ScriptRejected, Textures.ScriptApproved, Textures.ScriptNotVerified };
+            for (var i = 0; i < _verificationIcons.Length; i++)
+            {
+                grid = File
+                    .ReadAllLines($@"{Interface._texturesDirectory}\{iconsTextures[i]}.sm")
+                    .Select(l => l.Split('\t').Select(p => byte.Parse(p)).ToArray())
+                    .ToArray();
+                if (grid.Length > 0 && grid[0].Length > 0)
+                {
+                    _verificationIcons[i] = new()
+                    {
+                        Position = new(229, 133),
+                        Texture = new(Engine.CreateImage(grid))
+                    };
+                }
             }
 
             var options = new List<Text>();
@@ -179,8 +198,10 @@ namespace Game.GUI
                 window.Draw(_scripts[i].name);
             }
 
-            _currentScriptText.DisplayedString = _scripts[CursorCurrentPosition].code;
+            var (_, code, verificationId) = _scripts[CursorCurrentPosition];
+            _currentScriptText.DisplayedString = code;
             window.Draw(_currentScriptText);
+            window.Draw(_verificationIcons[verificationId]);
 
             if (_isMenuActive)
             {
@@ -190,7 +211,7 @@ namespace Game.GUI
                 _menuCursorSprite.Position = new(_menuSprite.Position.X, _menuSprite.Position.Y + MenuCursorCurrentPosition * 6);
                 window.Draw(_menuCursorSprite);
                 
-                for (var i = 0; i < _menuOptions.Length; i++)
+                for (var i = CursorCurrentPosition == 0 ? 2 : 0; i < _menuOptions.Length; i++)
                 {
                     _menuOptions[i].Position = new(_menuSprite.Position.X + 3, _menuSprite.Position.Y + i * 6 + 2);
                     window.Draw(_menuOptions[i]);
@@ -217,23 +238,38 @@ namespace Game.GUI
                             switch (_menuOptions[MenuCursorCurrentPosition].DisplayedString)
                             {
                                 case "Add_Rename":
-                                    _menuAction = MenuActions.Add_Rename;
-                                    _isMenuActive = false;
+                                    if (CursorCurrentPosition != 0)
+                                    {
+                                        _menuAction = MenuActions.Add_Rename;
+                                        _isMenuActive = false;
+                                    }
                                     break;
                                 case "Edit":
                                     _menuAction = MenuActions.Edit;
                                     _isMenuActive = false;
                                     break;
                                 case "Delete":
-                                    _menuAction = MenuActions.Delete;
-                                    _isMenuActive = false;
+                                    if (CursorCurrentPosition != 0)
+                                    {
+                                        CodeBuilder.DeleteScript(_scripts[CursorCurrentPosition].name.DisplayedString);
+                                        _scripts[CursorCurrentPosition].name.DisplayedString = string.Empty;
+                                        _scripts[CursorCurrentPosition].code = string.Empty;
+                                        _scripts[CursorCurrentPosition].verificationId = 2;
+                                        _isMenuActive = false;
+                                    }
                                     break;
                                 case "Save":
-                                    _menuAction = MenuActions.Save;
-                                    _isMenuActive = false;
+                                    var (name, code, verificationId) = _scripts[CursorCurrentPosition];
+                                    if (verificationId == 1)
+                                    {
+                                        CodeBuilder.SaveScript(name.DisplayedString, code, CursorCurrentPosition == 0);
+                                        _isMenuActive = false;
+                                    }
                                     break;
-                                case "Compile":
-                                    _menuAction = MenuActions.Compile;
+                                case "Verify":
+                                    var script = _scripts[CursorCurrentPosition];
+                                    _scripts[CursorCurrentPosition].verificationId = Convert.ToByte(CodeBuilder.VefifyScript(script.name.DisplayedString, script.code));
+                                    _menuAction = MenuActions.None;
                                     _isMenuActive = false;
                                     break;
                             }
@@ -313,6 +349,7 @@ namespace Game.GUI
                         if (!string.IsNullOrEmpty(text))
                         {
                             _scripts[CursorCurrentPosition].code = new(text.Take(text.Length - 1).ToArray());
+                            _scripts[CursorCurrentPosition].verificationId = 2;
                         }
                     }
                     
@@ -321,6 +358,7 @@ namespace Game.GUI
                         if (_scriptsCharsShift.TryGetValue(args.Code, out var character))
                         { 
                             _scripts[CursorCurrentPosition].code += character;
+                            _scripts[CursorCurrentPosition].verificationId = 2;
                         }
                     }
                     else
@@ -328,46 +366,7 @@ namespace Game.GUI
                         if (_scriptsCharsNormal.TryGetValue(args.Code, out var character))
                         {
                             _scripts[CursorCurrentPosition].code += character;
-                        }
-                    }
-                    break;
-                case MenuActions.Save:
-                    if (args.Code == Keyboard.Key.Escape)
-                    {
-                        _isMenuActive = true;
-                        _menuAction = MenuActions.None;
-                        return true;
-                    }
-                    break;
-                case MenuActions.Delete:
-                    if (args.Code == Keyboard.Key.Escape)
-                    {
-                        _isMenuActive = true;
-                        _menuAction = MenuActions.None;
-                        return true;
-                    }
-
-                    {
-                        var scriptName = _scripts[CursorCurrentPosition].name.DisplayedString;
-                        if (!string.IsNullOrEmpty(scriptName))
-                        {
-                            _codeHandler.DeleteScript(scriptName);
-                        }
-                    }
-                    break;
-                case MenuActions.Compile:
-                    if (args.Code == Keyboard.Key.Escape)
-                    {
-                        _isMenuActive = true;
-                        _menuAction = MenuActions.None;
-                        return true;
-                    }
-
-                    {
-                        var scriptName = _scripts[CursorCurrentPosition].name.DisplayedString;
-                        if (!string.IsNullOrEmpty(scriptName))
-                        {
-                            _codeHandler.DeleteScript(scriptName);
+                            _scripts[CursorCurrentPosition].verificationId = 2;
                         }
                     }
                     break;
@@ -381,11 +380,6 @@ namespace Game.GUI
             CursorCurrentPosition = 0;
             _menuAction = MenuActions.None;
             _isMenuActive = false;
-        }
-
-        internal override void Release()
-        {
-            _codeHandler.IsActive = false;
         }
     }
 }

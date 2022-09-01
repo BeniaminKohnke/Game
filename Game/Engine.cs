@@ -8,7 +8,7 @@ namespace Game
 {
     public class Engine
     {
-        private readonly Font _font = new Font($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
+        private readonly Font _font = new($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
         private readonly ConcurrentDictionary<Grids, ConcurrentDictionary<States, Texture>> _textures = new();
         private readonly ConcurrentDictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
         public Interface GameInterface { get; }
@@ -94,11 +94,6 @@ namespace Game
             }
 
             GameInterface.Draw(window, gameWorld);
-        }
-
-        public void Release()
-        {
-            GameInterface.Release();
         }
 
         internal static Image CreateImage(byte[][] pixels)

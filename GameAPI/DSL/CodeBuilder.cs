@@ -6,12 +6,11 @@ namespace GameAPI.DSL
     {
         public static string[] CallOrder 
         { 
-            get => File.ReadAllLines(CallOrderFilePath).Select(l => l.Replace("()", "Script")).ToArray(); 
+            get => File.ReadAllLines(CallOrderFilePath).Select(l => l.Replace("()", "Script")).ToArray();
+            private set => File.WriteAllLines(CallOrderFilePath, value);
         }
         public static string ScriptsFolderPath { get; } = $@"{Directory.GetCurrentDirectory()}\Scripts";
         public static string CallOrderFilePath { get; } = $@"{Directory.GetCurrentDirectory()}\Scripts\CallOrder.txt";
-        private static string AddToDynamicObjects(string name, string type, string obj, string tabs) =>
-            $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters[{name}] = ({type}, {obj});{"\n"}{tabs}{"}"}";
 
         static CodeBuilder()
         {
@@ -20,22 +19,59 @@ namespace GameAPI.DSL
                 Directory.CreateDirectory(ScriptsFolderPath);
             }
         }
+        private static string AddToDynamicObjects(string name, string type, string obj, string tabs) =>
+            $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters[{name}] = ({type}, {obj});{"\n"}{tabs}{"}"}";
 
-        public static bool CompileToCSharp(string code)
+        public static void SaveScript(string scriptName, string code, bool isCallOrder = false)
         {
-            var scriptName = GetScriptName(code);
+            if (isCallOrder)
+            {
+                CallOrder = code.Split("\n");
+            }
+            else
+            {
+                File.WriteAllText($@"{ScriptsFolderPath}\{scriptName}.gs", code);
+            }
+        }
 
+        public static void DeleteScript(string scriptName)
+        {
+            var path = $@"{ScriptsFolderPath}\{scriptName}.gs";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+        public static bool VefifyScript(string scriptName, string code)
+        {
+            if (scriptName.Equals("CallOrder"))
+            {
+                var scriptsNames = Directory.GetFiles(ScriptsFolderPath).Where(s => s.Contains(".gs")).Select(s => s.Replace($@"{ScriptsFolderPath}\", string.Empty).Replace(".gs", string.Empty));
+                return code.Split("\n").All(l => scriptsNames.Contains(l));
+            }
+
+            return CompileToCSharp(scriptName, code);
+        }
+
+        public static (string name, string code)[] GetExistingScripts() => Directory
+            .GetFiles(ScriptsFolderPath)
+            .Where(s => s.Contains(".gs"))
+            .Select(p => (p.Replace($@"{ScriptsFolderPath}\", string.Empty).Replace(".gs", string.Empty), File.ReadAllText(p)))
+            .ToArray();
+
+        public static bool CompileToCSharp(string scriptName, string code)
+        {
             var builder = new StringBuilder();
-
             builder.AppendLine("using GameAPI;");
             builder.AppendLine("using System;");
             builder.AppendLine("using System.Collections.Concurrent;");
             builder.AppendLine("using System.Collections.Generic;\n");
             builder.AppendLine("namespace GameAPI.DSL");
             builder.AppendLine("{");
-            builder.AppendLine($"\tpublic class {scriptName}Script : PlayerScript");
+            builder.AppendLine($"\tpublic class {scriptName} : PlayerScript");
             builder.AppendLine("\t{");
-            builder.AppendLine($"\t\tpublic {scriptName}Script()");
+            builder.AppendLine($"\t\tpublic {scriptName}()");
             builder.AppendLine("\t\t{");
             builder.AppendLine("\t\t}\n");
 
@@ -62,11 +98,6 @@ namespace GameAPI.DSL
             File.WriteAllText(filePath, builder.ToString());
 
             return true;
-        }
-
-        private static string GetScriptName(string code)
-        {
-            return code;
         }
     }
 }

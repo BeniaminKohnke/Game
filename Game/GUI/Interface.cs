@@ -15,6 +15,9 @@ namespace Game.GUI
         ItemsBar,
         Cursor,
         ItemsBarCursor,
+        ScriptApproved,
+        ScriptRejected,
+        ScriptNotVerified,
     }
 
     public enum Icons
@@ -174,7 +177,5 @@ namespace Game.GUI
                 }
             }
         }
-
-        public void Release() => _pages.ForEach(p => p.Value.Release());
     }
 }

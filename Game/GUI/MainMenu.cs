@@ -112,10 +112,5 @@ namespace Game.GUI
         {
             CursorCurrentPosition = 0;
         }
-
-        internal override void Release()
-        {
-            
-        }
     }
 }
