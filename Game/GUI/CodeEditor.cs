@@ -262,7 +262,7 @@ namespace Game.GUI
                                     var (name, code, verificationId) = _scripts[CursorCurrentPosition];
                                     if (verificationId == 1)
                                     {
-                                        CodeBuilder.SaveScript(name.DisplayedString, code, CursorCurrentPosition == 0);
+                                        CodeBuilder.SaveScript(name.DisplayedString, code);
                                         _isMenuActive = false;
                                     }
                                     break;

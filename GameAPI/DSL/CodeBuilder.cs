@@ -22,9 +22,9 @@ namespace GameAPI.DSL
         private static string AddToDynamicObjects(string name, string type, string obj, string tabs) =>
             $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters[{name}] = ({type}, {obj});{"\n"}{tabs}{"}"}";
 
-        public static void SaveScript(string scriptName, string code, bool isCallOrder = false)
+        public static void SaveScript(string scriptName, string code)
         {
-            if (isCallOrder)
+            if (scriptName.Equals("CallOrder"))
             {
                 CallOrder = code.Split("\n");
             }
