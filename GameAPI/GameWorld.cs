@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace GameAPI
 {
-    public enum GetObjectsOptions
+    public enum GetObjectsOptions : byte
     {
         None = 0,
         FromPlayer = 2,

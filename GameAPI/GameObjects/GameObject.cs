@@ -4,12 +4,12 @@ namespace GameAPI.GameObjects
 {
     public class GameObject : Rectangle
     {
-        private static uint _lastId = 1;
+        private static uint s_lastId = 1;
         protected readonly ConcurrentQueue<Directions> _movement = new();
         protected readonly ConcurrentDictionary<Animations, States[]> _animations = new();
         public Dictionary<ObjectsParameters, object> ObjectParameters { get; set; } = new();
 
-        public uint Id { get; } = _lastId++;
+        public uint Id { get; } = s_lastId++;
         public virtual Grids Grid { get; protected set; }
         public virtual States State { get; protected set; } = States.NoAction1;
         public virtual Types ObjectType { get; protected set; }

@@ -8,7 +8,7 @@ namespace Game.GUI
 {
     internal sealed class CodeEditor : Page
     {
-        private enum MenuActions
+        private enum MenuActions : byte
         {
             None,
             Add_Rename,
@@ -47,9 +47,21 @@ namespace Game.GUI
             [Keyboard.Key.X] = 'x',
             [Keyboard.Key.Y] = 'y',
             [Keyboard.Key.Z] = 'z',
+            [Keyboard.Key.Num0] = '0',
+            [Keyboard.Key.Num1] = '1',
+            [Keyboard.Key.Num2] = '2',
+            [Keyboard.Key.Num3] = '3',
+            [Keyboard.Key.Num4] = '4',
+            [Keyboard.Key.Num5] = '5',
+            [Keyboard.Key.Num6] = '6',
+            [Keyboard.Key.Num7] = '7',
+            [Keyboard.Key.Num8] = '8',
+            [Keyboard.Key.Num9] = '9',
             [Keyboard.Key.Space] = ' ',
             [Keyboard.Key.Enter] = '\n',
             [Keyboard.Key.Tab] = '\t',
+            [Keyboard.Key.LBracket] = '[',
+            [Keyboard.Key.RBracket] = ']',
         };
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsShift = new()
         {
@@ -79,6 +91,8 @@ namespace Game.GUI
             [Keyboard.Key.X] = 'X',
             [Keyboard.Key.Y] = 'Y',
             [Keyboard.Key.Z] = 'Z',
+            [Keyboard.Key.LBracket] = '{',
+            [Keyboard.Key.RBracket] = '}',
         };
         private readonly Sprite _cursorSprite = new();
         private readonly Sprite _textEditorSprite = new();

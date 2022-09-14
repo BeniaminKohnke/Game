@@ -5,7 +5,7 @@ using SFML.Window;
 
 namespace Game.GUI
 {
-    public enum Textures
+    public enum Textures : byte
     {
         MainMenu,
         CodeEditor,
@@ -20,7 +20,7 @@ namespace Game.GUI
         ScriptNotVerified,
     }
 
-    public enum Icons
+    public enum Icons : byte
     {
         Pickaxe,
         Axe,

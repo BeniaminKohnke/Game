@@ -1,6 +1,6 @@
 ﻿namespace GameAPI
 {
-    public enum Types
+    public enum Types : byte
     {
         None,
         Player,
@@ -10,14 +10,14 @@
         Item,
     }
 
-    public enum ItemTypes
+    public enum ItemTypes : byte
     {
         None,
         Mele,
         Ranged,
     }
 
-    public enum Grids
+    public enum Grids : byte
     {
         Player,
         Rock1,
@@ -34,7 +34,7 @@
         ItemWood,
     }
 
-    public enum States
+    public enum States : byte
     {
         NoAction1,
         NoAction2,
@@ -47,14 +47,14 @@
         MovingRight3,
     }
 
-    public enum Animations
+    public enum Animations : byte
     {
         NoAction,
         MovingLeft,
         MovingRight,
     }
 
-    public enum Directions
+    public enum Directions : byte
     {
         None,
         Up,
@@ -63,7 +63,7 @@
         Right,
     }
 
-    public enum ObjectsParameters
+    public enum ObjectsParameters : byte
     {
         None,
         Health,

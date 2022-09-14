@@ -1,9 +1,16 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GameAPI.DSL
 {
     public static class CodeBuilder
     {
+        private static readonly Dictionary<string, byte> _scriptFunctions = typeof(ScriptFunctions)
+            .GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+            .ToDictionary(m => m.Name, p => (byte)p.GetParameters().Length);
+        private static readonly Regex FOR_EACH_Regex = new(@"(\t*)FOR EACH ([a-z][a-zA-Z]+) FROM ([a-z][a-zA-Z]+) REPEAT", RegexOptions.Compiled);
+
         public static string[] CallOrder 
         { 
             get => File.ReadAllLines(CallOrderFilePath).Select(l => l.Replace("()", "Script")).ToArray();
@@ -62,6 +69,21 @@ namespace GameAPI.DSL
 
         public static bool CompileToCSharp(string scriptName, string code)
         {
+            code = code
+                .Replace(" Player ", " gameWorld.Player ")
+                .Replace("SAVE TO", "SAVE_TO")
+                .Replace("FOR SINGLE", "FOR_SINGLE")
+                .Replace("LESS THAN", "LESS_THAN")
+                .Replace("MORE THAN", "MORE_THAN")
+                .Replace("LESS OR EQUAL THAN", "LESS_OR_EQUAL_THAN")
+                .Replace("MORE OR EQUAL THAN", "MORE_OR_EQUAL_THAN");
+
+            
+
+            var isValid = true;
+            var codeWords = code.Split('\n').Select(l => l.Split(' ')).ToArray();
+            var compiledCode = string.Empty;
+
             var builder = new StringBuilder();
             builder.AppendLine("using GameAPI;");
             builder.AppendLine("using System;");
@@ -98,6 +120,21 @@ namespace GameAPI.DSL
             File.WriteAllText(filePath, builder.ToString());
 
             return true;
+            bool Compile()
+            {
+                return false;
+            }
+
+            bool Detect_SAVE_TO()
+            {
+
+                return false;
+            }
+
+            bool Detect_FOR_EACH()
+            {
+                return false;
+            }
         }
     }
 }
