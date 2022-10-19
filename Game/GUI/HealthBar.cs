@@ -29,19 +29,22 @@ namespace Game.GUI
             };
         }
 
-        internal override void Draw(RenderWindow window, GameWorld world)
+        internal override void Draw(RenderWindow window, GameWorld? world)
         {
-            if (!(world.Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health))
+            if (world != null)
             {
-                health = -1;
+                if (!(world.Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health))
+                {
+                    health = -1;
+                }
+
+                _healthValueText.DisplayedString = health.ToString();
+                _healthValueText.Position = new(95 + world.Player.Position.x, 60 + world.Player.Position.y);
+                window.Draw(_healthValueText);
+
+                _healthBarSprite.Position = new(87 + world.Player.Position.x, 58 + world.Player.Position.y);
+                window.Draw(_healthBarSprite);
             }
-
-            _healthValueText.DisplayedString = health.ToString();
-            _healthValueText.Position = new(95 + world.Player.Position.x, 60 + world.Player.Position.y);
-            window.Draw(_healthValueText);
-
-            _healthBarSprite.Position = new(87 + world.Player.Position.x, 58 + world.Player.Position.y);
-            window.Draw(_healthBarSprite);
         }
 
         internal override bool HandleInput(KeyEventArgs args) => throw new Exception("In-game interface cannot handle input");

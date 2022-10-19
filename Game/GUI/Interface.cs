@@ -1,5 +1,4 @@
 ﻿using GameAPI;
-using MoreLinq;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -46,6 +45,8 @@ namespace Game.GUI
         private sbyte _cursorIndex = 0; 
         private bool _isMenu = true;
         private bool _isInsidePage = false;
+        public EventHandler<KeyEventArgs> InterfaceHandler { get; }
+        public int Seed => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu && int.TryParse(mainMenu.Seed, out var seed) ? seed : 0;
         public bool IsMenu 
         { 
             get => _isMenu;
@@ -77,9 +78,7 @@ namespace Game.GUI
             }
         }
 
-        public EventHandler<KeyEventArgs> InterfaceHandler { get; }
-
-        public Interface(GameWorld world)
+        public Interface()
         {
             var font = new Font($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
             _pages = new()
@@ -87,7 +86,7 @@ namespace Game.GUI
                 [Textures.MainMenu] = new MainMenu(font),
                 [Textures.HealthBar] = new HealthBar(font),
                 [Textures.EquipmentWindow] = new Equipment(font),
-                [Textures.CodeEditor] = new CodeEditor(font, world),
+                [Textures.CodeEditor] = new CodeEditor(font),
                 [Textures.ItemsBar] = new ItemsBar(),
             };
 
@@ -145,9 +144,9 @@ namespace Game.GUI
             });
         }
 
-        public void Draw(RenderWindow window, GameWorld gameWorld)
+        public void Draw(RenderWindow window, GameWorld? gameWorld)
         {
-            if (PerformedAction == MenuOptions.Resume)
+            if (PerformedAction == MenuOptions.Resume || PerformedAction == MenuOptions.NewGame)
             {
                 _isInsidePage = false;
                 IsMenu = false;

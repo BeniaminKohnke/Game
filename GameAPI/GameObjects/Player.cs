@@ -15,10 +15,14 @@ namespace GameAPI.GameObjects
             LastDirection = Directions.Right;
         }
 
-        public override void EnqueueMovement(Directions direction)
+        public void IncreaseItemUses()
         {
-            IsMoving = true;
-            base.EnqueueMovement(direction);
+            var item = Items.FirstOrDefault(i => i.Id == SelectedItemId);
+            if (item != null)
+            {
+                item.Uses++;
+                item.IsActive = true;
+            }
         }
 
         public void SetSelctedItem(byte position)
@@ -30,11 +34,11 @@ namespace GameAPI.GameObjects
 
         public void SetItemState(bool isUsed)
         {
-            var item = Items.FirstOrDefault(i => i.Id == SelectedItemId);
-            if (item != null)
-            {
-                item.IsUsed = isUsed;
-            }
+            //var item = Items.FirstOrDefault(i => i.Id == SelectedItemId);
+            //if (item != null)
+            //{
+            //    item.IsUsed = isUsed;
+            //}
         }
 
         public override void Update(double deltaTime, GridLoader loader)

@@ -2,6 +2,37 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Aardvark.Base/5.2.13": {
+        "type": "package",
+        "dependencies": {
+          "Aardvark.Base.Telemetry": "[5.2.13]",
+          "System.Collections.Immutable": "5.0.0",
+          "System.Text.Json": "4.7.2"
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Aardvark.Base.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Aardvark.Base.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "Aardvark.Base.Telemetry/5.2.13": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "coverlet.collector/3.1.0": {
         "type": "package",
         "build": {
@@ -1867,6 +1898,19 @@
           }
         }
       },
+      "System.Text.Json/4.7.2": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/System.Text.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Text.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Text.RegularExpressions/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -1986,6 +2030,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+          "Aardvark.Base": "5.2.13",
           "Microsoft.CodeAnalysis.CSharp": "4.2.0",
           "Microsoft.CodeAnalysis.Common": "4.2.0",
           "morelinq": "3.3.2"
@@ -2000,6 +2045,37 @@
     }
   },
   "libraries": {
+    "Aardvark.Base/5.2.13": {
+      "sha512": "j1nrXv6UXt74xxAfzKWgKsnworBiYD5pa6mM4PrwSEk8sjYuuMzahOpLjzYb4PXwTAZTBaIBATn+YV4dio2JtA==",
+      "type": "package",
+      "path": "aardvark.base/5.2.13",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "aardvark.base.5.2.13.nupkg.sha512",
+        "aardvark.base.nuspec",
+        "lib/netcoreapp3.1/Aardvark.Base.dll",
+        "lib/netcoreapp3.1/Aardvark.Base.pdb",
+        "lib/netcoreapp3.1/Aardvark.Base.xml",
+        "lib/netstandard2.0/Aardvark.Base.dll",
+        "lib/netstandard2.0/Aardvark.Base.pdb",
+        "lib/netstandard2.0/Aardvark.Base.xml"
+      ]
+    },
+    "Aardvark.Base.Telemetry/5.2.13": {
+      "sha512": "DqA7GpGYW+snRehKAhRCoeqHgVpTXej9YGjHRJigp3M1zFZpdC+Dgw4ZwHzNb9aDHxnwpxL7lxB8Q9npZTWXaA==",
+      "type": "package",
+      "path": "aardvark.base.telemetry/5.2.13",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "aardvark.base.telemetry.5.2.13.nupkg.sha512",
+        "aardvark.base.telemetry.nuspec",
+        "lib/netstandard2.0/Aardvark.Base.Telemetry.dll",
+        "lib/netstandard2.0/Aardvark.Base.Telemetry.pdb",
+        "lib/netstandard2.0/Aardvark.Base.Telemetry.xml"
+      ]
+    },
     "coverlet.collector/3.1.0": {
       "sha512": "YzYqSRrjoP5lULBhTDcTOjuM4IDPPi6PhFsl4w8EI4WdZhE6llt7E38Tg4CHyrS+QKwyu1+9OwkdDgluOdoBTw==",
       "type": "package",
@@ -6569,6 +6645,28 @@
         "ref/xamarinwatchos10/_._",
         "system.text.encoding.extensions.4.3.0.nupkg.sha512",
         "system.text.encoding.extensions.nuspec"
+      ]
+    },
+    "System.Text.Json/4.7.2": {
+      "sha512": "TcMd95wcrubm9nHvJEQs70rC0H/8omiSGGpU4FQ/ZA1URIqD4pjmFJh2Mfv1yH1eHgJDWTi2hMDXwTET+zOOyg==",
+      "type": "package",
+      "path": "system.text.json/4.7.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Text.Json.dll",
+        "lib/net461/System.Text.Json.xml",
+        "lib/netcoreapp3.0/System.Text.Json.dll",
+        "lib/netcoreapp3.0/System.Text.Json.xml",
+        "lib/netstandard2.0/System.Text.Json.dll",
+        "lib/netstandard2.0/System.Text.Json.xml",
+        "system.text.json.4.7.2.nupkg.sha512",
+        "system.text.json.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "System.Text.RegularExpressions/4.3.0": {

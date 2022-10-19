@@ -1,5 +1,4 @@
-﻿using Game.GUI;
-using GameAPI;
+﻿using GameAPI;
 using GameAPI.GameObjects;
 using SFML.Graphics;
 using System.Collections.Concurrent;
@@ -11,12 +10,9 @@ namespace Game
         private readonly Font _font = new($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
         private readonly ConcurrentDictionary<Grids, ConcurrentDictionary<States, Texture>> _textures = new();
         private readonly ConcurrentDictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
-        public Interface GameInterface { get; }
 
         public Engine(GameWorld gameWorld)
         {
-            GameInterface = new(gameWorld);
-
             foreach (var type in gameWorld.GetGrids())
             {
                 _textures[type.Key] = new();
@@ -36,64 +32,65 @@ namespace Game
             }));
         }
 
-        public void Draw(RenderWindow window, int drawDistance, GameWorld gameWorld)
+        public void Draw(RenderWindow window, int drawDistance, GameWorld? gameWorld)
         {
+            if (gameWorld != null)
             {
-                if (!(gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health))
                 {
-                    health = 100;
+                    if (!(gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health))
+                    {
+                        health = 100;
+                    }
+
+                    drawDistance = (int)(drawDistance * (health / 100f));
                 }
 
-                drawDistance = (int)(drawDistance * (health / 100f));
+                var gameObjects = gameWorld.GetObjects(GetObjectsOptions.FromPlayer | GetObjectsOptions.AddPlayerItems | GetObjectsOptions.Ordered | GetObjectsOptions.OnlyActive, drawDistance);
+                foreach (var gameObject in gameObjects)
+                {
+                    if (!_gameObjectsSprites.ContainsKey(gameObject.Id))
+                    {
+                        _gameObjectsSprites[gameObject.Id] = (gameObject.State, new()
+                        {
+                            Texture = _textures[gameObject.Grid][gameObject.State],
+                            Position = new(gameObject.Position.x, gameObject.Position.y),
+                        });
+                    }
+
+                    var (state, sprite) = _gameObjectsSprites[gameObject.Id];
+                    if (gameObject.State != state)
+                    {
+                        var texture = _textures[gameObject.Grid][gameObject.State];
+                        state = gameObject.State;
+                        sprite = new()
+                        {
+                            Texture = texture,
+                            Position = new(gameObject.Position.x, gameObject.Position.y),
+                        };
+                        _gameObjectsSprites[gameObject.Id] = (state, sprite);
+                    }
+                    else
+                    {
+                        sprite.Position = new(gameObject.Position.x, gameObject.Position.y);
+                    }
+
+                    if (gameObject is not Player && gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
+                    {
+                        var text = new Text()
+                        {
+                            Font = _font,
+                            DisplayedString = health.ToString(),
+                            Position = new(gameObject.Position.x + (gameObject.SizeX / 2) - 3, gameObject.Position.y + gameObject.SizeY),
+                            CharacterSize = 200,
+                            Scale = new(0.01f, 0.01f),
+                        };
+
+                        window.Draw(text);
+                    }
+
+                    window.Draw(sprite);
+                }
             }
-
-            var gameObjects = gameWorld.GetObjects(GetObjectsOptions.FromPlayer | GetObjectsOptions.AddPlayerItems | GetObjectsOptions.Ordered | GetObjectsOptions.OnlyActive, drawDistance);
-            foreach (var gameObject in gameObjects)
-            {
-                if (!_gameObjectsSprites.ContainsKey(gameObject.Id))
-                {
-                    _gameObjectsSprites[gameObject.Id] = (gameObject.State, new()
-                    {
-                        Texture = _textures[gameObject.Grid][gameObject.State],
-                        Position = new(gameObject.Position.x, gameObject.Position.y),
-                    });
-                }
-
-                var (state, sprite) = _gameObjectsSprites[gameObject.Id];
-                if (gameObject.State != state)
-                {
-                    var texture = _textures[gameObject.Grid][gameObject.State];
-                    state = gameObject.State;
-                    sprite = new()
-                    {
-                        Texture = texture,
-                        Position = new(gameObject.Position.x, gameObject.Position.y),
-                    };
-                    _gameObjectsSprites[gameObject.Id] = (state, sprite);
-                }
-                else
-                {
-                    sprite.Position = new(gameObject.Position.x, gameObject.Position.y);
-                }
-
-                if (gameObject is not Player && gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
-                {
-                    var text = new Text()
-                    {
-                        Font = _font,
-                        DisplayedString = health.ToString(),
-                        Position = new(gameObject.Position.x + (gameObject.SizeX / 2) - 3, gameObject.Position.y + gameObject.SizeY),
-                        CharacterSize = 200,
-                        Scale = new(0.01f, 0.01f),
-                    };
-
-                    window.Draw(text);
-                }
-
-                window.Draw(sprite);
-            }
-
-            GameInterface.Draw(window, gameWorld);
         }
 
         internal static Image CreateImage(byte[][] pixels)

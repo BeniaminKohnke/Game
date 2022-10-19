@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "8yuZd5P9Bo0YBjUdPINuLMfYe/2Phq8ys9KK3oIay6CCI/nQvm8qQzdYcBeeXvbaozJ4cNAvECAxhPc8XN6IKg==",
+  "dgSpecHash": "zCSPTGamV7UV6GwxcLF2z4/pEH0BDLpiW15eTjcVCH71uwT2/Qpv5hp1XJsnx/hNvWFwugUayShX+dYLRkbJDA==",
   "success": true,
   "projectFilePath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameTest\\GameTest.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\benia\\.nuget\\packages\\aardvark.base\\5.2.13\\aardvark.base.5.2.13.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\aardvark.base.telemetry\\5.2.13\\aardvark.base.telemetry.5.2.13.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\microsoft.codeanalysis.common\\4.2.0\\microsoft.codeanalysis.common.4.2.0.nupkg.sha512",
@@ -93,6 +95,7 @@
     "C:\\Users\\benia\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.text.encoding.extensions\\4.3.0\\system.text.encoding.extensions.4.3.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.threading\\4.3.0\\system.threading.4.3.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",

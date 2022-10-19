@@ -31,6 +31,7 @@ namespace GameAPI.DSL
         public CodeHandler(GameWorld gameWorld)
         {
             _gameWorld = gameWorld;
+            ScriptFunctions.GameWorld = _gameWorld;
             t_update = new(new ThreadStart(Update));
             t_update.Start();
         }

@@ -41,41 +41,44 @@ namespace Game.GUI
             _font = font;
         }
 
-        internal override void Draw(RenderWindow window, GameWorld gameWorld)
+        internal override void Draw(RenderWindow window, GameWorld? gameWorld)
         {
-            _equipmentSprite.Position = new(_equipmentPosition.x, _equipmentPosition.y);
-            window.Draw(_equipmentSprite);
-
-            _cursorSprite.Position = new(_cursorPosition.x, _cursorPosition.y + CursorCurrentPosition * 6);
-            window.Draw(_cursorSprite);
-
-            var i = 0;
-            foreach (var group in gameWorld.Player.Items.GroupBy(i => i.Name))
+            if (gameWorld != null)
             {
-                var item = group.First();
-                if (i == _cursorCurrentPosition)
+                _equipmentSprite.Position = new(_equipmentPosition.x, _equipmentPosition.y);
+                window.Draw(_equipmentSprite);
+
+                _cursorSprite.Position = new(_cursorPosition.x, _cursorPosition.y + CursorCurrentPosition * 6);
+                window.Draw(_cursorSprite);
+
+                var i = 0;
+                foreach (var group in gameWorld.Player.Items.GroupBy(i => i.Name))
                 {
-                    var specification = new Text
+                    var item = group.First();
+                    if (i == _cursorCurrentPosition)
                     {
-                        DisplayedString = $"[{item.ItemType}]\n{string.Join("\n", item.ObjectParameters.Select(p => $"{p.Key} : {p.Value}"))}",
-                        Position = new(_cursorPosition.x + 35, _cursorPosition.y),
+                        var specification = new Text
+                        {
+                            DisplayedString = $"[{item.ItemType}]\n{string.Join("\n", item.ObjectParameters.Select(p => $"{p.Key} : {p.Value}"))}",
+                            Position = new(_cursorPosition.x + 35, _cursorPosition.y),
+                            Font = _font,
+                            CharacterSize = 200,
+                            Scale = new(0.01f, 0.01f),
+                        };
+                        window.Draw(specification);
+                    }
+
+                    var text = new Text
+                    {
+                        DisplayedString = $"{item.Name} x {group.Count()}",
+                        Position = new(_cursorPosition.x + 2, _cursorPosition.y + i * 6 + 3),
                         Font = _font,
-                        CharacterSize = 200,
+                        CharacterSize = 120,
                         Scale = new(0.01f, 0.01f),
                     };
-                    window.Draw(specification);
+                    window.Draw(text);
+                    i++;
                 }
-
-                var text = new Text
-                {
-                    DisplayedString = $"{item.Name} x {group.Count()}",
-                    Position = new(_cursorPosition.x + 2, _cursorPosition.y + i * 6 + 3),
-                    Font = _font,
-                    CharacterSize = 120,
-                    Scale = new(0.01f, 0.01f),
-                };
-                window.Draw(text);
-                i++;
             }
         }
 

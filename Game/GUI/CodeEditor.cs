@@ -117,7 +117,7 @@ namespace Game.GUI
         }
         internal string EditedText { get; set; } = string.Empty;
 
-        internal CodeEditor(Font font, GameWorld world)
+        internal CodeEditor(Font font)
         {
             var grid = File
                 .ReadAllLines($@"{Interface._texturesDirectory}\{Textures.CodeEditor}.sm")
@@ -145,9 +145,10 @@ namespace Game.GUI
             _currentScriptText = new()
             {
                 Font = font,
-                CharacterSize = 150,
+                CharacterSize = 125,
                 Position = new(34, 11),
-                Scale = new(0.01f, 0.01f),
+                Scale = new(0.01f, 0.015f),
+                LineSpacing = 1.5f
             };
 
             grid = File
@@ -200,7 +201,7 @@ namespace Game.GUI
             _menuOptions = options.ToArray();
         }
 
-        internal override void Draw(RenderWindow window, GameWorld world)
+        internal override void Draw(RenderWindow window, GameWorld? world)
         {
             window.Draw(_textEditorSprite);
             _cursorSprite.Position = new(2, 13 + CursorCurrentPosition * 6);

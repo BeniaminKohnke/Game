@@ -1,4 +1,5 @@
-﻿using GameAPI;
+﻿using Game.GUI;
+using GameAPI;
 using GameAPI.DSL;
 using SFML.Graphics;
 using SFML.System;
@@ -8,153 +9,181 @@ namespace Game
 {
     public class Core
     {
-        private readonly RenderWindow _window = new(VideoMode.FullscreenModes[1], "Thesis", Styles.Default);
+        private readonly RenderWindow _window = new(VideoMode.DesktopMode, "Thesis", Styles.Default);
+        private readonly Thread t_logicUpdate;
         private readonly View _view;
-        private readonly Engine _engine;
-        private readonly GameWorld _gameWorld = new();
-        private readonly CodeHandler _codeHandler;
+        private readonly Interface _gameInterface = new();
         private readonly Clock _renderClock = new();
         private readonly Clock _logicClock = new();
+        private readonly Time _renderFrameTime = Time.FromSeconds(1.0f / 144.0f);
+        private readonly Time _logicUpdateTime = Time.FromSeconds(1.0f / 60.0f);
         private Time _lastRenderTime = Time.Zero;
-        private Time _renderFrameTime = Time.FromSeconds(1.0f / 144.0f);
+        private Time _lastLogicUpdateTime = Time.Zero;
+        private Keyboard.Key _pressedKey;
+        private Engine? _engine;
+        private GameWorld? _gameWorld;
+        private CodeHandler? _codeHandler;
 
         public Core()
         {
-            _codeHandler = new(_gameWorld);
-            _engine = new(_gameWorld);
-            _view = new(new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y), new(240, 144));
+            _view = new(new(120, 72), new(240, 144));
             _window.SetView(_view);
 
-            _window.KeyPressed += _engine.GameInterface.InterfaceHandler;
+            _window.KeyPressed += _gameInterface.InterfaceHandler;
             _window.KeyPressed += new EventHandler<KeyEventArgs>((sender, e) =>
             {
-                if (!_engine.GameInterface.IsMenu)
+                if (!_gameInterface.IsMenu)
                 {
-                    switch (e.Code)
-                    {
-                        case Keyboard.Key.Up:
-                            EnqueueMovement(Directions.Up);
-                            break;
-                        case Keyboard.Key.Down:
-                            EnqueueMovement(Directions.Down);
-                            break;
-                        case Keyboard.Key.Right:
-                            EnqueueMovement(Directions.Right);
-                            break;
-                        case Keyboard.Key.Left:
-                            EnqueueMovement(Directions.Left);
-                            break;
-                        case Keyboard.Key.Space:
-                            _gameWorld.Player.SetItemState(true);
-                            break;
-                        case Keyboard.Key.Num1:
-                            _gameWorld.Player.SetSelctedItem(1);
-                            break;
-                        case Keyboard.Key.Num2:
-                            _gameWorld.Player.SetSelctedItem(2);
-                            break;
-                        case Keyboard.Key.Num3:
-                            _gameWorld.Player.SetSelctedItem(3);
-                            break;
-                        case Keyboard.Key.Num4:
-                            _gameWorld.Player.SetSelctedItem(4);
-                            break;
-                        case Keyboard.Key.Num5:
-                            _gameWorld.Player.SetSelctedItem(5);
-                            break;
-                        case Keyboard.Key.Num6:
-                            _gameWorld.Player.SetSelctedItem(6);
-                            break;
-                        case Keyboard.Key.Num7:
-                            _gameWorld.Player.SetSelctedItem(7);
-                            break;
-                        case Keyboard.Key.Num8:
-                            _gameWorld.Player.SetSelctedItem(8);
-                            break;
-                        case Keyboard.Key.Num9:
-                            _gameWorld.Player.SetSelctedItem(9);
-                            break;
-                        case Keyboard.Key.Num0:
-                            _gameWorld.Player.SetSelctedItem(10);
-                            break;
-                        case Keyboard.Key.F1:
-                            _codeHandler.RecompileScripts = true;
-                            break;
-                        case Keyboard.Key.F2:
-                            _codeHandler.AllowRunningScripts = true;
-                            break;
-                        case Keyboard.Key.F3:
-                            _codeHandler.AbortScripts();
-                            break;
-
-                            void EnqueueMovement(Directions direction)
-                            {
-                                if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
-                                {
-                                    for (int i = 0; i < movementSpeed; i++)
-                                    {
-                                        _gameWorld.Player.EnqueueMovement(direction);
-                                    }
-                                }
-                            }
-                    }
-                }
-
-                if (e.Code == Keyboard.Key.Tilde)
-                {
-                    _codeHandler.IsActive = false;
-                    _gameWorld.IsActive = false;
-                    _window.Close();
+                    _pressedKey = e.Code;
                 }
             });
 
             _window.KeyReleased += new EventHandler<KeyEventArgs>((sender, e) =>
             {
-                if (!_engine.GameInterface.IsMenu)
+                _pressedKey = Keyboard.Key.Unknown;
+            });
+
+            t_logicUpdate = new Thread(new ThreadStart(() =>
+            {
+                while (_window.IsOpen)
                 {
-                    switch (e.Code)
+                    var deltaTime = _logicClock.Restart();
+                    _lastLogicUpdateTime += deltaTime;
+                    if (_lastLogicUpdateTime >= _logicUpdateTime)
                     {
-                        case Keyboard.Key.Up:
-                        case Keyboard.Key.Down:
-                        case Keyboard.Key.Right:
-                        case Keyboard.Key.Left:
-                            _gameWorld.Player.IsMoving = false;
-                            break;
-                        case Keyboard.Key.Space:
-                            _gameWorld.Player.SetItemState(false);
-                            break;
+                        _lastLogicUpdateTime = Time.Zero;
+                        if (_gameWorld != null)
+                        {
+                            {
+                                switch (_pressedKey)
+                                {
+                                    case Keyboard.Key.Up:
+                                        EnqueueMovement(Directions.Up);
+                                        break;
+                                    case Keyboard.Key.Down:
+                                        EnqueueMovement(Directions.Down);
+                                        break;
+                                    case Keyboard.Key.Right:
+                                        EnqueueMovement(Directions.Right);
+                                        break;
+                                    case Keyboard.Key.Left:
+                                        EnqueueMovement(Directions.Left);
+                                        break;
+                                    case Keyboard.Key.Space:
+                                        _gameWorld.Player.IncreaseItemUses();
+                                        _gameWorld.Player.SetItemState(true);
+                                        break;
+                                    case Keyboard.Key.Num1:
+                                        _gameWorld.Player.SetSelctedItem(1);
+                                        break;
+                                    case Keyboard.Key.Num2:
+                                        _gameWorld.Player.SetSelctedItem(2);
+                                        break;
+                                    case Keyboard.Key.Num3:
+                                        _gameWorld.Player.SetSelctedItem(3);
+                                        break;
+                                    case Keyboard.Key.Num4:
+                                        _gameWorld.Player.SetSelctedItem(4);
+                                        break;
+                                    case Keyboard.Key.Num5:
+                                        _gameWorld.Player.SetSelctedItem(5);
+                                        break;
+                                    case Keyboard.Key.Num6:
+                                        _gameWorld.Player.SetSelctedItem(6);
+                                        break;
+                                    case Keyboard.Key.Num7:
+                                        _gameWorld.Player.SetSelctedItem(7);
+                                        break;
+                                    case Keyboard.Key.Num8:
+                                        _gameWorld.Player.SetSelctedItem(8);
+                                        break;
+                                    case Keyboard.Key.Num9:
+                                        _gameWorld.Player.SetSelctedItem(9);
+                                        break;
+                                    case Keyboard.Key.Num0:
+                                        _gameWorld.Player.SetSelctedItem(10);
+                                        break;
+                                    case Keyboard.Key.F1:
+                                        if (_codeHandler != null)
+                                        {
+                                            _codeHandler.RecompileScripts = true;
+                                        }
+                                        break;
+                                    case Keyboard.Key.F2:
+                                        if (_codeHandler != null)
+                                        {
+                                            _codeHandler.AllowRunningScripts = true;
+                                        }
+                                        break;
+                                    case Keyboard.Key.F3:
+                                        if (_codeHandler != null)
+                                        {
+                                            _codeHandler.AbortScripts();
+                                        }
+                                        break;
+
+                                        void EnqueueMovement(Directions direction)
+                                        {
+                                            if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
+                                            {
+                                                for (var i = 0; i < movementSpeed; i++)
+                                                {
+                                                    _gameWorld.Player.EnqueueMovement(direction);
+                                                    _gameWorld.Player.IsMoving = true;
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                            _gameWorld.Update(_logicUpdateTime.AsSeconds());
+                        }
                     }
                 }
-            });
+            }));
         }
 
         public void Run()
         {
             _renderClock.Restart();
             _logicClock.Restart();
+            t_logicUpdate.Start();
             while (_window.IsOpen)
             {
-                var deltaTime = _logicClock.Restart().AsMilliseconds();
-                _gameWorld.Update(deltaTime);
                 _window.DispatchEvents();
+                switch (_gameInterface.PerformedAction)
+                {
+                    case MenuOptions.Resume:
+                        if (_gameWorld == null)
+                        {
+                            _gameInterface.PerformedAction = MenuOptions.None;
+                        }
+                        break;
+                    case MenuOptions.NewGame:
+                        _gameWorld?.Destroy();
+                        _gameWorld = new(_gameInterface.Seed);
+                        _codeHandler = new(_gameWorld);
+                        _engine = new(_gameWorld);
+                        break;
+                    case MenuOptions.Exit:
+                        if (_codeHandler != null && _gameWorld != null)
+                        {
+                            _codeHandler.IsActive = false;
+                            _gameWorld.IsActive = false;
+                        }
+                        _window.Close();
+                        break;
+                }
 
                 _lastRenderTime += _renderClock.Restart();
                 if (_lastRenderTime >= _renderFrameTime)
                 {
                     _lastRenderTime = Time.Zero;
-
                     _window.Clear();
-                    _view.Center = _engine.GameInterface.IsMenu ? new(120, 72) : new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
+                    _view.Center = _gameInterface.IsMenu || _gameWorld == null ? new(120, 72) : new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
                     _window.SetView(_view);
-                    _engine.Draw(_window, 200, _gameWorld);
+                    _engine?.Draw(_window, 200, _gameWorld);
+                    _gameInterface.Draw(_window, _gameWorld);
                     _window.Display();
-                }
-
-                if (_engine.GameInterface.PerformedAction == GUI.MenuOptions.Exit)
-                {
-                    _codeHandler.IsActive = false;
-                    _gameWorld.IsActive = false;
-                    _window.Close();
                 }
             }
         }

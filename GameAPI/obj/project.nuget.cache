@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "R3lJj0U/GU9BvCPnvIZRsxb56SCzCAAC15oppRqVCqbqgUU8GPkLfJ+biGZ1P5df7bLeVl4lM+7nZJLJOXu1QA==",
+  "dgSpecHash": "FfMdqJM2OhHczp1U0625a+FdTnemZoQ2Y212WotD/63SX6QZhwnDWwI2sfEKqg15WkwsxtO7nlVbu79YYEIBZw==",
   "success": true,
   "projectFilePath": "C:\\Users\\benia\\Documents\\GitHub\\Game\\GameAPI\\GameAPI.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\benia\\.nuget\\packages\\aardvark.base\\5.2.13\\aardvark.base.5.2.13.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\aardvark.base.telemetry\\5.2.13\\aardvark.base.telemetry.5.2.13.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\microsoft.codeanalysis.common\\4.2.0\\microsoft.codeanalysis.common.4.2.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\microsoft.codeanalysis.csharp\\4.2.0\\microsoft.codeanalysis.csharp.4.2.0.nupkg.sha512",
@@ -13,6 +15,7 @@
     "C:\\Users\\benia\\.nuget\\packages\\system.reflection.metadata\\5.0.0\\system.reflection.metadata.5.0.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
+    "C:\\Users\\benia\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\benia\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
   ],
   "logs": []

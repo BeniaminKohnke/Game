@@ -51,24 +51,27 @@ namespace Game.GUI
             }
         }
 
-        internal override void Draw(RenderWindow window, GameWorld world)
+        internal override void Draw(RenderWindow window, GameWorld? world)
         {
-            _itemsBarSprite.Position = new(world.Player.Position.x - 33, 59 + world.Player.Position.y);
-            window.Draw(_itemsBarSprite);
-
-            _cursorSprite.Position = new(_itemsBarSprite.Position.X + world.Player.SelectedPosition * 8 + 1, _itemsBarSprite.Position.Y + 1);
-            window.Draw(_cursorSprite);
-
-            for (var i = 0; i < world.Player.ItemsMenu.Length; i++)
+            if (world != null)
             {
-                var item = world.Player.Items.FirstOrDefault(it => it.Id == world.Player.ItemsMenu[i]);
-                if (item != null)
+                _itemsBarSprite.Position = new(world.Player.Position.x - 33, 59 + world.Player.Position.y);
+                window.Draw(_itemsBarSprite);
+
+                _cursorSprite.Position = new(_itemsBarSprite.Position.X + world.Player.SelectedPosition * 8 + 1, _itemsBarSprite.Position.Y + 1);
+                window.Draw(_cursorSprite);
+
+                for (var i = 0; i < world.Player.ItemsMenu.Length; i++)
                 {
-                    var iconType = _gridsIcons[item.Grid];
-                    if (_iconsSprites.TryGetValue(iconType, out var sprite))
+                    var item = world.Player.Items.FirstOrDefault(it => it.Id == world.Player.ItemsMenu[i]);
+                    if (item != null)
                     {
-                        sprite.Position = new(_itemsBarSprite.Position.X + i * 8 + 2, _itemsBarSprite.Position.Y + 2);
-                        window.Draw(sprite);
+                        var iconType = _gridsIcons[item.Grid];
+                        if (_iconsSprites.TryGetValue(iconType, out var sprite))
+                        {
+                            sprite.Position = new(_itemsBarSprite.Position.X + i * 8 + 2, _itemsBarSprite.Position.Y + 2);
+                            window.Draw(sprite);
+                        }
                     }
                 }
             }

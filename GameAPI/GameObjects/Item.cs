@@ -2,63 +2,48 @@
 {
     public class Item : GameObject
     {
-        private byte _frameCounter = 0;
-        private double _lastChange = 0f;
-
+        private double _lastUpdate = 0f;
         public string Name { get; set; } = string.Empty;
         public byte Uses { get; set; } = 0;
-        public bool IsUsed { get; set; } = false;
         public ItemTypes ItemType { get; set; } = ItemTypes.None;
-
         public Item(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader, x, y, type, grid)
         {
         }
 
         public override void Update(double deltaTime, GridLoader loader)
         {
-            switch (LastDirection)
+            _lastUpdate += deltaTime;
+            if (_lastUpdate >= 0.3f)
             {
-                case Directions.Up:
-                    ChangeState(Animations.MovingRight);
-                    break;
-                case Directions.Down:
-                    ChangeState(Animations.MovingLeft);
-                    break;
-                case Directions.Left:
-                    ChangeState(Animations.MovingLeft);
-                    break;
-                case Directions.Right:
-                    ChangeState(Animations.MovingRight);
-                    break;
+                switch (LastDirection)
+                {
+                    case Directions.Up:
+                        ChangeState(Animations.MovingRight);
+                        break;
+                    case Directions.Down:
+                        ChangeState(Animations.MovingLeft);
+                        break;
+                    case Directions.Left:
+                        ChangeState(Animations.MovingLeft);
+                        break;
+                    case Directions.Right:
+                        ChangeState(Animations.MovingRight);
+                        break;
+                }
+                _lastUpdate = 0f;
             }
 
             void ChangeState(Animations animation)
             {
-                _lastChange += deltaTime;
-                if (_lastChange > 0.3f)
+                if (Uses > 0)
                 {
-                    if (IsUsed)
-                    {
-                        if (TrySetNextState(animation))
-                        {
-                            _frameCounter++;
-                        }
-                    }
-                    else
-                    {
-                        State = States.NoAction1;
-                        _frameCounter = 0;
-                    }
-
                     SetGrid(loader.GetGrid(Grid, State));
-                    _lastChange = 0;
+                    TrySetNextState(animation);
                 }
-            }
-
-            if (_frameCounter == 3)
-            {
-                _frameCounter = 0;
-                Uses++;
+                else
+                {
+                    IsActive = false;
+                }
             }
         }
     }

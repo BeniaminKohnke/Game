@@ -8,6 +8,7 @@ namespace Game.GUI
     public enum MenuOptions
     {
         None,
+        NewGame,
         Resume,
         Options,
         Exit,
@@ -19,6 +20,7 @@ namespace Game.GUI
         private readonly Sprite _menuSprite = new();
         private readonly Text[] _menuOptions;
         private sbyte _cursorCurrentPosition = 0;
+        public string Seed { get; private set; } = string.Empty;
         public sbyte CursorCurrentPosition
         {
             get => _cursorCurrentPosition;
@@ -60,7 +62,7 @@ namespace Game.GUI
             _menuOptions = options.ToArray();
         }
 
-        internal override void Draw(RenderWindow window, GameWorld world)
+        internal override void Draw(RenderWindow window, GameWorld? world)
         {
             window.Draw(_menuSprite);
             _cursorSprite.Position = new(2, 13 + CursorCurrentPosition * 6);
@@ -89,6 +91,10 @@ namespace Game.GUI
             {
                 switch (_menuOptions[CursorCurrentPosition].DisplayedString)
                 {
+                    case "NewGame":
+                        PerformedAction = MenuOptions.NewGame;
+                        Reset();
+                        break;
                     case "Resume":
                         PerformedAction = MenuOptions.Resume;
                         Reset();

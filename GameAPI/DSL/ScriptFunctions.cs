@@ -5,6 +5,7 @@ namespace GameAPI.DSL
     public static class ScriptFunctions
     {
         private static readonly string s_playerNotesFolder = $@"{Directory.GetCurrentDirectory()}\Notes";
+        public static GameWorld? GameWorld { get; set; }
 
         static ScriptFunctions()
         {
@@ -28,13 +29,13 @@ namespace GameAPI.DSL
                 : string.Empty
             : string.Empty;
 
-        public static void Use(Player player, object item)
+        public static void Use(object item)
         {
             if (item is GameObject go)
             {
                 if (go.ObjectType == Types.Item)
                 {
-
+                    //GameWorld?.Player.
                 }
             }
 
@@ -47,6 +48,15 @@ namespace GameAPI.DSL
             {
 
             }
+        }
+
+        public static object DistanceBetween(object first, object second)
+        {
+            if (first is GameObject firstObject && second is GameObject secondObject)
+            {
+                return Math.Sqrt(Math.Pow(firstObject.Position.x - secondObject.Position.x, 2) + Math.Pow(firstObject.Position.y - secondObject.Position.y, 2)); 
+            }
+            return "NaN"; 
         }
 
         public static List<GameObject> ScanArea(GameWorld gameWorld) => gameWorld.GetObjects(GetObjectsOptions.FromPlayer);

@@ -16,33 +16,17 @@ namespace GameAPI
 
     public class GameWorld
     {
+        private (int x, int y) _waypoint = (0, 0);
+        private readonly ushort _generationDistance = 400;
         private ConcurrentBag<GameObject> _gameObjects;
+        private readonly ProceduralGeneration _procedure;
         private readonly PositionComparer _comparer = new();
         private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
         public bool IsActive { get; set; } = true;
 
-        public GameWorld()
+        public GameWorld(int seed)
         {
-            var pickaxe = new Item(_loader, 0, 0, Types.Item, Grids.Pickaxe)
-            {
-                ItemType = ItemTypes.Mele,
-                Name = "Pickaxe",
-                ObjectParameters = new Dictionary<ObjectsParameters, object>
-                {
-                    [ObjectsParameters.ThrustDamage] = (ushort)30,
-                },
-            };
-            var axe = new Item(_loader, 0, 0, Types.Item, Grids.Axe)
-            {
-                ItemType = ItemTypes.Mele,
-                Name = "Axe",
-                ObjectParameters = new Dictionary<ObjectsParameters, object>
-                {
-                    [ObjectsParameters.CuttingDamage] = (ushort)30,
-                }
-            };
-
             Player = new(_loader, 0, 0)
             {
                 ObjectParameters = new()
@@ -51,6 +35,28 @@ namespace GameAPI
                     [ObjectsParameters.Health] = (short)100,
                     [ObjectsParameters.ScanRadius] = 100,
                 }
+            };
+
+            _procedure = new(seed == 0 ? 1000000 : seed);
+            var pickaxe = new Item(_loader, 0, 0, Types.Item, Grids.Pickaxe)
+            {
+                ItemType = ItemTypes.Mele,
+                Name = "Pickaxe",
+                ObjectParameters = new Dictionary<ObjectsParameters, object>
+                {
+                    [ObjectsParameters.ThrustDamage] = (ushort)30,
+                },
+                IsActive = true,
+            };
+            var axe = new Item(_loader, 0, 0, Types.Item, Grids.Axe)
+            {
+                ItemType = ItemTypes.Mele,
+                Name = "Axe",
+                ObjectParameters = new Dictionary<ObjectsParameters, object>
+                {
+                    [ObjectsParameters.CuttingDamage] = (ushort)30,
+                },
+                IsActive = true,
             };
 
             Player.Items.Add(axe);
@@ -64,57 +70,18 @@ namespace GameAPI
                 axe,
                 pickaxe,
                 Player,
-                //new(_loader, 20, 20, Types.Tree, Grids.Tree1),
-                //new(_loader, 40, 40, Types.Tree, Grids.Tree1),
-                new(_loader, -50, -20, Types.Building, Grids.Building1),
-                //new(_loader, 40, -20, Types.Rock, Grids.Rock1),
             };
 
-            var random = new Random();
-            for (int i = 0; i < 30; i++)
+            for (var x = _waypoint.x - _generationDistance; x <= _waypoint.x + _generationDistance; x++)
             {
-                var x = random.Next(-200, 200);
-                var y = random.Next(-200, 200);
-                _gameObjects.Add(new(_loader, x, y, Types.Tree, Grids.Tree1)
+                for (var y = _waypoint.y - _generationDistance; y <= _waypoint.y + _generationDistance; y++)
                 {
-                    ObjectParameters = new()
+                    var go = _procedure.CreateObject(x, y, _loader);
+                    if (go != null)
                     {
-                        [ObjectsParameters.Health] = (short)100,
-                        [ObjectsParameters.ThrustDamageResistance] = (byte)100,
-                        [ObjectsParameters.Loot] = new Item[]
-                        {
-                            new(_loader, x + random.Next(-2, 2), y + random.Next(-2, 2) + 20, Types.Item, Grids.ItemWood)
-                            {
-                                IsActive = false,
-                                IsUsed = false,
-                                Name = "Wood",
-                            }
-                        }
+                        _gameObjects.Add(go);
                     }
-                });
-            }
-
-            for (int i = 0; i < 30; i++)
-            {
-                var x = random.Next(-200, 200);
-                var y = random.Next(-200, 200);
-                _gameObjects.Add(new(_loader, x, y, Types.Rock, Grids.Rock1)
-                {
-                    ObjectParameters = new()
-                    {
-                        [ObjectsParameters.Health] = (short)100,
-                        [ObjectsParameters.CuttingDamageResistance] = (byte)100,
-                        [ObjectsParameters.Loot] = new Item[]
-                        {
-                            new(_loader, x + random.Next(-2, 2), y + random.Next(-2, 2), Types.Item, Grids.ItemRock)
-                            {
-                                IsActive = false,
-                                IsUsed = false,
-                                Name = "Rock",
-                            }
-                        }
-                    }
-                });
+                }
             }
         }
 
@@ -160,6 +127,16 @@ namespace GameAPI
         {
             if (IsActive)
             {
+                var item = Player.Items.FirstOrDefault(i => i.Id == Player.SelectedItemId);
+                if (item != null)
+                {
+                    if (item.Uses >= 3)
+                    {
+                        item.Uses = 0;
+                        HandleItemActions(item, Player.Id);
+                    }
+                }
+
                 var objectsToRemove = new List<uint>();
                 foreach (var go in _gameObjects)
                 {
@@ -186,18 +163,9 @@ namespace GameAPI
                     }
                 }
                 HandleCollisions();
-
-                var item = Player.Items.FirstOrDefault(i => i.Id == Player.SelectedItemId);
-                if (item != null)
-                {
-                    if (item.Uses > 0)
-                    {
-                        item.Uses--;
-                        HandleItemActions(item, Player.Id);
-                    }
-                }
-
                 _gameObjects = new ConcurrentBag<GameObject>(_gameObjects.Where(go => !objectsToRemove.Contains(go.Id)));
+
+                HandleObjectGeneration();
             }
         }
 
@@ -251,9 +219,9 @@ namespace GameAPI
             }
         }
 
-        public void HandleItemActions(Item item, uint usingObjectId)
+        private void HandleItemActions(Item item, uint usingObjectId)
         {
-            if (item != null && item.IsActive && item.IsUsed)
+            if (item != null)
             {
                 switch (item.ItemType)
                 {
@@ -279,7 +247,7 @@ namespace GameAPI
                                                     resistance = 0;
                                                 }
         
-                                                health -= (short)(((100 - resistance) * 0.01f) * damage);
+                                                health -= (short)((100 - resistance) * 0.01f * damage);
                                             }
                                         }
                                     }
@@ -288,8 +256,62 @@ namespace GameAPI
                             break;
                         }
                 }
-        
             }
+        }
+
+        private void HandleObjectGeneration()
+        {
+            var directionX = 0;
+            var directionY = 0;
+
+            if (_waypoint.x + _generationDistance / 2 < Player.Position.x)
+            {
+                directionX = 1;
+            }
+
+            if (_waypoint.x - _generationDistance / 2 > Player.Position.x)
+            {
+                directionX = -1;
+            }
+
+            if (_waypoint.y + _generationDistance / 2 < Player.Position.y)
+            {
+                directionY = 1;
+            }
+
+            if (_waypoint.y - _generationDistance / 2 > Player.Position.y)
+            {
+                directionY = -1;
+            }
+
+            if (directionX != 0 || directionY != 0)
+            {
+                _waypoint = (_waypoint.x + (_generationDistance * directionX / 2), _waypoint.y + (_generationDistance * directionY / 2));
+                _gameObjects = new(_gameObjects.Where(go => _waypoint.x - _generationDistance <= go.Position.x && go.Position.x <= _waypoint.x + _generationDistance
+                                                         && _waypoint.y - _generationDistance <= go.Position.y && go.Position.y <= _waypoint.y + _generationDistance));
+                new Thread(new ThreadStart(() =>
+                {
+                    Parallel.For(_waypoint.x - _generationDistance, _waypoint.x + _generationDistance, (x) =>
+                    {
+                        for (var y = _waypoint.y - _generationDistance; y <= _waypoint.y + _generationDistance; y++)
+                        {
+                            if (!_gameObjects.Any(go => go.Position.x == x && go.Position.y == y))
+                            {
+                                var go = _procedure.CreateObject(x, y, _loader);
+                                if (go != null)
+                                {
+                                    _gameObjects.Add(go);
+                                }
+                            }
+                        }
+                    });
+                })).Start();
+            }
+        }
+
+        public void Destroy()
+        {
+
         }
 
         private class PositionComparer : IComparer<GameObject>
