@@ -49,80 +49,80 @@ namespace Game
                 {
                     var deltaTime = _logicClock.Restart();
                     _lastLogicUpdateTime += deltaTime;
-                    if (_lastLogicUpdateTime >= _logicUpdateTime)
+                    _gameWorld?.Update(deltaTime.AsSeconds());
+                    if (_gameWorld != null)
                     {
-                        _lastLogicUpdateTime = Time.Zero;
-                        if (_gameWorld != null)
                         {
+                            switch (_pressedKey)
                             {
-                                switch (_pressedKey)
-                                {
-                                    case Keyboard.Key.Up:
-                                        EnqueueMovement(Directions.Up);
-                                        break;
-                                    case Keyboard.Key.Down:
-                                        EnqueueMovement(Directions.Down);
-                                        break;
-                                    case Keyboard.Key.Right:
-                                        EnqueueMovement(Directions.Right);
-                                        break;
-                                    case Keyboard.Key.Left:
-                                        EnqueueMovement(Directions.Left);
-                                        break;
-                                    case Keyboard.Key.Space:
-                                        _gameWorld.Player.IncreaseItemUses();
-                                        _gameWorld.Player.SetItemState(true);
-                                        break;
-                                    case Keyboard.Key.Num1:
-                                        _gameWorld.Player.SetSelctedItem(1);
-                                        break;
-                                    case Keyboard.Key.Num2:
-                                        _gameWorld.Player.SetSelctedItem(2);
-                                        break;
-                                    case Keyboard.Key.Num3:
-                                        _gameWorld.Player.SetSelctedItem(3);
-                                        break;
-                                    case Keyboard.Key.Num4:
-                                        _gameWorld.Player.SetSelctedItem(4);
-                                        break;
-                                    case Keyboard.Key.Num5:
-                                        _gameWorld.Player.SetSelctedItem(5);
-                                        break;
-                                    case Keyboard.Key.Num6:
-                                        _gameWorld.Player.SetSelctedItem(6);
-                                        break;
-                                    case Keyboard.Key.Num7:
-                                        _gameWorld.Player.SetSelctedItem(7);
-                                        break;
-                                    case Keyboard.Key.Num8:
-                                        _gameWorld.Player.SetSelctedItem(8);
-                                        break;
-                                    case Keyboard.Key.Num9:
-                                        _gameWorld.Player.SetSelctedItem(9);
-                                        break;
-                                    case Keyboard.Key.Num0:
-                                        _gameWorld.Player.SetSelctedItem(10);
-                                        break;
-                                    case Keyboard.Key.F1:
-                                        if (_codeHandler != null)
-                                        {
-                                            _codeHandler.RecompileScripts = true;
-                                        }
-                                        break;
-                                    case Keyboard.Key.F2:
-                                        if (_codeHandler != null)
-                                        {
-                                            _codeHandler.AllowRunningScripts = true;
-                                        }
-                                        break;
-                                    case Keyboard.Key.F3:
-                                        if (_codeHandler != null)
-                                        {
-                                            _codeHandler.AbortScripts();
-                                        }
-                                        break;
+                                case Keyboard.Key.Up:
+                                    EnqueueMovement(Directions.Up);
+                                    break;
+                                case Keyboard.Key.Down:
+                                    EnqueueMovement(Directions.Down);
+                                    break;
+                                case Keyboard.Key.Right:
+                                    EnqueueMovement(Directions.Right);
+                                    break;
+                                case Keyboard.Key.Left:
+                                    EnqueueMovement(Directions.Left);
+                                    break;
+                                case Keyboard.Key.Space:
+                                    _gameWorld.Player.IncreaseItemUses();
+                                    _gameWorld.Player.SetItemState(true);
+                                    break;
+                                case Keyboard.Key.Num1:
+                                    _gameWorld.Player.SetSelctedItem(1);
+                                    break;
+                                case Keyboard.Key.Num2:
+                                    _gameWorld.Player.SetSelctedItem(2);
+                                    break;
+                                case Keyboard.Key.Num3:
+                                    _gameWorld.Player.SetSelctedItem(3);
+                                    break;
+                                case Keyboard.Key.Num4:
+                                    _gameWorld.Player.SetSelctedItem(4);
+                                    break;
+                                case Keyboard.Key.Num5:
+                                    _gameWorld.Player.SetSelctedItem(5);
+                                    break;
+                                case Keyboard.Key.Num6:
+                                    _gameWorld.Player.SetSelctedItem(6);
+                                    break;
+                                case Keyboard.Key.Num7:
+                                    _gameWorld.Player.SetSelctedItem(7);
+                                    break;
+                                case Keyboard.Key.Num8:
+                                    _gameWorld.Player.SetSelctedItem(8);
+                                    break;
+                                case Keyboard.Key.Num9:
+                                    _gameWorld.Player.SetSelctedItem(9);
+                                    break;
+                                case Keyboard.Key.Num0:
+                                    _gameWorld.Player.SetSelctedItem(10);
+                                    break;
+                                case Keyboard.Key.F1:
+                                    if (_codeHandler != null)
+                                    {
+                                        _codeHandler.RecompileScripts = true;
+                                    }
+                                    break;
+                                case Keyboard.Key.F2:
+                                    if (_codeHandler != null)
+                                    {
+                                        _codeHandler.AllowRunningScripts = true;
+                                    }
+                                    break;
+                                case Keyboard.Key.F3:
+                                    if (_codeHandler != null)
+                                    {
+                                        _codeHandler.AbortScripts();
+                                    }
+                                    break;
 
-                                        void EnqueueMovement(Directions direction)
+                                    void EnqueueMovement(Directions direction)
+                                    {
+                                        if (_lastLogicUpdateTime >= _logicUpdateTime)
                                         {
                                             if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
                                             {
@@ -132,10 +132,10 @@ namespace Game
                                                     _gameWorld.Player.IsMoving = true;
                                                 }
                                             }
+                                            _lastLogicUpdateTime = Time.Zero;
                                         }
-                                }
+                                    }
                             }
-                            _gameWorld.Update(_logicUpdateTime.AsSeconds());
                         }
                     }
                 }

@@ -130,10 +130,10 @@ namespace GameAPI
                 var item = Player.Items.FirstOrDefault(i => i.Id == Player.SelectedItemId);
                 if (item != null)
                 {
-                    if (item.Uses >= 3)
+                    if (item.Uses > 0)
                     {
-                        item.Uses = 0;
                         HandleItemActions(item, Player.Id);
+                        item.Uses = 0;
                     }
                 }
 
