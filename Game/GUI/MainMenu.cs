@@ -20,7 +20,7 @@ namespace Game.GUI
         private readonly Sprite _menuSprite = new();
         private readonly Text[] _menuOptions;
         private sbyte _cursorCurrentPosition = 0;
-        public string Seed { get; private set; } = "200";
+        public string Seed { get; private set; } = "333";
         public sbyte CursorCurrentPosition
         {
             get => _cursorCurrentPosition;

@@ -296,3 +296,5 @@ C:\Users\benia\Documents\GitHub\Game\GameTest\bin\Debug\net6.0\tr\Microsoft.Code
 C:\Users\benia\Documents\GitHub\Game\GameTest\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\benia\Documents\GitHub\Game\GameTest\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\benia\Documents\GitHub\Game\GameTest\bin\Debug\net6.0\MoreLinq.dll
+C:\Users\benia\Documents\GitHub\Game\GameTest\bin\Debug\net6.0\Aardvark.Base.dll
+C:\Users\benia\Documents\GitHub\Game\GameTest\bin\Debug\net6.0\Aardvark.Base.Telemetry.dll

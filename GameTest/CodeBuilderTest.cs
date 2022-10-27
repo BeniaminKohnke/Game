@@ -31,8 +31,8 @@ namespace GameTest
         [TestMethod]
         public void ChangeFunctionsToCSharpMethodsTest()
         { 
-            var code = _prepareCodeToCompilation?.Invoke("DistanceBetween Player myObject");
-            Assert.AreEqual("DistanceBetween(gameWorld.Player,myObject)", _changeFunctionsToCSharpMethods?.Invoke(code ?? string.Empty));
+            var code = _prepareCodeToCompilation?.Invoke("DistanceBetween [Player] [myObject]");
+            Assert.AreEqual("DistanceBetween([Player],[myObject],GameWorld gameWorld,Dictionary<string, object> parameters,float deltaTime)", _changeFunctionsToCSharpMethods?.Invoke(code ?? string.Empty));
         }
 
         [TestMethod]

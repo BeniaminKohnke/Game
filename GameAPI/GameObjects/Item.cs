@@ -2,9 +2,9 @@
 {
     public class Item : GameObject
     {
-        private double _nextStateCounter = 0d;
-        private double _animationTime = 1d;
         private byte _uses = 0;
+        private float _nextStateCounter = 0f;
+        private float _animationTime = 1f;
         public string Name { get; set; } = string.Empty;
         public byte Uses
         {
@@ -13,9 +13,9 @@
             {
                 if (value > _uses)
                 {
-                    if (_animationTime >= 1d)
+                    if (_animationTime >= 1f)
                     {
-                        _animationTime = 0d;
+                        _animationTime = 0f;
                     }
                 }
                 else
@@ -25,17 +25,18 @@
             }
         }
         public ItemTypes ItemType { get; set; } = ItemTypes.None;
+
         public Item(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader, x, y, type, grid)
         {
         }
 
-        public override void Update(double deltaTime, GridLoader loader)
+        public override void Update(float deltaTime, GridLoader loader)
         {
-            if (_animationTime < 1d)
+            if (_animationTime < 1f)
             {
                 _animationTime += deltaTime;
                 _nextStateCounter += deltaTime;
-                if (_nextStateCounter >= 0.25d)
+                if (_nextStateCounter >= 0.25f)
                 {
                     switch (LastDirection)
                     {
@@ -55,18 +56,18 @@
                             ChangeState(Animations.NoAction);
                             break;
                     }
-                    _nextStateCounter = 0d;
+                    _nextStateCounter = 0f;
                 }
 
-                if (_animationTime >= 0.9d)
+                if (_animationTime >= 0.9f)
                 {
                     _uses++;
-                    _animationTime = 1d;
+                    _animationTime = 1f;
                 }
             }
             else
             {
-                _nextStateCounter = 0d;
+                _nextStateCounter = 0f;
                 ChangeState(Animations.NoAction);
             }
 

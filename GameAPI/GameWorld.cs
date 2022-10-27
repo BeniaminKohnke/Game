@@ -1,6 +1,5 @@
 ﻿using GameAPI.GameObjects;
 using MoreLinq;
-using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace GameAPI
@@ -17,8 +16,8 @@ namespace GameAPI
     public class GameWorld
     {
         private (int x, int y) _waypoint = (0, 0);
-        private readonly ushort _generationDistance = 400;
-        private ConcurrentBag<GameObject> _gameObjects;
+        private readonly ushort _generationDistance = 500;
+        private List<GameObject> _gameObjects;
         private readonly ProceduralGeneration _procedure;
         private readonly PositionComparer _comparer = new();
         private readonly GridLoader _loader = new();
@@ -85,7 +84,7 @@ namespace GameAPI
             }
         }
 
-        public ConcurrentDictionary<Grids, ConcurrentDictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _loader.GetGrids();
+        public Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _loader.GetGrids();
 
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
@@ -163,7 +162,7 @@ namespace GameAPI
                     }
                 }
                 HandleCollisions();
-                _gameObjects = new ConcurrentBag<GameObject>(_gameObjects.Where(go => !objectsToRemove.Contains(go.Id)));
+                _gameObjects = new List<GameObject>(_gameObjects.Where(go => !objectsToRemove.Contains(go.Id)));
 
                 HandleObjectGeneration();
             }

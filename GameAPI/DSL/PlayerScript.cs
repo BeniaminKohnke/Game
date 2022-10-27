@@ -1,52 +1,7 @@
-﻿using System.Collections.Concurrent;
-
-namespace GameAPI.DSL
+﻿namespace GameAPI.DSL
 {
-    public abstract class PlayerScript
+    public interface IPlayerScript
     {
-        public bool IsActive { get; private set; }
-        private Thread? t_script;
-
-        protected abstract void Do(GameWorld gameWorld, ConcurrentDictionary<string, object> parameters);
-
-        public void Invoke(GameWorld gameWorld, ConcurrentDictionary<string, object> parameters)
-        {
-            try
-            {
-                IsActive = true;
-                var starter = new ThreadStart(() =>
-                {
-                    try
-                    {
-                        Do(gameWorld, parameters);
-                        IsActive = false;
-                    }
-                    catch
-                    {
-
-                    }
-                });
-
-                t_script = new(starter);
-                t_script.Start();
-            }
-            catch
-            {
-
-            }
-        }
-
-        public void Abort()
-        {
-            try
-            {
-                t_script?.Interrupt();
-                IsActive = false;
-            }
-            catch//(SecurityException e)
-            {
-
-            }
-        }
+        public void Run(GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime);
     }
 }

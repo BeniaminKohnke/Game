@@ -5,7 +5,6 @@ namespace GameAPI.DSL
     public static class ScriptFunctions
     {
         private static readonly string s_playerNotesFolder = $@"{Directory.GetCurrentDirectory()}\Notes";
-        public static GameWorld? GameWorld { get; set; }
 
         static ScriptFunctions()
         {
@@ -15,7 +14,7 @@ namespace GameAPI.DSL
             }
         }
 
-        public static void SaveNote(object name, object content)
+        public static void SaveNote(object name, object content, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
         {
             if (name is string && content is string)
             {
@@ -23,19 +22,19 @@ namespace GameAPI.DSL
             }
         }
 
-        public static string LoadNote(object name) => name is string ?
+        public static string LoadNote(object name, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime) => name is string ?
             File.Exists($@"{s_playerNotesFolder}\{name as string}.txt") ?
                 File.ReadAllText($@"{s_playerNotesFolder}\{name as string}.txt")
                 : string.Empty
             : string.Empty;
 
-        public static void Use(object item)
+        public static void Use(object item, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
         {
             if (item is GameObject go)
             {
                 if (go.ObjectType == Types.Item)
                 {
-                    //GameWorld?.Player.
+                    
                 }
             }
 
@@ -50,7 +49,29 @@ namespace GameAPI.DSL
             }
         }
 
-        public static object DistanceBetween(object first, object second)
+        public static void Move(object direction, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
+        {
+            if (direction is string text)
+            {
+                switch (text)
+                {
+                    case "North":
+                        gameWorld.Player.EnqueueMovement(Directions.Up);
+                        break;
+                    case "South":
+                        gameWorld.Player.EnqueueMovement(Directions.Down);
+                        break;
+                    case "West":
+                        gameWorld.Player.EnqueueMovement(Directions.Left);
+                        break;
+                    case "East":
+                        gameWorld.Player.EnqueueMovement(Directions.Right);
+                        break;
+                }
+            }
+        }
+
+        public static object DistanceBetween(object first, object second, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
         {
             if (first is GameObject firstObject && second is GameObject secondObject)
             {
@@ -59,6 +80,16 @@ namespace GameAPI.DSL
             return "NaN"; 
         }
 
-        public static List<GameObject> ScanArea(GameWorld gameWorld) => gameWorld.GetObjects(GetObjectsOptions.FromPlayer);
+        public static object RangeOf(object gameObject, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
+        {
+            if (gameObject is GameObject go && go.ObjectParameters.TryGetValue(ObjectsParameters.ScanRadius, out var value))
+            {
+                return value;
+            }
+
+            return "NaN";
+        }
+
+        public static object ScanArea(GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime) => gameWorld.GetObjects(GetObjectsOptions.FromPlayer) ?? new List<GameObject>();
     }
 }

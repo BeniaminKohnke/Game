@@ -1,15 +1,14 @@
 ﻿using GameAPI;
 using GameAPI.GameObjects;
 using SFML.Graphics;
-using System.Collections.Concurrent;
 
 namespace Game
 {
     public class Engine
     {
         private readonly Font _font = new($@"{Directory.GetCurrentDirectory()}\Font\PressStart2P-Regular.ttf");
-        private readonly ConcurrentDictionary<Grids, ConcurrentDictionary<States, Texture>> _textures = new();
-        private readonly ConcurrentDictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
+        private readonly Dictionary<Grids, Dictionary<States, Texture>> _textures = new();
+        private readonly Dictionary<uint, (States state, Sprite sprite)> _gameObjectsSprites = new();
 
         public Engine(GameWorld gameWorld)
         {
@@ -25,11 +24,14 @@ namespace Game
                 }
             }
 
-            gameWorld.GetObjects().ForEach(go => _gameObjectsSprites[go.Id] = (go.State, new()
+            foreach (var go in gameWorld.GetObjects())
             {
-                Texture = _textures[go.Grid][go.State],
-                Position = new(go.Position.x, go.Position.y),
-            }));
+                _gameObjectsSprites[go.Id] = (go.State, new()
+                {
+                    Texture = _textures[go.Grid][go.State],
+                    Position = new(go.Position.x, go.Position.y),
+                });
+            }
         }
 
         public void Draw(RenderWindow window, int drawDistance, GameWorld? gameWorld)

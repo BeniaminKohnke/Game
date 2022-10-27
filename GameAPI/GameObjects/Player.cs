@@ -1,13 +1,12 @@
-﻿using System.Collections.Concurrent;
-
-namespace GameAPI.GameObjects
+﻿namespace GameAPI.GameObjects
 {
     public class Player : GameObject
     {
+        private float _movementUpdate = 0f;
         public readonly uint[] ItemsMenu = new uint[10];
         public uint SelectedItemId { get; set; } = 0;
         public byte SelectedPosition { get; set; } = 0;
-        public ConcurrentBag<Item> Items { get; } = new();
+        public List<Item> Items { get; } = new();
         public bool IsMoving { get; set; } = false;
         
         public Player(GridLoader loader, int x, int y) : base(loader, x, y, Types.Player, Grids.Player)
@@ -32,17 +31,18 @@ namespace GameAPI.GameObjects
             SelectedItemId = ItemsMenu[SelectedPosition];
         }
 
-        public void SetItemState(bool isUsed)
+        public override void EnqueueMovement(Directions direction)
         {
-            //var item = Items.FirstOrDefault(i => i.Id == SelectedItemId);
-            //if (item != null)
-            //{
-            //    item.IsUsed = isUsed;
-            //}
+            if (_movementUpdate > 0.02f)
+            {
+                base.EnqueueMovement(direction);
+                _movementUpdate = 0f;
+            }
         }
 
-        public override void Update(double deltaTime, GridLoader loader)
+        public override void Update(float deltaTime, GridLoader loader)
         {
+            _movementUpdate += deltaTime;
             foreach (var item in Items)
             {
                 if (item.IsActive)

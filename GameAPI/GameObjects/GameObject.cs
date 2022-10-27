@@ -1,15 +1,12 @@
-﻿using System.Collections.Concurrent;
-
-namespace GameAPI.GameObjects
+﻿namespace GameAPI.GameObjects
 {
     public class GameObject : Rectangle
     {
         private static uint s_lastId = 1;
-        private readonly long _objectHash;
-        protected readonly ConcurrentQueue<Directions> _movement = new();
-        protected readonly ConcurrentDictionary<Animations, States[]> _animations = new();
-        public Dictionary<ObjectsParameters, object> ObjectParameters { get; set; } = new();
+        protected readonly Queue<Directions> _movement = new();
+        protected readonly Dictionary<Animations, States[]> _animations = new();
         public uint Id { get; } = s_lastId++;
+        public Dictionary<ObjectsParameters, object> ObjectParameters { get; set; } = new();
         public virtual Grids Grid { get; protected set; }
         public virtual States State { get; protected set; } = States.NoAction1;
         public virtual Types ObjectType { get; protected set; }
@@ -43,7 +40,7 @@ namespace GameAPI.GameObjects
             }
         }
 
-        public virtual void Update(double deltaTime, GridLoader loader)
+        public virtual void Update(float deltaTime, GridLoader loader)
         {
 
         }

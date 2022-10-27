@@ -18,6 +18,27 @@
           "GameTest.dll": {}
         }
       },
+      "Aardvark.Base/5.2.13": {
+        "dependencies": {
+          "Aardvark.Base.Telemetry": "5.2.13",
+          "System.Collections.Immutable": "5.0.0",
+          "System.Text.Json": "4.7.2"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Aardvark.Base.dll": {
+            "assemblyVersion": "5.2.0.0",
+            "fileVersion": "5.2.0.0"
+          }
+        }
+      },
+      "Aardvark.Base.Telemetry/5.2.13": {
+        "runtime": {
+          "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
+            "assemblyVersion": "5.2.0.0",
+            "fileVersion": "5.2.0.0"
+          }
+        }
+      },
       "coverlet.collector/3.1.0": {},
       "Microsoft.CodeAnalysis.Analyzers/3.3.3": {},
       "Microsoft.CodeAnalysis.Common/4.2.0": {
@@ -1137,6 +1158,7 @@
           "System.Text.Encoding": "4.3.0"
         }
       },
+      "System.Text.Json/4.7.2": {},
       "System.Text.RegularExpressions/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
@@ -1200,6 +1222,7 @@
       },
       "GameAPI/1.0.0": {
         "dependencies": {
+          "Aardvark.Base": "5.2.13",
           "Microsoft.CodeAnalysis.CSharp": "4.2.0",
           "Microsoft.CodeAnalysis.Common": "4.2.0",
           "morelinq": "3.3.2"
@@ -1215,6 +1238,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Aardvark.Base/5.2.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j1nrXv6UXt74xxAfzKWgKsnworBiYD5pa6mM4PrwSEk8sjYuuMzahOpLjzYb4PXwTAZTBaIBATn+YV4dio2JtA==",
+      "path": "aardvark.base/5.2.13",
+      "hashPath": "aardvark.base.5.2.13.nupkg.sha512"
+    },
+    "Aardvark.Base.Telemetry/5.2.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DqA7GpGYW+snRehKAhRCoeqHgVpTXej9YGjHRJigp3M1zFZpdC+Dgw4ZwHzNb9aDHxnwpxL7lxB8Q9npZTWXaA==",
+      "path": "aardvark.base.telemetry/5.2.13",
+      "hashPath": "aardvark.base.telemetry.5.2.13.nupkg.sha512"
     },
     "coverlet.collector/3.1.0": {
       "type": "package",
@@ -1838,6 +1875,13 @@
       "sha512": "sha512-YVMK0Bt/A43RmwizJoZ22ei2nmrhobgeiYwFzC4YAN+nue8RF6djXDMog0UCn+brerQoYVyaS+ghy9P/MUVcmw==",
       "path": "system.text.encoding.extensions/4.3.0",
       "hashPath": "system.text.encoding.extensions.4.3.0.nupkg.sha512"
+    },
+    "System.Text.Json/4.7.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TcMd95wcrubm9nHvJEQs70rC0H/8omiSGGpU4FQ/ZA1URIqD4pjmFJh2Mfv1yH1eHgJDWTi2hMDXwTET+zOOyg==",
+      "path": "system.text.json/4.7.2",
+      "hashPath": "system.text.json.4.7.2.nupkg.sha512"
     },
     "System.Text.RegularExpressions/4.3.0": {
       "type": "package",
