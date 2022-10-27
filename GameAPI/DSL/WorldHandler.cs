@@ -12,42 +12,43 @@ namespace GameAPI.DSL
         private readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary);
         private readonly MetadataReference[] _references = new[]
         {
-            AssemblyMetadata.CreateFromFile(typeof(string).Assembly.Location).GetReference(),
             MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\GameAPI.dll"),
-            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\mscorlib.dll"),
-            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.dll"),
-            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Core.dll"),
-            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Runtime.dll"),
-            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Collections.dll"),
-            MetadataReference.CreateFromFile($@"{Path.GetDirectoryName(typeof(object).Assembly.Location)}\System.Collections.Concurrent.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\mscorlib.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Core.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Runtime.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Collections.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Collections.Concurrent.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Private.CoreLib.dll"),
         };
-        public GameWorld World { get; set; }
+        public GameWorld? World { get; set; }
         public bool RunScripts { get; set; } = false;
         public bool IsActive { get; set; } = true;
         public bool RecompileScripts { get; set; } = false;
 
-        public WorldHandler(int seed) => World = new(seed);
-
         public void Update(float deltaTime)
         {
-            if (RecompileScripts)
+            if (World != null)
             {
-                CompileScripts();
-                RecompileScripts = false;
-            }
-
-            if (RunScripts)
-            {
-                foreach (var position in CodeBuilder.CallOrder)
+                if (RecompileScripts)
                 {
-                    if (_compilations.TryGetValue(position, out var script))
+                    CompileScripts();
+                    RecompileScripts = false;
+                }
+
+                if (RunScripts)
+                {
+                    foreach (var position in CodeBuilder.CallOrder)
                     {
-                        script.Run(World, _dynamicObjects, deltaTime);
+                        if (_compilations.TryGetValue(position, out var script))
+                        {
+                            script.Run(World, _dynamicObjects, deltaTime);
+                        }
                     }
                 }
-            }
 
-            World.Update(deltaTime);
+                World.Update(deltaTime);
+            }
         }
 
         private void CompileScripts()

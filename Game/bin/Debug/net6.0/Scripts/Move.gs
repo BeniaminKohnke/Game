@@ -1,1 +1,1 @@
-Move [North]
+Move [West]

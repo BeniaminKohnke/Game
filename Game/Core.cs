@@ -18,7 +18,7 @@ namespace Game
         private Time _lastRenderTime = Time.Zero;
         private Keyboard.Key _pressedKey;
         private Engine? _engine;
-        private WorldHandler? _handler;
+        private readonly WorldHandler _handler = new();
 
         public Core()
         {
@@ -50,18 +50,18 @@ namespace Game
                 switch (_gameInterface.PerformedAction)
                 {
                     case MenuOptions.Resume:
-                        if (_handler?.World == null)
+                        if (_handler.World == null)
                         {
                             _gameInterface.PerformedAction = MenuOptions.None;
                         }
                         break;
                     case MenuOptions.NewGame:
-                        _handler?.World?.Destroy();
-                        _handler = new(_gameInterface.Seed);
+                        _handler.World?.Destroy();
+                        _handler.World = new(_gameInterface.Seed);
                         _engine = new(_handler.World);
                         break;
                     case MenuOptions.Exit:
-                        if (_handler != null && _handler.World != null)
+                        if (_handler.World != null)
                         {
                             _handler.IsActive = false;
                             _handler.World.IsActive = false;
@@ -75,10 +75,10 @@ namespace Game
                 {
                     _lastRenderTime = Time.Zero;
                     _window.Clear();
-                    _view.Center = _gameInterface.IsMenu || _handler?.World == null ? new(120, 72) : new(_handler.World.Player.Position.x, _handler.World.Player.Position.y);
+                    _view.Center = _gameInterface.IsMenu || _handler.World == null ? new(120, 72) : new(_handler.World.Player.Position.x, _handler.World.Player.Position.y);
                     _window.SetView(_view);
-                    _engine?.Draw(_window, 200, _handler?.World);
-                    _gameInterface.Draw(_window, _handler?.World);
+                    _engine?.Draw(_window, 200, _handler.World);
+                    _gameInterface.Draw(_window, _handler.World);
                     _window.Display();
                 }
             }
@@ -87,8 +87,8 @@ namespace Game
         public void HandleLogic()
         {
             _window.DispatchEvents();
-            _handler?.Update(_logicClock.Restart().AsSeconds());
-            if (_handler != null)
+            _handler.Update(_logicClock.Restart().AsSeconds());
+            if (_handler.World != null)
             {
                 switch (_pressedKey)
                 {

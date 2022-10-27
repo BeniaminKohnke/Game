@@ -146,6 +146,8 @@ namespace GameAPI.DSL
 
         private static string TranslateToCSharp(string scriptName, string code)
         {
+            code = string.Join('\n', code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()));
+
             code = PrepareCodeToCompilation(code);
             code = ChangeFunctionsToCSharpMethods(code);
             code = TranslateKeywords(code);
@@ -153,6 +155,7 @@ namespace GameAPI.DSL
             code = AddSemicolons(code);
             code = TranslateVariables(code);
             code = TranslateOtherWords(code);
+
             code = code.Replace("\r", string.Empty);
 
             if (string.IsNullOrEmpty(code))
