@@ -146,7 +146,13 @@ namespace Game
                     case Keyboard.Key.F2:
                         if (_handler != null)
                         {
-                            _handler.RunScripts = !_handler.RunScripts;
+                            _handler.RunScripts = true;
+                        }
+                        break;
+                    case Keyboard.Key.F3:
+                        if (_handler != null)
+                        {
+                            _handler.RunScripts = false;
                         }
                         break;
 

@@ -23,6 +23,10 @@ namespace GameAPI.DSL
             ["Mele"] = "ItemTypes.Mele",
             ["Items"] = "gameWorld.Player.Items",
             ["None"] = "new object()",
+            ["North"] = "Directions.Up",
+            ["South"] = "Directions.Down",
+            ["West"] = "Directions.Left",
+            ["East"] = "Directions.Right",
         };
 
         public static string[] CallOrder 

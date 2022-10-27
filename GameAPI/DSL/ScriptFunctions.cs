@@ -51,23 +51,9 @@ namespace GameAPI.DSL
 
         public static void Move(object direction, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
         {
-            if (direction is string text)
+            if (direction is Directions dir)
             {
-                switch (text)
-                {
-                    case "North":
-                        gameWorld.Player.EnqueueMovement(Directions.Up);
-                        break;
-                    case "South":
-                        gameWorld.Player.EnqueueMovement(Directions.Down);
-                        break;
-                    case "West":
-                        gameWorld.Player.EnqueueMovement(Directions.Left);
-                        break;
-                    case "East":
-                        gameWorld.Player.EnqueueMovement(Directions.Right);
-                        break;
-                }
+                gameWorld.Player.EnqueueMovement(dir);
             }
         }
 
