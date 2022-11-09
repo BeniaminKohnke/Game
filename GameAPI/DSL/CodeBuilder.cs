@@ -11,18 +11,21 @@ namespace GameAPI.DSL
             .GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .ToDictionary(m => m.Name, p => (byte)(p.GetParameters().Length - 3));
         private static readonly Regex _variableRegex = new(@"\[([A-Za-z]+)\]");
-        private static readonly Regex _comparationRegex = new(@"([A-Za-z(),.]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.]+)");
-        private static readonly Regex FOR_SINGLE_Regex = new(@"FOR_SINGLE ([A-Za-z\[\]]+) FROM ([A-Za-z\[\]]+) REPEAT", RegexOptions.Compiled);
-        private static readonly Regex SAVE_TO_Regex = new(@"([A-Za-z\)\(,\[\].]+) SAVE_TO \[([A-Za-z\)\(]+)\]");
-        private static readonly Regex IS_Regex = new(@"([A-Za-z\)\(,\[\].]+) IS ([A-Za-z\)\(,\[\]]+)", RegexOptions.Compiled);
+        private static readonly Regex _comparationRegex = new(@"([A-Za-z(),.:'\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\d]+)");
+        private static readonly Regex _textRegex = new(@"\['([\S ]+)'\]");
+        private static readonly Regex _tupleRegex = new(@"\[((?:\d+(?:,\d+)?)+)\]");
+        private static readonly Regex _collectionRegex = new(@"\[(\d+):(\d+)]");
+        private static readonly Regex FOR_SINGLE_Regex = new(@"FOR_SINGLE ([A-Za-z\[\]':\d]+) FROM ([A-Za-z\[\]':\d]+) DO", RegexOptions.Compiled);
+        private static readonly Regex SAVE_TO_Regex = new(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]");
+        private static readonly Regex IS_Regex = new(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled);
         private static readonly Regex IF_Regex = new(@"IF ([\S ]+) THEN", RegexOptions.Compiled);
         private static readonly Dictionary<string, string> _globalVariablesPaths = new()
         {
             ["Player"] = "gameWorld.Player",
             ["Rock"] = "Types.Rock",
-            ["Mele"] = "ItemTypes.Mele",
+            ["Melee"] = "ItemTypes.Melee",
             ["Items"] = "gameWorld.Player.Items",
-            ["None"] = "new object()",
+            ["None"] = "(object)0",
             ["North"] = "Directions.Up",
             ["South"] = "Directions.Down",
             ["West"] = "Directions.Left",
@@ -50,49 +53,72 @@ namespace GameAPI.DSL
 
         public static bool Is(object first, object second)
         {
-            switch (first)
+            if (!first.Equals(second))
             {
-                case GameObject fo:
-                    switch (second)
-                    {
-                        case GameObject so:
-                            return fo.ObjectType == so.ObjectType;
-                        case Types st:
-                            return fo.ObjectType == st;
-                    }
-                    break;
-                case Types ft:
-                    switch (second)
-                    {
-                        case GameObject s:
-                            return ft == s.ObjectType;
-                        case Types st:
-                            return ft == st;
-                    }
-                    break;
-                case double fd:
-                    switch (second)
-                    {
-                        case double sd:
-                            return fd == sd;
-                    }
-                    break;
-                case string fs:
-                    switch (second)
-                    {
-                        case string ss:
-                            return fs.Equals(ss);
-                    }
-                    break;
+                switch (first)
+                {
+                    case Item fi:
+                        switch (second)
+                        {
+                            case Item si:
+                                return fi.ItemType == si.ItemType;
+                            case ItemTypes sit:
+                                return fi.ItemType == sit;
+                            case string ss:
+                                return fi.Name.Equals(ss);
+                        }
+                        break;
+                    case GameObject fo:
+                        switch (second)
+                        {
+                            case GameObject so:
+                                return fo.ObjectType == so.ObjectType;
+                            case Types st:
+                                return fo.ObjectType == st;
+                        }
+                        break;
+                    case Types ft:
+                        switch (second)
+                        {
+                            case GameObject s:
+                                return ft == s.ObjectType;
+                            case Types st:
+                                return ft == st;
+                        }
+                        break;
+                    case double fd:
+                        switch (second)
+                        {
+                            case double sd:
+                                return fd == sd;
+                        }
+                        break;
+                    case ItemTypes fit:
+                        switch (second)
+                        {
+                            case Item si:
+                                return fit == si.ItemType;
+                            case ItemTypes sit:
+                                return fit == sit;
+                        }
+                        break;
+                    case string fs:
+                        switch (second)
+                        {
+                            case string ss:
+                                return fs.Equals(ss);
+                        }
+                        break;
+                }
             }
 
             return false;
         }
 
-        public static bool LessThan(object first, object second) => first is double fd && second is double sd && fd < sd;
-        public static bool MoreThan(object first, object second) => first is double fd && second is double sd && fd > sd;
-        public static bool LessOrEqualThan(object first, object second) => first is double fd && second is double sd && fd <= sd;
-        public static bool MoreOrEqualThan(object first, object second) => first is double fd && second is double sd && fd >= sd;
+        public static bool LessThan(object first, object second) => first is int fd && second is int sd && fd < sd;
+        public static bool MoreThan(object first, object second) => first is int fd && second is int sd && fd > sd;
+        public static bool LessOrEqualThan(object first, object second) => first is int fd && second is int sd && fd <= sd;
+        public static bool MoreOrEqualThan(object first, object second) => first is int fd && second is int sd && fd >= sd;
 
         public static void SaveScript(string scriptName, string code)
         {
@@ -146,7 +172,7 @@ namespace GameAPI.DSL
 
         private static string TranslateToCSharp(string scriptName, string code)
         {
-            code = string.Join('\n', code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()));
+            code = string.Join('\n', code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Where(l => !l.Equals("\r"))) + "\n";
 
             code = PrepareCodeToCompilation(code);
             code = ChangeFunctionsToCSharpMethods(code);
@@ -217,6 +243,42 @@ namespace GameAPI.DSL
                 }
             }
 
+            foreach (var match in _tupleRegex.Matches(code).Cast<Match>())
+            {
+                var numbers = match.Groups[1].Value.Split(',');
+                if (numbers.Length == 1)
+                {
+                    code = code.Replace(match.Value, $"(object){numbers[0]}");
+                }
+                else
+                {
+                    code = code.Replace(match.Value, $"(object)({string.Join(',', numbers)})");
+                }
+            }
+
+            foreach (var match in _tupleRegex.Matches(code).Cast<Match>())
+            {
+                var numbers = match.Groups[1].Value.Split(',');
+                if (numbers.Length == 1)
+                {
+                    code = code.Replace(match.Value, $"(object){numbers[0]}");
+                }
+                else
+                {
+                    code = code.Replace(match.Value, $"(object)({string.Join(',', numbers)})");
+                }
+            }
+
+            foreach (var match in _textRegex.Matches(code).Cast<Match>())
+            {
+                code = code.Replace(match.Value, "(object)" + '\"' + match.Groups[1].Value + '\"');
+            }
+
+            foreach (var match in _collectionRegex.Matches(code).Cast<Match>())
+            {
+                code = code.Replace(match.Value, $"(object)Enumerable.Range({match.Groups[1].Value},{match.Groups[2].Value})");
+            }
+
             return code;
         }
 
@@ -226,7 +288,7 @@ namespace GameAPI.DSL
             for (var i = 0; i < codeLines.Length; i++)
             {
                 var parts = codeLines[i].Split(' ');
-                var index = Array.IndexOf(parts, parts.LastOrDefault(p => char.IsUpper(p[0]) && p.Any(c => char.IsLower(c))));
+                var index = Array.IndexOf(parts, parts.LastOrDefault(p => p.Length > 0 && char.IsUpper(p[0]) && p.Any(c => char.IsLower(c))));
                 while (index != -1)
                 {
                     var functionName = parts[index];
@@ -277,7 +339,10 @@ namespace GameAPI.DSL
                 if (firstGridIndex != secondGridIndex)
                 {
                     codeGrid[firstGridIndex][indexOfTab] = "{";
-                    codeGrid[secondGridIndex][indexOfTab] = string.Empty;
+                    for (var i = firstGridIndex + 1; i <= secondGridIndex; i++)
+                    {
+                        codeGrid[i][indexOfTab] = string.Empty;
+                    }
                     codeGrid[secondGridIndex][^1] = codeGrid[secondGridIndex][^1] + "}";
                 }
                 else
@@ -321,6 +386,8 @@ namespace GameAPI.DSL
                 code = code.Replace(match.Value, $"if( {match.Groups[1].Value} )");
             }
 
+            code = code.Replace("ELSE THEN", "else");
+
             return code;
         }
 
@@ -329,7 +396,7 @@ namespace GameAPI.DSL
             var codeLines = code.Split('\n');
             for (var i = 0; i < codeLines.Length; i++)
             {
-                if (!codeLines[i].Contains("if") && !codeLines[i].Contains("foreach") && codeLines[i].Any(c => char.IsLetter(c)))
+                if (!codeLines[i].Contains("if") && !codeLines[i].Contains("foreach") && !codeLines[i].Contains("else") && codeLines[i].Any(c => char.IsLetter(c)))
                 {
                     if (codeLines[i].Contains('}'))
                     {

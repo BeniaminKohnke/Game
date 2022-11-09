@@ -13,7 +13,7 @@
     public enum ItemTypes : byte
     {
         None,
-        Mele,
+        Melee,
         Ranged,
     }
 
@@ -76,6 +76,7 @@
         CuttingDamageResistance,
         ScanRadius,
         Loot,
+        MeleeRange,
     }
 
     public static class Parameters

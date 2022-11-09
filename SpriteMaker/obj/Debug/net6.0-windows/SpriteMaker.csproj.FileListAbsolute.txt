@@ -116,3 +116,5 @@ C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\runtim
 C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\runtimes\win-x86\native\openal32.dll
 C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\Game.dll
 C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\Game.pdb
+C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\Aardvark.Base.dll
+C:\Users\benia\Documents\GitHub\Game\SpriteMaker\bin\Debug\net6.0-windows\Aardvark.Base.Telemetry.dll

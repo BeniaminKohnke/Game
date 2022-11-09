@@ -33,14 +33,15 @@ namespace GameAPI
                 {
                     [ObjectsParameters.MovementSpeed] = 1,
                     [ObjectsParameters.Health] = (short)100,
-                    [ObjectsParameters.ScanRadius] = 100,
+                    [ObjectsParameters.ScanRadius] = 200,
+                    [ObjectsParameters.MeleeRange] = 5,
                 }
             };
 
             _procedure = new(seed == 0 ? 1000000 : seed);
             var pickaxe = new Item(_loader, 0, 0, Types.Item, Grids.Pickaxe)
             {
-                ItemType = ItemTypes.Mele,
+                ItemType = ItemTypes.Melee,
                 Name = "Pickaxe",
                 ObjectParameters = new Dictionary<ObjectsParameters, object>
                 {
@@ -50,7 +51,7 @@ namespace GameAPI
             };
             var axe = new Item(_loader, 0, 0, Types.Item, Grids.Axe)
             {
-                ItemType = ItemTypes.Mele,
+                ItemType = ItemTypes.Melee,
                 Name = "Axe",
                 ObjectParameters = new Dictionary<ObjectsParameters, object>
                 {
@@ -225,7 +226,7 @@ namespace GameAPI
             {
                 switch (item.ItemType)
                 {
-                    case ItemTypes.Mele:
+                    case ItemTypes.Melee:
                         {
                             foreach (var gameObject in _gameObjects)
                             {

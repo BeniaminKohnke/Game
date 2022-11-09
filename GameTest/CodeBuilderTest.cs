@@ -12,27 +12,27 @@ namespace GameTest
         private readonly Func<string, string>? _prepareCodeToCompilation;
         private readonly Func<string, string>? _changeFunctionsToCSharpMethods;
         private readonly Func<string, string>? _changeTabsToBrackets;
-        private readonly Func<string, string>? _traslateKeywords;
 
         public CodeBuilderTest()
         {
             var methods = typeof(CodeBuilder).GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            _prepareCodeToCompilation = methods?.FirstOrDefault(m => m.Name.Equals("PrepareCodeToCompilation"))?.CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;
-            _changeFunctionsToCSharpMethods = methods?.FirstOrDefault(m => m.Name.Equals("ChangeFunctionsToCSharpMethods"))?.CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;
-            _changeTabsToBrackets = methods?.FirstOrDefault(m => m.Name.Equals("ChangeTabsToBrackets"))?.CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;
-        }
-
-        [TestMethod]
-        public void CompileToCSharpTest()
-        {
-            //CodeBuilder.CompileToCSharp("Test");
+            _prepareCodeToCompilation = methods?.FirstOrDefault(m => m.Name
+                .Equals("PrepareCodeToCompilation"))?
+                .CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;
+            _changeFunctionsToCSharpMethods = methods?.FirstOrDefault(m => m.Name
+                .Equals("ChangeFunctionsToCSharpMethods"))?
+                .CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;
+            _changeTabsToBrackets = methods?.FirstOrDefault(m => m.Name
+                .Equals("ChangeTabsToBrackets"))?
+                .CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;
         }
 
         [TestMethod]
         public void ChangeFunctionsToCSharpMethodsTest()
         { 
             var code = _prepareCodeToCompilation?.Invoke("DistanceBetween [Player] [myObject]");
-            Assert.AreEqual("DistanceBetween([Player],[myObject],GameWorld gameWorld,Dictionary<string, object> parameters,float deltaTime)", _changeFunctionsToCSharpMethods?.Invoke(code ?? string.Empty));
+            Assert.AreEqual("DistanceBetween([Player],[myObject],GameWorld gameWorld,Dictionary<string, object> parameters,float deltaTime)", 
+                _changeFunctionsToCSharpMethods?.Invoke(code ?? string.Empty));
         }
 
         [TestMethod]
@@ -40,12 +40,6 @@ namespace GameTest
         {
             var code = "FOR_EACH LINE IN LINES\n\t";
             Assert.AreEqual("FOR_EACH LINE IN LINES\n{}", _changeTabsToBrackets?.Invoke(code));
-        }
-
-        [TestMethod]
-        public void TranslateKeywordsTest()
-        {
-            //var code = 
         }
     }
 }
