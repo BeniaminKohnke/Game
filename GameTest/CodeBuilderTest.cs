@@ -15,7 +15,7 @@ namespace GameTest
 
         public CodeBuilderTest()
         {
-            var methods = typeof(CodeBuilder).GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            var methods = typeof(ScriptBuilder).GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
             _prepareCodeToCompilation = methods?.FirstOrDefault(m => m.Name
                 .Equals("PrepareCodeToCompilation"))?
                 .CreateDelegate(typeof(Func<string, string>)) as Func<string, string>;

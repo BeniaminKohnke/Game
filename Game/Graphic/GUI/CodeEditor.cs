@@ -128,7 +128,7 @@ namespace Game.Graphic.GUI
                 _textEditorSprite.Texture = new(Engine.CreateImage(grid));
             }
 
-            var scripts = CodeBuilder.GetExistingScripts();
+            var scripts = ScriptBuilder.GetExistingScripts();
             for (var i = 0; i < 21; i++)
             {
                 _scripts[i].name = new()
@@ -139,7 +139,7 @@ namespace Game.Graphic.GUI
                     Scale = new(0.01f, 0.01f),
                 };
                 _scripts[i].verificationId = 2;
-                _scripts[i].code = i == 0 ? string.Join("\n", CodeBuilder.CallOrder) : scripts.Length > i - 1 ? scripts[i - 1].code : string.Empty;
+                _scripts[i].code = i == 0 ? string.Join("\n", ScriptBuilder.CallOrder) : scripts.Length > i - 1 ? scripts[i - 1].script : string.Empty;
             }
 
             _currentScriptText = new()
@@ -266,7 +266,7 @@ namespace Game.Graphic.GUI
                                 case "Delete":
                                     if (CursorCurrentPosition != 0)
                                     {
-                                        CodeBuilder.DeleteScript(_scripts[CursorCurrentPosition].name.DisplayedString);
+                                        ScriptBuilder.DeleteScript(_scripts[CursorCurrentPosition].name.DisplayedString);
                                         _scripts[CursorCurrentPosition].name.DisplayedString = string.Empty;
                                         _scripts[CursorCurrentPosition].code = string.Empty;
                                         _scripts[CursorCurrentPosition].verificationId = 2;
@@ -275,12 +275,12 @@ namespace Game.Graphic.GUI
                                     break;
                                 case "Save":
                                     var (name, code, _) = _scripts[CursorCurrentPosition];
-                                    CodeBuilder.SaveScript(name.DisplayedString, code);
+                                    ScriptBuilder.SaveScript(name.DisplayedString, code);
                                     _isMenuActive = false;
                                     break;
                                 case "Compile":
                                     var script = _scripts[CursorCurrentPosition];
-                                    _scripts[CursorCurrentPosition].verificationId = Convert.ToByte(CodeBuilder.CompileScript(script.name.DisplayedString, script.code));
+                                    _scripts[CursorCurrentPosition].verificationId = Convert.ToByte(ScriptBuilder.CompileScript(script.name.DisplayedString, script.code));
                                     _menuAction = MenuActions.None;
                                     _isMenuActive = false;
                                     break;

@@ -18,8 +18,9 @@ namespace Game
         private readonly Time _renderFrameTime = Time.FromSeconds(1.0f / 144.0f);
         private Time _lastRenderTime = Time.Zero;
         private Keyboard.Key _pressedKey;
+        private GameWorld? _gameWorld;
         private Engine? _engine;
-        private readonly WorldHandler _handler = new();
+        private readonly ScriptHandler _handler = new();
 
         public Core()
         {
@@ -51,21 +52,21 @@ namespace Game
                 switch (_gameInterface.PerformedAction)
                 {
                     case MenuOptions.Resume:
-                        if (_handler.World == null)
+                        if (_gameWorld == null)
                         {
                             _gameInterface.PerformedAction = MenuOptions.None;
                         }
                         break;
                     case MenuOptions.NewGame:
-                        _handler.World?.Destroy();
-                        _handler.World = new(_gameInterface.Seed);
-                        _engine = new(_handler.World);
+                        _gameWorld?.Destroy();
+                        _gameWorld = new(_gameInterface.Seed);
+                        _engine = new(_gameWorld);
                         break;
                     case MenuOptions.Exit:
-                        if (_handler.World != null)
+                        if (_gameWorld != null)
                         {
                             _handler.IsActive = false;
-                            _handler.World.IsActive = false;
+                            _gameWorld.IsActive = false;
                         }
                         _window.Close();
                         break;
@@ -76,10 +77,10 @@ namespace Game
                 {
                     _lastRenderTime = Time.Zero;
                     _window.Clear();
-                    _view.Center = _gameInterface.IsMenu || _handler.World == null ? new(120, 72) : new(_handler.World.Player.Position.x, _handler.World.Player.Position.y);
+                    _view.Center = _gameInterface.IsMenu || _gameWorld == null ? new(120, 72) : new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
                     _window.SetView(_view);
-                    _engine?.Draw(_window, 200, _handler.World);
-                    _gameInterface.Draw(_window, _handler.World);
+                    _engine?.Draw(_window, 200, _gameWorld);
+                    _gameInterface.Draw(_window, _gameWorld);
                     _window.Display();
                 }
             }
@@ -88,9 +89,11 @@ namespace Game
         public void HandleLogic()
         {
             _window.DispatchEvents();
-            _handler.Update(_logicClock.Restart().AsSeconds());
-            if (_handler.World != null)
+            var deltaTime = _logicClock.Restart().AsSeconds();
+            if (_gameWorld != null)
             {
+                _handler.Update(_gameWorld, deltaTime);
+                _gameWorld.Update(deltaTime);
                 switch (_pressedKey)
                 {
                     case Keyboard.Key.Up:
@@ -106,37 +109,37 @@ namespace Game
                         EnqueueMovement(Directions.Left);
                         break;
                     case Keyboard.Key.Space:
-                        _handler.World.Player.IncreaseItemUses();
+                        _gameWorld.Player.IncreaseItemUses();
                         break;
                     case Keyboard.Key.Num1:
-                        _handler.World.Player.SetSelctedItem(1);
+                        _gameWorld.Player.SetSelctedItem(1);
                         break;
                     case Keyboard.Key.Num2:
-                        _handler.World.Player.SetSelctedItem(2);
+                        _gameWorld.Player.SetSelctedItem(2);
                         break;
                     case Keyboard.Key.Num3:
-                        _handler.World.Player.SetSelctedItem(3);
+                        _gameWorld.Player.SetSelctedItem(3);
                         break;
                     case Keyboard.Key.Num4:
-                        _handler.World.Player.SetSelctedItem(4);
+                        _gameWorld.Player.SetSelctedItem(4);
                         break;
                     case Keyboard.Key.Num5:
-                        _handler.World.Player.SetSelctedItem(5);
+                        _gameWorld.Player.SetSelctedItem(5);
                         break;
                     case Keyboard.Key.Num6:
-                        _handler.World.Player.SetSelctedItem(6);
+                        _gameWorld.Player.SetSelctedItem(6);
                         break;
                     case Keyboard.Key.Num7:
-                        _handler.World.Player.SetSelctedItem(7);
+                        _gameWorld.Player.SetSelctedItem(7);
                         break;
                     case Keyboard.Key.Num8:
-                        _handler.World.Player.SetSelctedItem(8);
+                        _gameWorld.Player.SetSelctedItem(8);
                         break;
                     case Keyboard.Key.Num9:
-                        _handler.World.Player.SetSelctedItem(9);
+                        _gameWorld.Player.SetSelctedItem(9);
                         break;
                     case Keyboard.Key.Num0:
-                        _handler.World.Player.SetSelctedItem(10);
+                        _gameWorld.Player.SetSelctedItem(10);
                         break;
                     case Keyboard.Key.F1:
                         if (_handler != null)
@@ -159,12 +162,12 @@ namespace Game
 
                         void EnqueueMovement(Directions direction)
                         {
-                            if (_handler.World.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
+                            if (_gameWorld.Player.ObjectParameters.TryGetValue(ObjectsParameters.MovementSpeed, out var value) && value is int movementSpeed)
                             {
                                 for (var i = 0; i < movementSpeed; i++)
                                 {
-                                    _handler.World.Player.EnqueueMovement(direction);
-                                    _handler.World.Player.IsMoving = true;
+                                    _gameWorld.Player.EnqueueMovement(direction);
+                                    _gameWorld.Player.IsMoving = true;
                                 }
                             }
                         }
