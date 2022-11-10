@@ -65,13 +65,13 @@ namespace GameAPI.DSL
 
                 if (Math.Abs(x) > Math.Abs(y))
                 {
-                    return x > 0 ? Directions.Right : Directions.Left;
+                    return x > 0 ? Directions.East : Directions.West;
                 }
                 else
                 {
                     if (y != 0)
                     {
-                        return y > 0 ? Directions.Down : Directions.Up;
+                        return y > 0 ? Directions.South : Directions.North;
                     }
                 }
             }

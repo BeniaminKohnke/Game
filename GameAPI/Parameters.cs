@@ -57,10 +57,10 @@
     public enum Directions : byte
     {
         None,
-        Up,
-        Down,
-        Left,
-        Right,
+        North,
+        South,
+        West,
+        East,
     }
 
     public enum ObjectsParameters : byte

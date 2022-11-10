@@ -49,28 +49,7 @@ namespace Game
             while (_window.IsOpen)
             {
                 HandleLogic();
-                switch (_gameInterface.PerformedAction)
-                {
-                    case MenuOptions.Resume:
-                        if (_gameWorld == null)
-                        {
-                            _gameInterface.PerformedAction = MenuOptions.None;
-                        }
-                        break;
-                    case MenuOptions.NewGame:
-                        _gameWorld?.Destroy();
-                        _gameWorld = new(_gameInterface.Seed);
-                        _engine = new(_gameWorld);
-                        break;
-                    case MenuOptions.Exit:
-                        if (_gameWorld != null)
-                        {
-                            _handler.IsActive = false;
-                            _gameWorld.IsActive = false;
-                        }
-                        _window.Close();
-                        break;
-                }
+                HandleInterface();
 
                 _lastRenderTime += _renderClock.Restart();
                 if (_lastRenderTime >= _renderFrameTime)
@@ -86,6 +65,32 @@ namespace Game
             }
         }
 
+        public void HandleInterface()
+        {
+            switch (_gameInterface.PerformedAction)
+            {
+                case MenuOptions.Resume:
+                    if (_gameWorld == null)
+                    {
+                        _gameInterface.PerformedAction = MenuOptions.None;
+                    }
+                    break;
+                case MenuOptions.NewGame:
+                    _gameWorld?.Destroy();
+                    _gameWorld = new(_gameInterface.Seed);
+                    _engine = new(_gameWorld);
+                    break;
+                case MenuOptions.Exit:
+                    if (_gameWorld != null)
+                    {
+                        _handler.IsActive = false;
+                        _gameWorld.IsActive = false;
+                    }
+                    _window.Close();
+                    break;
+            }
+        }
+
         public void HandleLogic()
         {
             _window.DispatchEvents();
@@ -97,16 +102,16 @@ namespace Game
                 switch (_pressedKey)
                 {
                     case Keyboard.Key.Up:
-                        EnqueueMovement(Directions.Up);
+                        EnqueueMovement(Directions.North);
                         break;
                     case Keyboard.Key.Down:
-                        EnqueueMovement(Directions.Down);
+                        EnqueueMovement(Directions.South);
                         break;
                     case Keyboard.Key.Right:
-                        EnqueueMovement(Directions.Right);
+                        EnqueueMovement(Directions.East);
                         break;
                     case Keyboard.Key.Left:
-                        EnqueueMovement(Directions.Left);
+                        EnqueueMovement(Directions.West);
                         break;
                     case Keyboard.Key.Space:
                         _gameWorld.Player.IncreaseItemUses();

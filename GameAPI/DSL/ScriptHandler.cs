@@ -18,7 +18,7 @@ namespace GameAPI.DSL
             {
                 foreach (var dllFilePath in Directory.GetFiles(ScriptBuilder.ScriptsFolderPath).Where(f => f.Contains(".dll")))
                 {
-                    var dll = Assembly.LoadFile(dllFilePath);
+                    var dll = Assembly.Load(File.ReadAllBytes(dllFilePath));
                     foreach (var position in ScriptBuilder.CallOrder)
                     {
                         var script = dll.GetExportedTypes().FirstOrDefault(t => t.Name.Equals(position));

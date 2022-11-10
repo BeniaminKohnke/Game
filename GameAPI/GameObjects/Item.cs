@@ -40,16 +40,16 @@
                 {
                     switch (LastDirection)
                     {
-                        case Directions.Up:
+                        case Directions.North:
                             ChangeState(Animations.MovingRight);
                             break;
-                        case Directions.Down:
+                        case Directions.South:
                             ChangeState(Animations.MovingLeft);
                             break;
-                        case Directions.Left:
+                        case Directions.West:
                             ChangeState(Animations.MovingLeft);
                             break;
-                        case Directions.Right:
+                        case Directions.East:
                             ChangeState(Animations.MovingRight);
                             break;
                         case Directions.None:

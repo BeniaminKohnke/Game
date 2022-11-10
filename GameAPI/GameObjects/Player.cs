@@ -11,7 +11,7 @@
         
         public Player(GridLoader loader, int x, int y) : base(loader, x, y, Types.Player, Grids.Player)
         {
-            LastDirection = Directions.Right;
+            LastDirection = Directions.East;
         }
 
         public void IncreaseItemUses()
@@ -56,16 +56,16 @@
             {
                 switch (LastDirection)
                 {
-                    case Directions.Up:
+                    case Directions.North:
                         ResetState(Animations.MovingRight, 2);
                         break;
-                    case Directions.Down:
+                    case Directions.South:
                         ResetState(Animations.MovingLeft, 2);
                         break;
-                    case Directions.Left:
+                    case Directions.West:
                         ResetState(Animations.MovingLeft, 2);
                         break;
-                    case Directions.Right:
+                    case Directions.East:
                         ResetState(Animations.MovingRight, 2);
                         break;
                 }

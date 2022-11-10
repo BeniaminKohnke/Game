@@ -55,21 +55,21 @@
                 var lastDirection = Directions.None;
                 switch (direction)
                 {
-                    case Directions.Up:
+                    case Directions.North:
                         changeAnimation = TrySetNextState(Animations.MovingRight);
-                        lastDirection = Directions.Up;
+                        lastDirection = Directions.North;
                         break;
-                    case Directions.Down:
+                    case Directions.South:
                         changeAnimation = TrySetNextState(Animations.MovingLeft);
-                        lastDirection = Directions.Down;
+                        lastDirection = Directions.South;
                         break;
-                    case Directions.Left:
+                    case Directions.West:
                         changeAnimation = TrySetNextState(Animations.MovingLeft);
-                        lastDirection = Directions.Left;
+                        lastDirection = Directions.West;
                         break;
-                    case Directions.Right:
+                    case Directions.East:
                         changeAnimation = TrySetNextState(Animations.MovingRight);
-                        lastDirection = Directions.Right;
+                        lastDirection = Directions.East;
                         break;
                 }
 

@@ -10,12 +10,14 @@ namespace Game.Graphic
         {
             None = 0,
             Rain = 1,
+            Snow = 2,
         }
 
         private (int x, int y) _waypoint = (0,0);
+        private readonly int _scale = 2;
         private readonly ushort _generationDistance = 500;
         private readonly Clock _clock = new();
-        private readonly Time _drawTime = Time.FromSeconds(1.0f / 5f);
+        private readonly Time _drawTime = Time.FromSeconds(1.0f / 4f);
         private Time _lastDraw = Time.Zero;
         private byte _frame = 0;
         private FilterType _type = FilterType.None;
@@ -26,6 +28,12 @@ namespace Game.Graphic
             {
                 new [] { (byte)3 },
                 new [] { (byte)3 },
+            }),
+            [FilterType.Snow] = (200, 5, new[]
+            {
+                new [] { (byte)0, (byte)3, (byte)0 },
+                new [] { (byte)3, (byte)3, (byte)3 },
+                new [] { (byte)0, (byte)3, (byte)0 },
             }),
         };
         private readonly (sbyte x, sbyte y)[] _directions =
@@ -44,11 +52,12 @@ namespace Game.Graphic
 
             Sprite CreateTexture(byte[][] frame, byte offset)
             {
+                var range = _generationDistance * _scale;
                 var random = new Random();
-                var grid = Enumerable.Range(0, _generationDistance).Select(c => Enumerable.Range(0, 500).Select(r => (byte)0).ToArray()).ToArray();
-                for (var i = 0; i < _generationDistance; i++)
+                var grid = Enumerable.Range(0, range).Select(c => Enumerable.Range(0, range).Select(r => (byte)0).ToArray()).ToArray();
+                for (var i = 0; i < range; i++)
                 {
-                    for (var j = 0; j < _generationDistance; j++)
+                    for (var j = 0; j < range; j++)
                     {
                         if (random.Next(0, offset) == 0)
                         {
@@ -68,7 +77,7 @@ namespace Game.Graphic
                     }
                 }
 
-                return new Sprite(new Texture(Engine.CreateImage(grid.Select(l => l.ToArray()).ToArray())));
+                return new Sprite(new Texture(Engine.CreateImage(grid.Select(l => l.ToArray()).ToArray()))) { Scale = new(1f / _scale, 1f / _scale) };
             }
         }
 
@@ -102,6 +111,7 @@ namespace Game.Graphic
         {
             var types = Enum.GetValues(typeof(FilterType)).ToArrayOfT<FilterType>();
             _type = types[new Random().Next(0, types.Length)];
+            _frame = 0;
         }
 
         private void HandleWaypoint(int x, int y)

@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using Aardvark.Base;
 
 namespace GameAPI.DSL
 {
@@ -28,14 +29,8 @@ namespace GameAPI.DSL
         private static readonly Dictionary<string, string> _globalVariablesPaths = new()
         {
             ["Player"] = "gameWorld.Player",
-            ["Rock"] = "Types.Rock",
-            ["Melee"] = "ItemTypes.Melee",
             ["Items"] = "gameWorld.Player.Items",
             ["None"] = "(object)0",
-            ["North"] = "Directions.Up",
-            ["South"] = "Directions.Down",
-            ["West"] = "Directions.Left",
-            ["East"] = "Directions.Right",
         };
 
         public static string[] CallOrder 
@@ -48,6 +43,17 @@ namespace GameAPI.DSL
 
         static ScriptBuilder()
         {
+            foreach (var type in new[] { typeof(Types), typeof(ItemTypes), typeof(Directions) })
+            {
+                foreach (var name in Enum.GetNames(type))
+                {
+                    if (!_globalVariablesPaths.ContainsKey(name))
+                    {
+                        _globalVariablesPaths[name] = $"{type.Name}.{name}";
+                    }
+                }
+            }
+
             if (!Directory.Exists(ScriptsFolderPath))
             {
                 Directory.CreateDirectory(ScriptsFolderPath);

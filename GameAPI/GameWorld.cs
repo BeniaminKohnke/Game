@@ -181,10 +181,10 @@ namespace GameAPI
                     {
                         var newRectangle = direction switch
                         {
-                            Directions.Up => main.CopyWithShift(0, -1),
-                            Directions.Down => main.CopyWithShift(0, 1),
-                            Directions.Left => main.CopyWithShift(-1, 0),
-                            Directions.Right => main.CopyWithShift(1, 0),
+                            Directions.North => main.CopyWithShift(0, -1),
+                            Directions.South => main.CopyWithShift(0, 1),
+                            Directions.West => main.CopyWithShift(-1, 0),
+                            Directions.East => main.CopyWithShift(1, 0),
                             _ => null,
                         };
 
