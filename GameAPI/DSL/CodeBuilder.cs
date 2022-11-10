@@ -10,15 +10,6 @@ namespace GameAPI.DSL
         private static readonly Dictionary<string, byte> _scriptFunctions = typeof(ScriptFunctions)
             .GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .ToDictionary(m => m.Name, p => (byte)(p.GetParameters().Length - 3));
-        private static readonly Regex _variableRegex = VariableRegex();
-        private static readonly Regex _comparationRegex = ComparationRegex();
-        private static readonly Regex _textRegex = TextRegex();
-        private static readonly Regex _tupleRegex = TupleRegex();
-        private static readonly Regex _collectionRegex = CollectionRegex();
-        private static readonly Regex _forSingleRegex = ForSingleRegex();
-        private static readonly Regex _saveToRegex = SaveToRegex();
-        private static readonly Regex _isRegex = IsRegex();
-        private static readonly Regex _ifRegex = IfRegex();
         private static readonly Dictionary<string, string> _globalVariablesPaths = new()
         {
             ["Player"] = "gameWorld.Player",
@@ -223,7 +214,7 @@ namespace GameAPI.DSL
             .Replace(" AND ", " && ")
             .Replace("EQUALS", " == ");
 
-            foreach (var match in _comparationRegex.Matches(code).Cast<Match>())
+            foreach (var match in ComparationRegex().Matches(code).Cast<Match>())
             {
                 var method = string.Join(string.Empty, match.Groups[2].Value.ToLower().Split('_').Select(s => s.Replace(s[0].ToString(), s[0].ToString().ToUpper())));
                 code = code.Replace(match.Value, $"CodeBuilder.{method}({match.Groups[1].Value},{match.Groups[3].Value})");
@@ -234,7 +225,7 @@ namespace GameAPI.DSL
 
         private static string TranslateVariables(string code)
         {
-            foreach (var match in _variableRegex.Matches(code).Cast<Match>())
+            foreach (var match in VariableRegex().Matches(code).Cast<Match>())
             {
                 if (char.IsUpper(match.Groups[1].Value[0]))
                 {
@@ -249,7 +240,7 @@ namespace GameAPI.DSL
                 }
             }
 
-            foreach (var match in _tupleRegex.Matches(code).Cast<Match>())
+            foreach (var match in TupleRegex().Matches(code).Cast<Match>())
             {
                 var numbers = match.Groups[1].Value.Split(',');
                 if (numbers.Length == 1)
@@ -262,25 +253,12 @@ namespace GameAPI.DSL
                 }
             }
 
-            foreach (var match in _tupleRegex.Matches(code).Cast<Match>())
-            {
-                var numbers = match.Groups[1].Value.Split(',');
-                if (numbers.Length == 1)
-                {
-                    code = code.Replace(match.Value, $"(object){numbers[0]}");
-                }
-                else
-                {
-                    code = code.Replace(match.Value, $"(object)({string.Join(',', numbers)})");
-                }
-            }
-
-            foreach (var match in _textRegex.Matches(code).Cast<Match>())
+            foreach (var match in TextRegex().Matches(code).Cast<Match>())
             {
                 code = code.Replace(match.Value, "(object)" + '\"' + match.Groups[1].Value + '\"');
             }
 
-            foreach (var match in _collectionRegex.Matches(code).Cast<Match>())
+            foreach (var match in CollectionRegex().Matches(code).Cast<Match>())
             {
                 code = code.Replace(match.Value, $"(object)Enumerable.Range({match.Groups[1].Value},{match.Groups[2].Value})");
             }
@@ -365,7 +343,7 @@ namespace GameAPI.DSL
         {
             code = code.Replace("FINISH", "break");
 
-            foreach (var match in _saveToRegex.Matches(code).Cast<Match>().GroupBy(m => m.Groups[2].Value))
+            foreach (var match in SaveToRegex().Matches(code).Cast<Match>().GroupBy(m => m.Groups[2].Value))
             {
                 var first = match.First();
                 code = code.Replace(first.Value, $"object {first.Groups[2].Value} = {first.Groups[1].Value}");
@@ -375,19 +353,19 @@ namespace GameAPI.DSL
                 }
             }
 
-            foreach (var match in _isRegex.Matches(code).Cast<Match>())
+            foreach (var match in IsRegex().Matches(code).Cast<Match>())
             {
                 code = code.Replace(match.Value, $"CodeBuilder.Is({match.Groups[1].Value},{match.Groups[2].Value})");
             }
 
-            foreach (var match in _forSingleRegex.Matches(code).Cast<Match>())
+            foreach (var match in ForSingleRegex().Matches(code).Cast<Match>())
             {
                 var g1 = match.Groups[1].Value;
                 var g2 = match.Groups[2].Value;
                 code = code.Replace(match.Value, $"foreach( var {g1} in ({g2} as IEnumerable<object> ?? new[]{"{" + g2 + "}"}) )");
             }
 
-            foreach (var match in _ifRegex.Matches(code).Cast<Match>())
+            foreach (var match in IfRegex().Matches(code).Cast<Match>())
             {
                 code = code.Replace(match.Value, $"if( {match.Groups[1].Value} )");
             }
