@@ -1,4 +1,6 @@
 ﻿using GameAPI.GameObjects;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,6 +12,18 @@ namespace GameAPI.DSL
         private static readonly Dictionary<string, byte> _scriptFunctions = typeof(ScriptFunctions)
             .GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .ToDictionary(m => m.Name, p => (byte)(p.GetParameters().Length - 3));
+        private static readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary);
+        private static readonly MetadataReference[] _references =
+        {
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\GameAPI.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\mscorlib.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Core.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Runtime.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Collections.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Collections.Concurrent.dll"),
+            MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\System.Private.CoreLib.dll"),
+        };
         private static readonly Dictionary<string, string> _globalVariablesPaths = new()
         {
             ["Player"] = "gameWorld.Player",
@@ -38,9 +52,6 @@ namespace GameAPI.DSL
                 Directory.CreateDirectory(ScriptsFolderPath);
             }
         }
-
-        private static string AddToDynamicObjects(string name, string type, string obj, string tabs) =>
-            $@"{tabs}if(!parameters.ContainsKey(name)){"\n"}{tabs}{"{"}{"\n\t"}{tabs}parameters[{name}] = ({type}, {obj});{"\n"}{tabs}{"}"}";
 
         public static bool Is(object first, object second)
         {
@@ -105,7 +116,6 @@ namespace GameAPI.DSL
 
             return false;
         }
-
         public static bool LessThan(object first, object second) => first is int fd && second is int sd && fd < sd;
         public static bool MoreThan(object first, object second) => first is int fd && second is int sd && fd > sd;
         public static bool LessOrEqualThan(object first, object second) => first is int fd && second is int sd && fd <= sd;
@@ -131,14 +141,14 @@ namespace GameAPI.DSL
                 File.Delete(path);
             }
 
-            path = $@"{ScriptsFolderPath}\{scriptName}.cs";
+            path = $@"{ScriptsFolderPath}\{scriptName}.dll";
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
         }
 
-        public static bool VefifyScript(string scriptName, string code)
+        public static bool CompileScript(string scriptName, string code)
         {
             if (scriptName.Equals("CallOrder"))
             {
@@ -157,14 +167,34 @@ namespace GameAPI.DSL
 
         public static bool CompileToCSharp(string scriptName, string code)
         {
-            var filePath = $@"{ScriptsFolderPath}\{scriptName}.cs";
-            if (File.Exists(filePath))
+            var success = false;
+            var compiledCode = TranslateToCSharp(scriptName, code);
+            if (!string.IsNullOrEmpty(compiledCode))
             {
-                File.Delete(filePath);
-            }
-            File.WriteAllText(filePath, TranslateToCSharp(scriptName, code));
+                var compilation = CSharpCompilation.Create
+                (
+                    scriptName,
+                    new[] { SyntaxFactory.ParseSyntaxTree(compiledCode, null, string.Empty) },
+                    _references,
+                    _compilationOptions
+                );
 
-            return true;
+                using var dllStream = new MemoryStream();
+                var result = compilation.Emit(dllStream);
+                if (result.Success)
+                {
+                    var filePath = $@"{ScriptsFolderPath}\{scriptName}.dll";
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    File.WriteAllBytes(filePath, dllStream.ToArray());
+                    success = true;
+                }
+            }
+
+            return success;
         }
 
         private static string TranslateToCSharp(string scriptName, string code)
@@ -396,19 +426,19 @@ namespace GameAPI.DSL
             return string.Join('\n', codeLines);
         }
 
-        [GeneratedRegex(@"\[([A-Za-z]+)\]", RegexOptions.NonBacktracking)]
+        [GeneratedRegex(@"\[([A-Za-z]+)\]", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex VariableRegex();
-        [GeneratedRegex("([A-Za-z(),.:'\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\\d]+)", RegexOptions.NonBacktracking)]
+        [GeneratedRegex("([A-Za-z(),.:'\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\\d]+)", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex ComparationRegex();
-        [GeneratedRegex(@"\['([\S ]+)'\]", RegexOptions.NonBacktracking)]
+        [GeneratedRegex(@"\['([\S ]+)'\]", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex TextRegex();
-        [GeneratedRegex(@"\[((?:\d+(?:,\d+)?)+)\]", RegexOptions.NonBacktracking)]
+        [GeneratedRegex(@"\[((?:\d+(?:,\d+)?)+)\]", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex TupleRegex();
-        [GeneratedRegex(@"\[(\d+):(\d+)]", RegexOptions.NonBacktracking)]
+        [GeneratedRegex(@"\[(\d+):(\d+)]", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex CollectionRegex();
         [GeneratedRegex(@"FOR_SINGLE ([A-Za-z\[\]':\d]+) FROM ([A-Za-z\[\]':\d]+) DO", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex ForSingleRegex();
-        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]", RegexOptions.NonBacktracking)]
+        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex SaveToRegex();
         [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex IsRegex();

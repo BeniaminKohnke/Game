@@ -141,7 +141,7 @@ namespace Game
                     case Keyboard.Key.F1:
                         if (_handler != null)
                         {
-                            _handler.RecompileScripts = true;
+                            _handler.ReloadScripts = true;
                         }
                         break;
                     case Keyboard.Key.F2:

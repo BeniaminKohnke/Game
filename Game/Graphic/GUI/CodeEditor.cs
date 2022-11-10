@@ -15,7 +15,7 @@ namespace Game.Graphic.GUI
             Delete,
             Save,
             Edit,
-            Verify,
+            Compile,
         }
 
         private readonly (Text name, string code, byte verificationId)[] _scripts = new (Text, string, byte)[21];
@@ -274,16 +274,13 @@ namespace Game.Graphic.GUI
                                     }
                                     break;
                                 case "Save":
-                                    var (name, code, verificationId) = _scripts[CursorCurrentPosition];
-                                    if (verificationId == 1)
-                                    {
-                                        CodeBuilder.SaveScript(name.DisplayedString, code);
-                                        _isMenuActive = false;
-                                    }
+                                    var (name, code, _) = _scripts[CursorCurrentPosition];
+                                    CodeBuilder.SaveScript(name.DisplayedString, code);
+                                    _isMenuActive = false;
                                     break;
-                                case "Verify":
+                                case "Compile":
                                     var script = _scripts[CursorCurrentPosition];
-                                    _scripts[CursorCurrentPosition].verificationId = Convert.ToByte(CodeBuilder.VefifyScript(script.name.DisplayedString, script.code));
+                                    _scripts[CursorCurrentPosition].verificationId = Convert.ToByte(CodeBuilder.CompileScript(script.name.DisplayedString, script.code));
                                     _menuAction = MenuActions.None;
                                     _isMenuActive = false;
                                     break;
