@@ -2,7 +2,7 @@
 
 namespace GameAPI
 {
-    public class GridLoader
+    public sealed class GridLoader
     {
         private readonly Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> _grids = new();
 

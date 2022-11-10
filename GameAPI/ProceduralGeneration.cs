@@ -8,8 +8,8 @@ namespace GameAPI
         private readonly PerlinNoise _noise = new();
         private readonly Dictionary<Types, Grids[]> _grids = new()
         {
-            [Types.Tree] = new[] { Grids.Tree1 },
-            [Types.Rock] = new[] { Grids.Rock1 },
+            [Types.Tree] = new[] { Grids.Tree1, Grids.Tree2 },
+            [Types.Rock] = new[] { Grids.Rock1, Grids.Rock2 },
             [Types.Building] = new[] { Grids.Building1 },
         };
         private readonly Dictionary<Types, Dictionary<ObjectsParameters, object?>> _parameters = new()
@@ -78,7 +78,7 @@ namespace GameAPI
         private Grids GetObjectGrid(Types type, int value)
         {
             var grids = _grids[type];
-            return grids[new Random(value + 8).Next(0, grids.Length - 1)];
+            return grids[new Random(value + 8).Next(0, grids.Length)];
         }
 
         private Item[] InitializeLootParameter(int x, int y, GridLoader loader, Types type, int value)

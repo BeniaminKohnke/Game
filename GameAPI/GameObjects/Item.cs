@@ -1,6 +1,6 @@
 ﻿namespace GameAPI.GameObjects
 {
-    public class Item : GameObject
+    public sealed class Item : GameObject
     {
         private byte _uses = 0;
         private float _nextStateCounter = 0f;

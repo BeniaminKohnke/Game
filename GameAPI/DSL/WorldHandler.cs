@@ -5,12 +5,12 @@ using System.Reflection;
 
 namespace GameAPI.DSL
 {
-    public class WorldHandler
+    public sealed class WorldHandler
     {
         private readonly Dictionary<string, object> _dynamicObjects = new();
         private readonly Dictionary<string, IPlayerScript> _compilations = new();
         private readonly CSharpCompilationOptions _compilationOptions = new(OutputKind.DynamicallyLinkedLibrary);
-        private readonly MetadataReference[] _references = new[]
+        private readonly MetadataReference[] _references = 
         {
             MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\GameAPI.dll"),
             MetadataReference.CreateFromFile($@"{Directory.GetCurrentDirectory()}\mscorlib.dll"),

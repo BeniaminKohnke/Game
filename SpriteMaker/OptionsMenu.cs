@@ -1,4 +1,4 @@
-﻿using Game.GUI;
+﻿using Game.Graphic.GUI;
 using GameAPI;
 
 namespace SpriteMaker
@@ -20,7 +20,7 @@ namespace SpriteMaker
                 }
             }
 
-            FolderPathBox.Text = $@"C:\Users\benia\Documents\GitHub\Game\Game\bin\Debug\net6.0\Textures";
+            FolderPathBox.Text = $@"C:\Users\benia\Documents\GitHub\Game\Game\bin\Debug\net7.0\Textures";
             OptionsBox_SelectedIndexChanged(null, null);
         }
 

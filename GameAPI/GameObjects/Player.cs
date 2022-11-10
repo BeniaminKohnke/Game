@@ -1,6 +1,6 @@
 ﻿namespace GameAPI.GameObjects
 {
-    public class Player : GameObject
+    public sealed class Player : GameObject
     {
         private float _movementUpdate = 0f;
         public readonly uint[] ItemsMenu = new uint[10];

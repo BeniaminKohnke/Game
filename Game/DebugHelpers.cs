@@ -2,7 +2,7 @@
 
 namespace Game
 {
-    public static class DebugHelpers
+    internal static class DebugHelpers
     {
         public static void DrawRectangleVertexes(RenderWindow window)
         {

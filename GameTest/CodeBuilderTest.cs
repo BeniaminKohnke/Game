@@ -7,7 +7,7 @@ using System.Reflection;
 namespace GameTest
 {
     [TestClass]
-    public class CodeBuilderTest
+    public sealed class CodeBuilderTest
     {
         private readonly Func<string, string>? _prepareCodeToCompilation;
         private readonly Func<string, string>? _changeFunctionsToCSharpMethods;

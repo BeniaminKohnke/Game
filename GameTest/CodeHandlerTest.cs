@@ -1,11 +1,9 @@
-﻿using GameAPI;
-using GameAPI.DSL;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GameTest
 {
     [TestClass]
-    public class CodeHandlerTest
+    public sealed class CodeHandlerTest
     {
         [TestMethod]
         public void InvokePlayerScriptsTest()

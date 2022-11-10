@@ -14,7 +14,7 @@ namespace GameAPI
         AddPlayerItems = 32,
     }
 
-    public class GameWorld
+    public sealed class GameWorld
     {
         private (int x, int y) _waypoint = (0, 0);
         private readonly ushort _generationDistance = 500;
@@ -29,7 +29,7 @@ namespace GameAPI
         {
             Player = new(_loader, 0, 0)
             {
-                ObjectParameters = new()
+                ObjectParameters = 
                 {
                     [ObjectsParameters.MovementSpeed] = 1,
                     [ObjectsParameters.Health] = (short)100,
@@ -315,7 +315,7 @@ namespace GameAPI
 
         }
 
-        private class PositionComparer : IComparer<GameObject>
+        private sealed class PositionComparer : IComparer<GameObject>
         {
             public int Compare(GameObject? first, GameObject? second)
             {

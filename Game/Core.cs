@@ -1,4 +1,5 @@
-﻿using Game.GUI;
+﻿using Game.Graphic;
+using Game.Graphic.GUI;
 using GameAPI;
 using GameAPI.DSL;
 using SFML.Graphics;
@@ -7,7 +8,7 @@ using SFML.Window;
 
 namespace Game
 {
-    public class Core
+    public sealed class Core
     {
         private readonly RenderWindow _window = new(VideoMode.DesktopMode, "Thesis", Styles.Default);
         private readonly View _view;

@@ -13,5 +13,6 @@ build_property.PlatformNeutralAssembly =
 build_property.PlatformNeutralAssembly = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.EnforceExtendedAnalyzerRules = 
 build_property.RootNamespace = GameAPI
 build_property.ProjectDir = C:\Users\benia\Documents\GitHub\Game\GameAPI\

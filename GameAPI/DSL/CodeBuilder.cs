@@ -5,20 +5,20 @@ using System.Text.RegularExpressions;
 
 namespace GameAPI.DSL
 {
-    public static class CodeBuilder
+    public static partial class CodeBuilder
     {
         private static readonly Dictionary<string, byte> _scriptFunctions = typeof(ScriptFunctions)
             .GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .ToDictionary(m => m.Name, p => (byte)(p.GetParameters().Length - 3));
-        private static readonly Regex _variableRegex = new(@"\[([A-Za-z]+)\]");
-        private static readonly Regex _comparationRegex = new(@"([A-Za-z(),.:'\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\d]+)");
-        private static readonly Regex _textRegex = new(@"\['([\S ]+)'\]");
-        private static readonly Regex _tupleRegex = new(@"\[((?:\d+(?:,\d+)?)+)\]");
-        private static readonly Regex _collectionRegex = new(@"\[(\d+):(\d+)]");
-        private static readonly Regex FOR_SINGLE_Regex = new(@"FOR_SINGLE ([A-Za-z\[\]':\d]+) FROM ([A-Za-z\[\]':\d]+) DO", RegexOptions.Compiled);
-        private static readonly Regex SAVE_TO_Regex = new(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]");
-        private static readonly Regex IS_Regex = new(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled);
-        private static readonly Regex IF_Regex = new(@"IF ([\S ]+) THEN", RegexOptions.Compiled);
+        private static readonly Regex _variableRegex = VariableRegex();
+        private static readonly Regex _comparationRegex = ComparationRegex();
+        private static readonly Regex _textRegex = TextRegex();
+        private static readonly Regex _tupleRegex = TupleRegex();
+        private static readonly Regex _collectionRegex = CollectionRegex();
+        private static readonly Regex _forSingleRegex = ForSingleRegex();
+        private static readonly Regex _saveToRegex = SaveToRegex();
+        private static readonly Regex _isRegex = IsRegex();
+        private static readonly Regex _ifRegex = IfRegex();
         private static readonly Dictionary<string, string> _globalVariablesPaths = new()
         {
             ["Player"] = "gameWorld.Player",
@@ -135,6 +135,12 @@ namespace GameAPI.DSL
         public static void DeleteScript(string scriptName)
         {
             var path = $@"{ScriptsFolderPath}\{scriptName}.gs";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            path = $@"{ScriptsFolderPath}\{scriptName}.cs";
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -359,7 +365,7 @@ namespace GameAPI.DSL
         {
             code = code.Replace("FINISH", "break");
 
-            foreach (var match in SAVE_TO_Regex.Matches(code).Cast<Match>().GroupBy(m => m.Groups[2].Value))
+            foreach (var match in _saveToRegex.Matches(code).Cast<Match>().GroupBy(m => m.Groups[2].Value))
             {
                 var first = match.First();
                 code = code.Replace(first.Value, $"object {first.Groups[2].Value} = {first.Groups[1].Value}");
@@ -369,19 +375,19 @@ namespace GameAPI.DSL
                 }
             }
 
-            foreach (var match in IS_Regex.Matches(code).Cast<Match>())
+            foreach (var match in _isRegex.Matches(code).Cast<Match>())
             {
                 code = code.Replace(match.Value, $"CodeBuilder.Is({match.Groups[1].Value},{match.Groups[2].Value})");
             }
 
-            foreach (var match in FOR_SINGLE_Regex.Matches(code).Cast<Match>())
+            foreach (var match in _forSingleRegex.Matches(code).Cast<Match>())
             {
                 var g1 = match.Groups[1].Value;
                 var g2 = match.Groups[2].Value;
                 code = code.Replace(match.Value, $"foreach( var {g1} in ({g2} as IEnumerable<object> ?? new[]{"{" + g2 + "}"}) )");
             }
 
-            foreach (var match in IF_Regex.Matches(code).Cast<Match>())
+            foreach (var match in _ifRegex.Matches(code).Cast<Match>())
             {
                 code = code.Replace(match.Value, $"if( {match.Groups[1].Value} )");
             }
@@ -411,5 +417,24 @@ namespace GameAPI.DSL
 
             return string.Join('\n', codeLines);
         }
+
+        [GeneratedRegex(@"\[([A-Za-z]+)\]")]
+        private static partial Regex VariableRegex();
+        [GeneratedRegex("([A-Za-z(),.:'\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\\d]+)")]
+        private static partial Regex ComparationRegex();
+        [GeneratedRegex(@"\['([\S ]+)'\]")]
+        private static partial Regex TextRegex();
+        [GeneratedRegex(@"\[((?:\d+(?:,\d+)?)+)\]")]
+        private static partial Regex TupleRegex();
+        [GeneratedRegex(@"\[(\d+):(\d+)]")]
+        private static partial Regex CollectionRegex();
+        [GeneratedRegex(@"FOR_SINGLE ([A-Za-z\[\]':\d]+) FROM ([A-Za-z\[\]':\d]+) DO", RegexOptions.Compiled)]
+        private static partial Regex ForSingleRegex();
+        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]")]
+        private static partial Regex SaveToRegex();
+        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled)]
+        private static partial Regex IsRegex();
+        [GeneratedRegex(@"IF ([\S ]+) THEN", RegexOptions.Compiled)]
+        private static partial Regex IfRegex();
     }
 }
