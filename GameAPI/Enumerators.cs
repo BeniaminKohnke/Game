@@ -78,29 +78,4 @@
         Loot,
         MeleeRange,
     }
-
-    public static class Parameters
-    {
-        public static readonly Dictionary<Animations, States[]> Animations = new()
-        {
-            [GameAPI.Animations.MovingLeft] = new[]
-            {
-                States.MovingLeft1,
-                States.MovingLeft2,
-                States.MovingLeft3,
-            },
-            [GameAPI.Animations.MovingRight] = new[]
-            {
-                States.MovingRight1,
-                States.MovingRight2,
-                States.MovingRight3,
-            },
-            [GameAPI.Animations.NoAction] = new[]
-            {
-                States.NoAction1,
-                States.NoAction2,
-                States.NoAction3,
-            },
-        };
-    }
 }

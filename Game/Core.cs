@@ -1,5 +1,5 @@
-﻿using Game.Graphic;
-using Game.Graphic.GUI;
+﻿using Game.Graphics;
+using Game.Graphics.GUI;
 using GameAPI;
 using GameAPI.DSL;
 using SFML.Graphics;

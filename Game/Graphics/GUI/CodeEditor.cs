@@ -4,7 +4,7 @@ using MoreLinq;
 using SFML.Graphics;
 using SFML.Window;
 
-namespace Game.Graphic.GUI
+namespace Game.Graphics.GUI
 {
     internal sealed class CodeEditor : Page
     {

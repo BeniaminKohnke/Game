@@ -3,6 +3,12 @@
     public class GameObject : Rectangle
     {
         private static uint s_lastId = 1;
+        private static readonly Dictionary<Animations, States[]> s_animations = Enum
+            .GetValues(typeof(Animations))
+            .Cast<Animations>()
+            .ToDictionary(k => k, v => Enum.GetValues(typeof(States)).Cast<States>().Where(s => s.ToString().Contains(v.ToString()))?.Order()?.ToArray())
+            .Where(p => p.Value != null)
+            .ToDictionary(k => k.Key, v => (States[])v.Value);
         protected readonly Queue<Directions> _movement = new();
         protected readonly Dictionary<Animations, States[]> _animations = new();
         public uint Id { get; } = s_lastId++;
@@ -21,7 +27,7 @@
             var states = loader.GetStates(grid);
             if (states != null)
             {
-                foreach (var animation in Parameters.Animations)
+                foreach (var animation in s_animations)
                 {
                     var animationStates = new List<States>();
                     foreach (var state in animation.Value)

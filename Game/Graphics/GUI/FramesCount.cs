@@ -3,7 +3,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace Game.Graphic.GUI
+namespace Game.Graphics.GUI
 {
     internal sealed class FrameCount : Page
     {

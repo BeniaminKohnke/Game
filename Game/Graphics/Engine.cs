@@ -3,7 +3,7 @@ using GameAPI.GameObjects;
 using SFML.Graphics;
 using SFML.System;
 
-namespace Game.Graphic
+namespace Game.Graphics
 {
     public sealed class Engine
     {

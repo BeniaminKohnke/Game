@@ -3,7 +3,7 @@ using MoreLinq;
 using SFML.Graphics;
 using SFML.Window;
 
-namespace Game.Graphic.GUI
+namespace Game.Graphics.GUI
 {
     public enum MenuOptions : byte
     {

@@ -1,4 +1,4 @@
-﻿using Game.Graphic.GUI;
+﻿using Game.Graphics.GUI;
 using GameAPI;
 
 namespace SpriteMaker
