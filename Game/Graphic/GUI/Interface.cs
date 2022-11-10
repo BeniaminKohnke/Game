@@ -17,6 +17,7 @@ namespace Game.Graphic.GUI
         ScriptApproved,
         ScriptRejected,
         ScriptNotVerified,
+        FramesCount,
     }
 
     public enum Icons : byte
@@ -31,16 +32,17 @@ namespace Game.Graphic.GUI
         internal static string _iconsDirectory = $@"{Directory.GetCurrentDirectory()}\Textures\Icons";
         private readonly Dictionary<Textures, Page> _pages;
         private Textures _currentPage = Textures.MainMenu;
-        private readonly Textures[] _menuPostions = new[]
+        private readonly Textures[] _menuPostions =
         {
             Textures.MainMenu,
             Textures.CodeEditor,
             Textures.EquipmentWindow,
         };
-        private readonly Textures[] _inGameInterfacePositions = new[]
+        private readonly Textures[] _inGameInterfacePositions =
         {
             Textures.HealthBar,
             Textures.ItemsBar,
+            Textures.FramesCount,
         };
         private sbyte _cursorIndex = 0;
         private bool _isMenu = true;
@@ -88,6 +90,7 @@ namespace Game.Graphic.GUI
                 [Textures.EquipmentWindow] = new Equipment(font),
                 [Textures.CodeEditor] = new CodeEditor(font),
                 [Textures.ItemsBar] = new ItemsBar(),
+                [Textures.FramesCount] = new FrameCount(font),
             };
 
             InterfaceHandler = new((sender, e) =>

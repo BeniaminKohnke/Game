@@ -1,0 +1,12 @@
+C:\Users\benia\Documents\GitHub\Game\GameAPI\bin\Release\net7.0\GameAPI.deps.json
+C:\Users\benia\Documents\GitHub\Game\GameAPI\bin\Release\net7.0\GameAPI.dll
+C:\Users\benia\Documents\GitHub\Game\GameAPI\bin\Release\net7.0\GameAPI.pdb
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.csproj.AssemblyReference.cache
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.AssemblyInfoInputs.cache
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.AssemblyInfo.cs
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.csproj.CoreCompileInputs.cache
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.dll
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\refint\GameAPI.dll
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\GameAPI.pdb
+C:\Users\benia\Documents\GitHub\Game\GameAPI\obj\Release\net7.0\ref\GameAPI.dll

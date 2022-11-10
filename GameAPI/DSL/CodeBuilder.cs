@@ -396,23 +396,23 @@ namespace GameAPI.DSL
             return string.Join('\n', codeLines);
         }
 
-        [GeneratedRegex(@"\[([A-Za-z]+)\]")]
+        [GeneratedRegex(@"\[([A-Za-z]+)\]", RegexOptions.NonBacktracking)]
         private static partial Regex VariableRegex();
-        [GeneratedRegex("([A-Za-z(),.:'\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\\d]+)")]
+        [GeneratedRegex("([A-Za-z(),.:'\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\\d]+)", RegexOptions.NonBacktracking)]
         private static partial Regex ComparationRegex();
-        [GeneratedRegex(@"\['([\S ]+)'\]")]
+        [GeneratedRegex(@"\['([\S ]+)'\]", RegexOptions.NonBacktracking)]
         private static partial Regex TextRegex();
-        [GeneratedRegex(@"\[((?:\d+(?:,\d+)?)+)\]")]
+        [GeneratedRegex(@"\[((?:\d+(?:,\d+)?)+)\]", RegexOptions.NonBacktracking)]
         private static partial Regex TupleRegex();
-        [GeneratedRegex(@"\[(\d+):(\d+)]")]
+        [GeneratedRegex(@"\[(\d+):(\d+)]", RegexOptions.NonBacktracking)]
         private static partial Regex CollectionRegex();
-        [GeneratedRegex(@"FOR_SINGLE ([A-Za-z\[\]':\d]+) FROM ([A-Za-z\[\]':\d]+) DO", RegexOptions.Compiled)]
+        [GeneratedRegex(@"FOR_SINGLE ([A-Za-z\[\]':\d]+) FROM ([A-Za-z\[\]':\d]+) DO", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex ForSingleRegex();
-        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]")]
+        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]", RegexOptions.NonBacktracking)]
         private static partial Regex SaveToRegex();
-        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled)]
+        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex IsRegex();
-        [GeneratedRegex(@"IF ([\S ]+) THEN", RegexOptions.Compiled)]
+        [GeneratedRegex(@"IF ([\S ]+) THEN", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
         private static partial Regex IfRegex();
     }
 }

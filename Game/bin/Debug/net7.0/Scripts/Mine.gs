@@ -8,7 +8,7 @@ FOR SINGLE [sObject] FROM [scannedObjects] DO
 		[sObject] SAVE TO [storedObject]
 		[objDis] SAVE TO [stObjDis]
 
-IF [storedObject] IS [Rock] AND [stObjDis] LESS THAN [20] THEN 
+IF [storedObject] IS [Rock] AND [stObjDis] LESS THAN [5] THEN 
 	FOR SINGLE [item] FROM [Items] DO
 		IF [item] IS ['Pickaxe'] THEN
 			Use [item]
