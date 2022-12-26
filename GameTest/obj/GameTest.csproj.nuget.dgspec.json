@@ -125,6 +125,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aardvark.Base": {
+              "target": "Package",
+              "version": "[5.2.18, )"
+            },
             "MSTest.TestAdapter": {
               "target": "Package",
               "version": "[2.2.7, )"
@@ -136,6 +140,10 @@
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
               "version": "[16.11.0, )"
+            },
+            "SFML.Net": {
+              "target": "Package",
+              "version": "[2.5.0, )"
             },
             "coverlet.collector": {
               "target": "Package",

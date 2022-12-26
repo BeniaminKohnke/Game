@@ -2,11 +2,11 @@
 
 namespace GameAPI
 {
-    public sealed class GridLoader
+    public static class GridLoader
     {
-        private readonly Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> _grids = new();
+        private static readonly Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> _grids = new();
 
-        public GridLoader()
+        static GridLoader()
         {
             var mainDir = $@"{Directory.GetCurrentDirectory()}\Textures";
             foreach (var folder in Enum.GetValues(typeof(Grids)))
@@ -31,9 +31,9 @@ namespace GameAPI
             }
         }
 
-        public ReadOnlyCollection<ReadOnlyCollection<byte>>? GetGrid(Grids grid, States state)
-            => _grids.ContainsKey(grid) && _grids[grid].ContainsKey(state) ? _grids[grid][state] : null;
-        public Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>? GetStates(Grids grid) => _grids.ContainsKey(grid) ? _grids[grid] : null;
-        public Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _grids;
+        public static ReadOnlyCollection<ReadOnlyCollection<byte>>? GetGrid(Grids grid, States state)
+            => _grids.TryGetValue(grid, out var g) && g.TryGetValue(state, out var s) ? s : null;
+        public static Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>? GetStates(Grids grid) => _grids.TryGetValue(grid, out var g) ? g : null;
+        public static Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _grids;
     }
 }

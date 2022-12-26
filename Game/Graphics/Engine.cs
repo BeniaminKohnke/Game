@@ -14,10 +14,11 @@ namespace Game.Graphics
         private readonly Clock _clock = new();
         private readonly Time _changeTime = Time.FromSeconds(10f);
         private Time _lastChange = Time.Zero;
+        public bool ShowWeather = true;
 
         public Engine(GameWorld gameWorld)
         {
-            foreach (var type in gameWorld.GetGrids())
+            foreach (var type in GameWorld.GetGrids())
             {
                 _textures[type.Key] = new();
                 foreach (var pair in type.Value)
@@ -98,14 +99,17 @@ namespace Game.Graphics
                     window.Draw(sprite);
                 }
 
-                _lastChange += _clock.Restart();
-                if (_lastChange >= _changeTime)
+                if (ShowWeather)
                 {
-                    _filter.SetNextFilter();
-                    _lastChange = Time.Zero;
-                }
+                    _lastChange += _clock.Restart();
+                    if (_lastChange >= _changeTime)
+                    {
+                        _filter.SetNextFilter();
+                        _lastChange = Time.Zero;
+                    }
 
-                _filter.Draw(window, gameWorld.Player.Position.x, gameWorld.Player.Position.y);
+                    _filter.Draw(window, gameWorld.Player.Position.x, gameWorld.Player.Position.y);
+                }
             }
         }
 

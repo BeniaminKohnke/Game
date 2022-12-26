@@ -16,6 +16,8 @@ namespace GameAPI.DSL
         {
             if (ReloadScripts)
             {
+                _dynamicObjects.Clear();
+                _compilations.Clear();
                 foreach (var dllFilePath in Directory.GetFiles(ScriptBuilder.ScriptsFolderPath).Where(f => f.Contains(".dll")))
                 {
                     var dll = Assembly.Load(File.ReadAllBytes(dllFilePath));

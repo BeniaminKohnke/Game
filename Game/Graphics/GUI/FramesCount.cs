@@ -18,7 +18,6 @@ namespace Game.Graphics.GUI
             _framesCountText = new()
             {
                 Font = font,
-                DisplayedString = "0",
                 CharacterSize = 200,
                 Scale = new(0.01f, 0.01f),
             };
@@ -33,7 +32,7 @@ namespace Game.Graphics.GUI
                 if (_lastChange >= _changeTime)
                 {
                     _lastChange = Time.Zero;
-                    _framesCountText.DisplayedString = _framesCount.ToString();
+                    _framesCountText.DisplayedString = $"[FPS: {_framesCount}]";
                     _framesCount = 1;
                 }
 

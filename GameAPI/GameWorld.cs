@@ -21,13 +21,13 @@ namespace GameAPI
         private ConcurrentBag<GameObject> _gameObjects;
         private readonly ProceduralGeneration _procedure;
         private readonly PositionComparer _comparer = new();
-        private readonly GridLoader _loader = new();
         public Player Player { get; private set; }
         public bool IsActive { get; set; } = true;
+        public ushort EnemyRange { get; set; } = 25;
 
         public GameWorld(int seed)
         {
-            Player = new(_loader, 0, 0)
+            Player = new(-400, -400)
             {
                 ObjectParameters = 
                 {
@@ -39,7 +39,7 @@ namespace GameAPI
             };
 
             _procedure = new(seed == 0 ? 1000000 : seed);
-            var pickaxe = new Item(_loader, 0, 0, Types.Item, Grids.Pickaxe)
+            var pickaxe = new Item(0, 0, Types.Item, Grids.Pickaxe)
             {
                 ItemType = ItemTypes.Melee,
                 Name = "Pickaxe",
@@ -49,7 +49,7 @@ namespace GameAPI
                 },
                 IsActive = true,
             };
-            var axe = new Item(_loader, 0, 0, Types.Item, Grids.Axe)
+            var axe = new Item(0, 0, Types.Item, Grids.Axe)
             {
                 ItemType = ItemTypes.Melee,
                 Name = "Axe",
@@ -77,7 +77,7 @@ namespace GameAPI
             {
                 for (var y = _waypoint.y - _generationDistance; y <= _waypoint.y + _generationDistance; y++)
                 {
-                    var go = _procedure.CreateObject(x, y, _loader);
+                    var go = _procedure.CreateObject(x, y);
                     if (go != null)
                     {
                         _gameObjects.Add(go);
@@ -86,7 +86,7 @@ namespace GameAPI
             }
         }
 
-        public Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => _loader.GetGrids();
+        public static Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => GridLoader.GetGrids();
 
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
@@ -160,9 +160,10 @@ namespace GameAPI
 
                     if (go.IsActive)
                     {
-                        go.Update(deltaTime, _loader);
+                        go.Update(deltaTime);
                     }
                 }
+                HandleEnemies(deltaTime);
                 HandleCollisions();
                 _gameObjects = new ConcurrentBag<GameObject>(_gameObjects.Where(go => !objectsToRemove.Contains(go.Id)));
 
@@ -176,7 +177,7 @@ namespace GameAPI
             {
                 if (main.ObjectParameters.ContainsKey(ObjectsParameters.MovementSpeed))
                 {
-                    var direction = main.DequeueMovement(_loader);
+                    var direction = main.DequeueMovement();
                     while (direction != Directions.None)
                     {
                         var newRectangle = direction switch
@@ -191,20 +192,23 @@ namespace GameAPI
                         if (newRectangle != null)
                         {
                             var canMove = true;
-                            foreach (var other in _gameObjects.Where(go => go.IsActive && !Player.Items.Contains(go)))
+                            if (main.ObjectType != Types.Enemy)
                             {
-                                if (main.Id != other.Id && newRectangle.CheckCollision(other))
+                                foreach (var other in _gameObjects.Where(go => go.IsActive && !Player.Items.Contains(go) && go.ObjectType != Types.Enemy))
                                 {
-                                    if (other is not Item)
+                                    if (main.Id != other.Id && newRectangle.CheckCollision(other))
                                     {
-                                        canMove = false;
+                                        if (other is not Item)
+                                        {
+                                            canMove = false;
+                                        }
+                                        else if (main is Player && other is Item item)
+                                        {
+                                            other.IsActive = false;
+                                            Player.Items.Add(item);
+                                        }
+                                        break;
                                     }
-                                    else if(main is Player && other is Item item)
-                                    {
-                                        other.IsActive = false;
-                                        Player.Items.Add(item);
-                                    }
-                                    break;
                                 }
                             }
 
@@ -214,7 +218,7 @@ namespace GameAPI
                             }
                         }
 
-                        direction = main.DequeueMovement(_loader);
+                        direction = main.DequeueMovement();
                     }
                 }
             }
@@ -260,6 +264,62 @@ namespace GameAPI
             }
         }
 
+        private void HandleEnemies(float deltaTime)
+        {
+            foreach (var go in _gameObjects)
+            {
+                if (go.ObjectType == Types.Enemy)
+                {
+                    if (go.ObjectParameters.TryGetValue(ObjectsParameters.AttackDelay, out var value) && value is float delay)
+                    {
+                        go.ObjectParameters[ObjectsParameters.AttackDelay] = delay + deltaTime;
+                    }
+                    else
+                    {
+                        delay = deltaTime;
+                        go.ObjectParameters[ObjectsParameters.AttackDelay] = deltaTime;
+                    }
+
+                    var x = Player.Position.x - go.Position.x;
+                    var y = Player.Position.y - go.Position.y;
+                    var distanceX = Math.Abs(x);
+                    var distanceY = Math.Abs(y);
+                    if (distanceX < EnemyRange && distanceY < EnemyRange)
+                    {
+                        if (delay > 0.3f && distanceX < 5 && distanceY < 5)
+                        {
+                            if (go.ObjectParameters.TryGetValue(ObjectsParameters.CuttingDamage, out value) && value is ushort damage)
+                            {
+                                if (Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out value) && value is short health && health > 0)
+                                {
+                                    health -= (short)damage;
+                                    if (health <= 0)
+                                    {
+                                        health = 0;
+                                        Player.IsActive = false;
+                                    }
+                                    Player.ObjectParameters[ObjectsParameters.Health] = health;
+                                }
+                                go.ObjectParameters[ObjectsParameters.AttackDelay] = 0f;
+                            }
+                        }
+
+                        if (distanceX > distanceY)
+                        {
+                            go.EnqueueMovement(x > 0 ? Directions.East : Directions.West);
+                        }
+                        else
+                        {
+                            if (y != 0)
+                            {
+                                go.EnqueueMovement(y > 0 ? Directions.South : Directions.North);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void HandleObjectGeneration()
         {
             var directionX = 0;
@@ -298,7 +358,7 @@ namespace GameAPI
                         {
                             if (!_gameObjects.Any(go => go.Position.x == x && go.Position.y == y))
                             {
-                                var go = _procedure.CreateObject(x, y, _loader);
+                                var go = _procedure.CreateObject(x, y);
                                 if (go != null)
                                 {
                                     _gameObjects.Add(go);
@@ -308,11 +368,6 @@ namespace GameAPI
                     });
                 })).Start();
             }
-        }
-
-        public void Destroy()
-        {
-
         }
 
         private sealed class PositionComparer : IComparer<GameObject>

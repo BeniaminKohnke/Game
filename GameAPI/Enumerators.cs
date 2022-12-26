@@ -8,6 +8,7 @@
         Tree,
         Building,
         Item,
+        Enemy,
     }
 
     public enum ItemTypes : byte
@@ -32,6 +33,7 @@
         Sword,
         ItemRock,
         ItemWood,
+        Enemy1,
     }
 
     public enum States : byte
@@ -77,5 +79,6 @@
         ScanRadius,
         Loot,
         MeleeRange,
+        AttackDelay,
     }
 }

@@ -9,7 +9,7 @@
         public List<Item> Items { get; } = new();
         public bool IsMoving { get; set; } = false;
         
-        public Player(GridLoader loader, int x, int y) : base(loader, x, y, Types.Player, Grids.Player)
+        public Player(int x, int y) : base(x, y, Types.Player, Grids.Player)
         {
             LastDirection = Directions.East;
         }
@@ -33,14 +33,14 @@
 
         public override void EnqueueMovement(Directions direction)
         {
-            if (_movementUpdate > 0.02f)
+            if (IsActive && _movementUpdate > 0.02f)
             {
                 base.EnqueueMovement(direction);
                 _movementUpdate = 0f;
             }
         }
 
-        public override void Update(float deltaTime, GridLoader loader)
+        public override void Update(float deltaTime)
         {
             _movementUpdate += deltaTime;
             foreach (var item in Items)

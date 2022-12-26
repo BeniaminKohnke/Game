@@ -15,20 +15,6 @@ namespace GameAPI.DSL
             }
         }
 
-        public static void SaveNote(object name, object content, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
-        {
-            if (name is string && content is string)
-            {
-                File.WriteAllText($@"{s_playerNotesFolder}\{name as string}.txt", content as string);
-            }
-        }
-
-        public static string LoadNote(object name, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime) => name is string ?
-            File.Exists($@"{s_playerNotesFolder}\{name as string}.txt") ?
-                File.ReadAllText($@"{s_playerNotesFolder}\{name as string}.txt")
-                : string.Empty
-            : string.Empty;
-
         public static object Use(object item, GameWorld gameWorld, Dictionary<string, object> parameters, float deltaTime)
         {
             if (item is Item go)

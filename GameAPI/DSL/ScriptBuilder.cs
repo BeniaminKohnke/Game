@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Aardvark.Base;
 
 namespace GameAPI.DSL
 {
@@ -175,13 +174,13 @@ namespace GameAPI.DSL
         public static bool CompileToCSharp(string scriptName, string script)
         {
             var success = false;
-            var compiledScript = TranslateToCSharp(scriptName, script);
-            if (!string.IsNullOrEmpty(compiledScript))
+            var translatedScript = TranslateToCSharp(scriptName, script);
+            if (!string.IsNullOrEmpty(translatedScript))
             {
                 var compilation = CSharpCompilation.Create
                 (
                     scriptName,
-                    new[] { SyntaxFactory.ParseSyntaxTree(compiledScript, null, string.Empty) },
+                    new[] { SyntaxFactory.ParseSyntaxTree(translatedScript, null, string.Empty) },
                     _references,
                     _compilationOptions
                 );
@@ -319,7 +318,7 @@ namespace GameAPI.DSL
                         if (parts.Length > lastIndex)
                         {
                             var parameters = $"{string.Join(',', parts.Skip(index + 1).Take(paramCount))}";
-                            var function = @$"ScriptFunctions.{functionName}({(string.IsNullOrEmpty(parameters) ? string.Empty : $"{parameters},")}gameWorld,parameters,deltaTime)";
+                            var function = @$"{nameof(ScriptFunctions)}.{functionName}({(string.IsNullOrEmpty(parameters) ? string.Empty : $"{parameters},")}gameWorld,parameters,deltaTime)";
                             parts[index] = function;
                             for (var j = index + 1; j <= lastIndex; j++)
                             {

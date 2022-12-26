@@ -26,11 +26,11 @@
         }
         public ItemTypes ItemType { get; set; } = ItemTypes.None;
 
-        public Item(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader, x, y, type, grid)
+        public Item(int x, int y, Types type, Grids grid) : base(x, y, type, grid)
         {
         }
 
-        public override void Update(float deltaTime, GridLoader loader)
+        public override void Update(float deltaTime)
         {
             if (_animationTime < 1f)
             {
@@ -73,7 +73,7 @@
 
             void ChangeState(Animations animation)
             {
-                SetGrid(loader.GetGrid(Grid, State));
+                SetGrid(GridLoader.GetGrid(Grid, State));
                 TrySetNextState(animation);
             }
         }

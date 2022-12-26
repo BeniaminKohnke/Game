@@ -4,6 +4,13 @@ using SFML.Window;
 
 namespace Game.Graphics.GUI
 {
+    public enum Difficulty : byte
+    {
+        Easy = 1,
+        Medium = 2,
+        Hard = 3,
+    }
+
     public enum Textures : byte
     {
         MainMenu,
@@ -18,6 +25,10 @@ namespace Game.Graphics.GUI
         ScriptRejected,
         ScriptNotVerified,
         FramesCount,
+        Seed,
+        OptionsMenu,
+        OptionsMenuCursor,
+        Position,
     }
 
     public enum Icons : byte
@@ -43,12 +54,17 @@ namespace Game.Graphics.GUI
             Textures.HealthBar,
             Textures.ItemsBar,
             Textures.FramesCount,
+            Textures.Position,
         };
         private sbyte _cursorIndex = 0;
         private bool _isMenu = true;
         private bool _isInsidePage = false;
         public EventHandler<KeyEventArgs> InterfaceHandler { get; }
-        public int Seed => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu && int.TryParse(mainMenu.Seed, out var seed) ? seed : 0;
+        public int Seed => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.Seed : 0;
+        public ushort FramesLimit => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.FramesLimit : (ushort)0;
+        public bool ShowWeather => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu && mainMenu.ShowWeather;
+        public ushort DrawDistance => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.DrawDistance : (ushort)0;
+        public byte DifficultyLevel => (byte)(_pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.DifficultyLevel : Difficulty.Medium);
         public bool IsMenu
         {
             get => _isMenu;
@@ -88,9 +104,10 @@ namespace Game.Graphics.GUI
                 [Textures.MainMenu] = new MainMenu(font),
                 [Textures.HealthBar] = new HealthBar(font),
                 [Textures.EquipmentWindow] = new Equipment(font),
-                [Textures.CodeEditor] = new CodeEditor(font),
+                [Textures.CodeEditor] = new ScriptEditor(font),
                 [Textures.ItemsBar] = new ItemsBar(),
                 [Textures.FramesCount] = new FrameCount(font),
+                [Textures.Position] = new Position(font),
             };
 
             InterfaceHandler = new((sender, e) =>

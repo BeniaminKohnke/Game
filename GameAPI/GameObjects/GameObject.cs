@@ -6,9 +6,9 @@
         private static readonly Dictionary<Animations, States[]> s_animations = Enum
             .GetValues(typeof(Animations))
             .Cast<Animations>()
-            .ToDictionary(k => k, v => Enum.GetValues(typeof(States)).Cast<States>().Where(s => s.ToString().Contains(v.ToString()))?.Order()?.ToArray())
-            .Where(p => p.Value != null)
-            .ToDictionary(k => k.Key, v => (States[])v.Value);
+            .ToDictionary(k => k, v => Enum.GetValues(typeof(States)).Cast<States>().Where(s => s.ToString().Contains(v.ToString()))?.Order()?.ToArray() ?? Array.Empty<States>())
+            .Where(p => p.Value.Any())
+            .ToDictionary(k => k.Key, v => v.Value);
         protected readonly Queue<Directions> _movement = new();
         protected readonly Dictionary<Animations, States[]> _animations = new();
         public uint Id { get; } = s_lastId++;
@@ -18,13 +18,13 @@
         public virtual Types ObjectType { get; protected set; }
         public virtual Directions LastDirection { get; set; } = Directions.None;
         public bool IsActive { get; set; } = true;
-        public bool HasChanged { get; set; } = false;
-        public GameObject(GridLoader loader, int x, int y, Types type, Grids grid) : base(loader.GetGrid(grid, States.NoAction1), x, y)
+
+        public GameObject(int x, int y, Types type, Grids grid) : base(GridLoader.GetGrid(grid, States.NoAction1), x, y)
         {
             ObjectType = type;
             Grid = grid;
 
-            var states = loader.GetStates(grid);
+            var states = GridLoader.GetStates(grid);
             if (states != null)
             {
                 foreach (var animation in s_animations)
@@ -46,14 +46,14 @@
             }
         }
 
-        public virtual void Update(float deltaTime, GridLoader loader)
+        public virtual void Update(float deltaTime)
         {
 
         }
 
         public virtual void EnqueueMovement(Directions direction) => _movement.Enqueue(direction);
 
-        public Directions DequeueMovement(GridLoader loader)
+        public Directions DequeueMovement()
         {
             if (_movement.TryDequeue(out var direction))
             {
@@ -82,7 +82,7 @@
                 if (changeAnimation)
                 {
                     LastDirection = lastDirection;
-                    SetGrid(loader.GetGrid(Grid, State));
+                    SetGrid(GridLoader.GetGrid(Grid, State));
                 }
 
                 return direction;

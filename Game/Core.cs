@@ -15,12 +15,13 @@ namespace Game
         private readonly Interface _gameInterface = new();
         private readonly Clock _renderClock = new();
         private readonly Clock _logicClock = new();
-        private readonly Time _renderFrameTime = Time.FromSeconds(1.0f / 144.0f);
+        private Time _renderFrameTime = Time.FromSeconds(1.0f / 240f);
         private Time _lastRenderTime = Time.Zero;
         private Keyboard.Key _pressedKey;
         private GameWorld? _gameWorld;
         private Engine? _engine;
         private readonly ScriptHandler _handler = new();
+        private ushort _drawDistance = 200;
 
         public Core()
         {
@@ -56,16 +57,18 @@ namespace Game
                 {
                     _lastRenderTime = Time.Zero;
                     _window.Clear();
-                    _view.Center = _gameInterface.IsMenu || _gameWorld == null ? new(120, 72) : new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
+                    _view.Center = _gameInterface.IsMenu || _gameWorld == null ? 
+                        new(120, 72) : 
+                        new(_gameWorld.Player.Position.x, _gameWorld.Player.Position.y);
                     _window.SetView(_view);
-                    _engine?.Draw(_window, 200, _gameWorld);
+                    _engine?.Draw(_window, _drawDistance, _gameWorld);
                     _gameInterface.Draw(_window, _gameWorld);
                     _window.Display();
                 }
             }
         }
 
-        public void HandleInterface()
+        private void HandleInterface()
         {
             switch (_gameInterface.PerformedAction)
             {
@@ -76,9 +79,20 @@ namespace Game
                     }
                     break;
                 case MenuOptions.NewGame:
-                    _gameWorld?.Destroy();
                     _gameWorld = new(_gameInterface.Seed);
                     _engine = new(_gameWorld);
+                    break;
+                case MenuOptions.Options:
+                    _renderFrameTime = Time.FromSeconds(1.0f / _gameInterface.FramesLimit);
+                    _drawDistance= _gameInterface.DrawDistance;
+                    if (_engine != null)
+                    {
+                        _engine.ShowWeather = _gameInterface.ShowWeather;
+                    }
+                    if (_gameWorld != null)
+                    {
+                        _gameWorld.EnemyRange = (ushort)(25 * _gameInterface.DifficultyLevel);
+                    }
                     break;
                 case MenuOptions.Exit:
                     if (_gameWorld != null)
@@ -91,7 +105,7 @@ namespace Game
             }
         }
 
-        public void HandleLogic()
+        private void HandleLogic()
         {
             _window.DispatchEvents();
             var deltaTime = _logicClock.Restart().AsSeconds();
