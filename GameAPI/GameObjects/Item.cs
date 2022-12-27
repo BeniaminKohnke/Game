@@ -11,7 +11,7 @@
             get => _uses;
             set
             {
-                if (value > _uses)
+                if (value > _uses && ItemType != ItemTypes.Consumable)
                 {
                     if (_animationTime >= 1f)
                     {

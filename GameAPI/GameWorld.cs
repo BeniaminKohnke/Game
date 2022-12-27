@@ -316,11 +316,11 @@ namespace GameAPI
                         break;
                     case ItemTypes.Consumable:
                         {
-                            if (item.ObjectParameters.TryGetValue(ObjectsParameters.Healing, out var value) && value is short healing)
+                            if (item.ObjectParameters.TryGetValue(ObjectsParameters.Healing, out var value) && value is ushort healing)
                             {
-                                if (Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out value) && value is ushort health)
+                                if (Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out value) && value is short health)
                                 {
-                                    Player.ObjectParameters[ObjectsParameters.Health] = (ushort)(health + healing);
+                                    Player.ObjectParameters[ObjectsParameters.Health] = (short)(health + healing);
                                     for (var x = 0; x < Player.ItemsMenu.Length; x++)
                                     {
                                         if (Player.ItemsMenu[x] == item.Id)
