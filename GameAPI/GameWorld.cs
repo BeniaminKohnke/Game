@@ -28,6 +28,8 @@ namespace GameAPI
 
         public GameWorld(int seed)
         {
+            _procedure = new(seed == 0 ? 1000000 : seed);
+            
             Player = new(0, 0)
             {
                 ObjectParameters = 
@@ -39,62 +41,8 @@ namespace GameAPI
                 }
             };
 
-            _procedure = new(seed == 0 ? 1000000 : seed);
-            var pickaxe = new Item(0, 0, Types.Item, Grids.Pickaxe)
-            {
-                ItemType = ItemTypes.Melee,
-                Name = Items.Pickaxe,
-                ObjectParameters = new Dictionary<ObjectsParameters, object>
-                {
-                    [ObjectsParameters.ThrustDamage] = (ushort)30,
-                },
-                IsActive = true,
-            };
-            var axe = new Item(0, 0, Types.Item, Grids.Axe)
-            {
-                ItemType = ItemTypes.Melee,
-                Name = Items.Axe,
-                ObjectParameters = new Dictionary<ObjectsParameters, object>
-                {
-                    [ObjectsParameters.CuttingDamage] = (ushort)30,
-                },
-                IsActive = true,
-            };
-
-            var bow = new Item(0, 0, Types.Item, Grids.Bow)
-            {
-                ItemType = ItemTypes.Ranged,
-                IsActive = true,
-                Name = Items.Bow,
-            };
-
-            var arrow = new Item(0, 0, Types.Item, Grids.Arrow)
-            {
-                ItemType = ItemTypes.Amunition,
-                IsActive = true,
-                ObjectParameters = new Dictionary<ObjectsParameters, object>
-                {
-                    [ObjectsParameters.MovementSpeed] = 20,
-                    [ObjectsParameters.ThrustDamage] = (ushort)30,
-                },
-                Name = Items.Arrow,
-            };
-
-            Player.Items.Add(axe);
-            Player.Items.Add(pickaxe);
-            Player.Items.Add(bow);
-            Player.Items.Add(arrow);
-            Player.SelectedItemId = axe.Id;
-            Player.ItemsMenu[0] = axe.Id;
-            Player.ItemsMenu[1] = pickaxe.Id;
-            Player.ItemsMenu[2] = bow.Id;
-
             _gameObjects = new()
             {
-                axe,
-                pickaxe,
-                bow,
-                arrow,
                 Player,
             };
 
@@ -111,11 +59,17 @@ namespace GameAPI
             }
         }
 
+        public void AddPlayerItem(Item item)
+        {
+            Player.Items.Add(item);
+            _gameObjects.Add(item);
+        }
+
         public static Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => GridLoader.GetGrids();
 
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
-            var objects = _gameObjects.Where(go => go.ObjectType != Types.Item).ToList();
+            var objects = _gameObjects.Where(go => !Player.Items.Contains(go)).ToList();
             if (options.HasFlag(GetObjectsOptions.FromPlayer))
             {
                 var squaredRadius = Math.Pow(radius ?? Player.ObjectParameters[ObjectsParameters.ScanRadius] as int? ?? 0, 2);

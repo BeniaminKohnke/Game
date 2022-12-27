@@ -58,7 +58,7 @@ namespace Game.Graphics.GUI
                 {
                     if (i == _cursorCurrentPosition)
                     {
-                        var specification = new Text
+                        var itemRecipe = new Text
                         {
                             DisplayedString = string.Join("\n", recipe.Select(r => $"[{r.item}] x [{r.count}]")),
                             Position = new(_cursorPosition.x + 35, _cursorPosition.y),
@@ -66,7 +66,7 @@ namespace Game.Graphics.GUI
                             CharacterSize = 200,
                             Scale = new(0.01f, 0.01f),
                         };
-                        window.Draw(specification);
+                        window.Draw(itemRecipe);
                         _currentItem = item;
                     }
 

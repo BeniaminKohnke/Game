@@ -111,7 +111,7 @@ namespace Game
             var deltaTime = _logicClock.Restart().AsSeconds();
             if (_gameWorld != null)
             {
-                Crafting.CraftItem(_gameWorld.Player, _gameInterface.ItemName);
+                Crafting.CraftItem(_gameWorld, _gameInterface.ItemName);
                 _handler.Update(_gameWorld, deltaTime);
                 _gameWorld.Update(deltaTime);
                 switch (_pressedKey)

@@ -12,6 +12,36 @@
         public Player(int x, int y) : base(x, y, Types.Player, Grids.Player)
         {
             LastDirection = Directions.East;
+
+            for (var i = 0; i < 15; i++)
+            {
+                Items.Add(new(x, y, Types.Item, Grids.ItemRock)
+                {
+                    IsActive = false,
+                    Name = GameAPI.Items.Rock,
+                    ItemType = ItemTypes.Material,
+                });
+            }
+
+            for (var i = 0; i < 9 ; i++)
+            {
+                Items.Add(new(x, y, Types.Item, Grids.ItemString)
+                {
+                    IsActive = false,
+                    Name = GameAPI.Items.String,
+                    ItemType = ItemTypes.Material,
+                });
+            }
+
+            for (var i = 0; i < 12; i++)
+            {
+                Items.Add(new(x, y, Types.Item, Grids.ItemStick)
+                {
+                    IsActive = false,
+                    Name = GameAPI.Items.Stick,
+                    ItemType = ItemTypes.Material,
+                });
+            }
         }
 
         public void IncreaseItemUses()

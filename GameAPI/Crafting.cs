@@ -87,8 +87,8 @@ namespace GameAPI
             },
             [Items.Bow] = new[]
             {
-                (Items.Stick, (ushort)20),
-                (Items.String, (ushort)10),
+                (Items.Stick, (ushort)5),
+                (Items.String, (ushort)5),
             },
             [Items.Arrow] = new[]
             {
@@ -101,7 +101,7 @@ namespace GameAPI
             },
             [Items.String] = new[]
             {
-                (Items.Fiber, (ushort)10),
+                (Items.Fiber, (ushort)2),
             },
             [Items.Pickaxe] = new[]
             {
@@ -118,19 +118,19 @@ namespace GameAPI
             [Items.Sword] = new[]
             {
                 (Items.Stick, (ushort)1),
-                (Items.String, (ushort)10),
-                (Items.Rock, (ushort)20),
+                (Items.String, (ushort)7),
+                (Items.Rock, (ushort)10),
             },
         };
 
-        public static bool CraftItem(Player player, Items item)
+        public static bool CraftItem(GameWorld gameWorld, Items item)
         {
             if (Recepies.TryGetValue(item, out var recipe))
             {
                 var isCraftable = true;
                 foreach (var (name, count) in recipe)
                 {
-                    if (player.Items.Count(i => i.Name == name) < count)
+                    if (gameWorld.Player.Items.Count(i => i.Name == name) < count)
                     {
                         isCraftable = false;
                         break;
@@ -143,7 +143,7 @@ namespace GameAPI
                     {
                         for (var i = 0; i < count; i++)
                         {
-                            player.Items.Remove(player.Items.First(i => i.Name == name));
+                            gameWorld.Player.Items.Remove(gameWorld.Player.Items.First(i => i.Name == name));
                         }
                     }
 
@@ -162,7 +162,7 @@ namespace GameAPI
                         }
                     }
 
-                    player.Items.Add(go);
+                    gameWorld.AddPlayerItem(go);
                     return true;
                 }
             }

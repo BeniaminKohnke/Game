@@ -120,11 +120,11 @@ namespace GameAPI.DSL
             if (item is string name)
             {
                 var t = Enum.GetValues(typeof(Items)).Cast<Items>().FirstOrDefault(i => i.ToString().Equals(name));
-                wasCreated = Crafting.CraftItem(gameWorld.Player, t);
+                wasCreated = Crafting.CraftItem(gameWorld, t);
             }
             else if (item is Items type)
             {
-                wasCreated = Crafting.CraftItem(gameWorld.Player, type);
+                wasCreated = Crafting.CraftItem(gameWorld, type);
             }
 
             return wasCreated ? "Success" : "Failure";
