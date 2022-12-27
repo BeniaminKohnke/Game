@@ -41,7 +41,7 @@ namespace GameAPI
             [Items.Arrow] = new Dictionary<ObjectsParameters, object>
             {
                 [ObjectsParameters.MovementSpeed] = 20,
-                [ObjectsParameters.ThrustDamage] = 30,
+                [ObjectsParameters.ThrustDamage] = (ushort)30,
             },
             [Items.Sword] = new Dictionary<ObjectsParameters, object>
             {

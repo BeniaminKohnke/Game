@@ -11,6 +11,7 @@
         Building,
         Item,
         Enemy,
+        Projectile,
     }
 
     public enum ItemTypes : byte

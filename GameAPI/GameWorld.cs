@@ -60,16 +60,38 @@ namespace GameAPI
                 IsActive = true,
             };
 
+            var bow = new Item(0, 0, Types.Item, Grids.Bow)
+            {
+                ItemType = ItemTypes.Ranged,
+                IsActive = true,
+            };
+
+            var arrow = new Item(0, 0, Types.Item, Grids.Arrow)
+            {
+                ItemType = ItemTypes.Amunition,
+                IsActive = true,
+                ObjectParameters = new Dictionary<ObjectsParameters, object>
+                {
+                    [ObjectsParameters.MovementSpeed] = 20,
+                    [ObjectsParameters.ThrustDamage] = (ushort)30,
+                },
+            };
+
             Player.Items.Add(axe);
             Player.Items.Add(pickaxe);
+            Player.Items.Add(bow);
+            Player.Items.Add(arrow);
             Player.SelectedItemId = axe.Id;
             Player.ItemsMenu[0] = axe.Id;
             Player.ItemsMenu[1] = pickaxe.Id;
+            Player.ItemsMenu[2] = bow.Id;
 
             _gameObjects = new()
             {
                 axe,
                 pickaxe,
+                bow,
+                arrow,
                 Player,
             };
 
@@ -194,11 +216,28 @@ namespace GameAPI
                             var canMove = true;
                             if (main.ObjectType != Types.Enemy)
                             {
-                                foreach (var other in _gameObjects.Where(go => go.IsActive && !Player.Items.Contains(go) && go.ObjectType != Types.Enemy))
+                                foreach (var other in _gameObjects.Where(go => go.IsActive && !Player.Items.Contains(go) && (go.ObjectType != Types.Enemy || main.ObjectType == Types.Projectile)))
                                 {
                                     if (main.Id != other.Id && newRectangle.CheckCollision(other))
                                     {
-                                        if (other is not Item)
+                                        if (main.ObjectType == Types.Projectile)
+                                        {
+                                            if (other.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
+                                            {
+                                                if (main.ObjectParameters.TryGetValue(ObjectsParameters.ThrustDamage, out value) && value is ushort damage)
+                                                {
+                                                    if (!(other.ObjectParameters.TryGetValue(ObjectsParameters.ThrustDamageResistance, out value) && value is byte resistance))
+                                                    {
+                                                        resistance = 0;
+                                                    }
+
+                                                    health -= (short)((100 - resistance) * 0.01f * damage);
+                                                    other.ObjectParameters[ObjectsParameters.Health] = health;
+                                                    _gameObjects = new ConcurrentBag<GameObject>(_gameObjects.Where(go => go.Id != main.Id));
+                                                }
+                                            }
+                                        }
+                                        else if (other is not Item)
                                         {
                                             canMove = false;
                                         }
@@ -261,8 +300,38 @@ namespace GameAPI
                             break;
                         }
                     case ItemTypes.Ranged:
+                        {
+                            var projectile = Player.Items.FirstOrDefault(i => i.ItemType == ItemTypes.Amunition);
+                            if (projectile != null)
+                            {
+                                Player.Items.Remove(projectile);
+                                var isRight = Player.LastDirection == Directions.East || Player.LastDirection == Directions.South;
+                                var go = new Projectile(Player.Position.x + (isRight ? 10 : -10), Player.Position.y, Grids.Arrow, isRight ? Directions.East : Directions.West)
+                                {
+                                    ObjectParameters = projectile.ObjectParameters,
+                                };
+                                _gameObjects.Add(go);
+                            }
+                        }
                         break;
                     case ItemTypes.Consumable:
+                        {
+                            if (item.ObjectParameters.TryGetValue(ObjectsParameters.Healing, out var value) && value is short healing)
+                            {
+                                if (Player.ObjectParameters.TryGetValue(ObjectsParameters.Health, out value) && value is ushort health)
+                                {
+                                    Player.ObjectParameters[ObjectsParameters.Health] = (ushort)(health + healing);
+                                    for (var x = 0; x < Player.ItemsMenu.Length; x++)
+                                    {
+                                        if (Player.ItemsMenu[x] == item.Id)
+                                        {
+                                            Player.ItemsMenu[x] = 0;
+                                        }
+                                    }
+                                    Player.Items.Remove(item);
+                                }
+                            }
+                        }
                         break;
                 }
             }
