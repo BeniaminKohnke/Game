@@ -1,5 +1,6 @@
 ﻿using Aardvark.Base;
 using GameAPI.GameObjects;
+using System;
 
 namespace GameAPI
 {
@@ -34,6 +35,7 @@ namespace GameAPI
                 [ObjectsParameters.Health] = (short)100,
                 [ObjectsParameters.CuttingDamage] = (ushort)10,
                 [ObjectsParameters.MovementSpeed] = 1,
+                [ObjectsParameters.Loot] = null,
             },
             [Types.Bush] = new()
             {
@@ -53,17 +55,25 @@ namespace GameAPI
         public GameObject? CreateObject(int x, int y)
         {
             var noise = _noise.Noise(x ^ Seed, y ^ Seed);
-            var value = x ^ y ^ Seed;
+            var value = Seed + x + y;
             var type = GetObjectType(noise, value);
             if (type != Types.None)
             {
-                var grid = GetObjectGrid(type, value);
-                var go = CreateObject(x, y, type, grid);
+                var grids = _grids[type];
+                var grid = grids[new Random(value / 2).Next(0, grids.Length)];
+                var go = type switch
+                {
+                    Types.Enemy => new Enemy(x, y, grid),
+                    Types.Item => new Item(x, y, type, grid),
+                    Types.Player => new Player(x, y),
+                    _ => new GameObject(x, y, type, grid),
+                };
+
                 if (_parameters.TryGetValue(type, out var parameters))
                 {
                     foreach (var parameter in parameters)
                     {
-                        go.ObjectParameters[parameter.Key] = (parameter.Key == ObjectsParameters.Loot ? InitializeLootParameter(x, y, type, value) : parameter.Value) ?? 0;
+                        go.ObjectParameters[parameter.Key] = (parameter.Key == ObjectsParameters.Loot ? InitializeLootParameter(x, y, type) : parameter.Value) ?? 0;
                     }
                 }
                 return go;
@@ -74,51 +84,46 @@ namespace GameAPI
 
         private static Types GetObjectType(float noise, int value)
         {
-            if (noise < 0.76f)
+            var random = new Random(value);
+            if (noise < 0.65f)
             {
                 return Types.None;
             }
-            else if (noise < 0.77f && new Random(value + 11).Next(0, 50) == 0)
+            else if (noise < 0.7f)
             {
-                return Types.Enemy;
+                return random.Next(0, 20) == 1 ? Types.Tree : Types.None;
             }
-            else if (noise < 0.78f && new Random(value + 13).Next(0, 100) == 0)
+            else if (noise < 0.75f)
             {
-                return Types.Grass;
+                return random.Next(0, 20) == 1 ? Types.Rock : Types.None;
             }
-            else if (noise < 0.8f && new Random(value + 12).Next(0, 30) == 0)
+            else if (noise < 0.8f)
             {
-                return Types.Bush;
+                return random.Next(0, 40) == 1 ? Types.Grass : Types.None;
             }
-            else if (noise < 0.85f && new Random(value + 5).Next(0, 35) == 0)
+            else if (noise < 0.85f)
             {
-                return Types.Rock;
+                return random.Next(0, 40) == 1 ? Types.Bush : Types.None;
             }
-            else if (noise < 0.90f && new Random(value + 6).Next(0, 50) == 0)
+            else if (noise < 0.95f)
             {
-                return Types.Tree;
+                return random.Next(0, 200) == 1 ? Types.Enemy : Types.None;
             }
-            else if (0.99f < noise && new Random(value + 7).Next(0, 500) == 150)
+            else if (noise < 0.96f)
             {
-                return Types.Building;
+                return random.Next(0, 300) == 1 ? Types.Building : Types.None;
             }
 
             return Types.None;
         }
 
-        private Grids GetObjectGrid(Types type, int value)
-        {
-            var grids = _grids[type];
-            return grids[new Random(value + 8).Next(0, grids.Length)];
-        }
-
-        private static Item[] InitializeLootParameter(int x, int y, Types type, int value)
+        private static Item[] InitializeLootParameter(int x, int y, Types type)
         {
             var items = new List<Item>();
             switch (type)
             {
                 case Types.Tree:
-                    items.Add(new(x + new Random(value + 1).Next(-2, 2), y + new Random(value + 3).Next(-2, 2) + 20, Types.Item, Grids.ItemWood)
+                    items.Add(new(x, y + 20, Types.Item, Grids.ItemWood)
                     {
                         IsActive = false,
                         Name = Items.Wood,
@@ -126,7 +131,7 @@ namespace GameAPI
                     });
                     break;
                 case Types.Rock:
-                    items.Add(new(x + new Random(value + 2).Next(-2, 2), y + new Random(value + 4).Next(-2, 2), Types.Item, Grids.ItemRock)
+                    items.Add(new(x, y, Types.Item, Grids.ItemRock)
                     {
                         IsActive = false,
                         Name = Items.Rock,
@@ -134,7 +139,7 @@ namespace GameAPI
                     });
                     break;
                 case Types.Grass:
-                    items.Add(new(x + new Random(value + 2).Next(-2, 2), y + new Random(value + 4).Next(-2, 2), Types.Item, Grids.ItemFiber)
+                    items.Add(new(x, y, Types.Item, Grids.ItemFiber)
                     {
                         IsActive = false,
                         Name = Items.Fiber,
@@ -142,7 +147,7 @@ namespace GameAPI
                     });
                     break;
                 case Types.Bush:
-                    items.Add(new(x + new Random(value + 2).Next(-2, 2), y + new Random(value + 4).Next(-2, 2), Types.Item, Grids.ItemFruit)
+                    items.Add(new(x, y, Types.Item, Grids.ItemFruit)
                     {
                         IsActive = false,
                         Name = Items.Fruit,
@@ -153,17 +158,24 @@ namespace GameAPI
                         }
                     });
                     break;
+                case Types.Enemy:
+                    for (var i = 0; i < 5; i++)
+                    {
+                        items.Add(new Item(x, y, Types.Item, Grids.ItemFruit)
+                        {
+                            IsActive = false,
+                            Name = Items.Fruit,
+                            ItemType = ItemTypes.Consumable,
+                            ObjectParameters = new Dictionary<ObjectsParameters, object>
+                            {
+                                [ObjectsParameters.Healing] = (ushort)5,
+                            }
+                        });
+                    }
+                    break;
             }
 
             return items.ToArray();
         }
-
-        private static GameObject CreateObject(int x, int y, Types type, Grids grid) => type switch
-        {
-            Types.Enemy => new Enemy(x, y, grid),
-            Types.Item => new Item(x, y, type, grid),
-            Types.Player => new Player(x, y),
-            _ => new GameObject(x, y, type, grid),
-        };
     }
 }

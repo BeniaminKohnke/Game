@@ -30,6 +30,8 @@ namespace GameAPI.DSL
             ["Player"] = "gameWorld.Player",
             ["Items"] = "gameWorld.Player.Items",
             ["None"] = "(object)0",
+            ["Item"] = "(object)(typeof(Item))",
+            ["Object"] = "(object)(typeof(GameObject))",
         };
 
         public static string[] CallOrder 
@@ -42,7 +44,8 @@ namespace GameAPI.DSL
 
         static ScriptBuilder()
         {
-            foreach (var type in new[] { typeof(Types), typeof(ItemTypes), typeof(Directions) })
+            var enums = new[] { typeof(Types), typeof(ItemTypes), typeof(Directions), typeof(Items) };
+            foreach (var type in enums)
             {
                 foreach (var name in Enum.GetNames(type))
                 {
@@ -59,68 +62,97 @@ namespace GameAPI.DSL
             }
         }
 
-        public static bool Is(object first, object second)
+        public static bool Is(object first, object second, bool negate)
         {
-            if (!first.Equals(second))
+            var value = Is();
+            return negate ? !value : value;
+            bool Is()
             {
-                switch (first)
+                if (!first.Equals(second) || (first is string && second is string))
                 {
-                    case Item fi:
-                        switch (second)
-                        {
-                            case Item si:
-                                return fi.ItemType == si.ItemType;
-                            case ItemTypes sit:
-                                return fi.ItemType == sit;
-                            case string ss:
-                                return fi.Name.Equals(ss);
-                        }
-                        break;
-                    case GameObject fo:
-                        switch (second)
-                        {
-                            case GameObject so:
-                                return fo.ObjectType == so.ObjectType;
-                            case Types st:
-                                return fo.ObjectType == st;
-                        }
-                        break;
-                    case Types ft:
-                        switch (second)
-                        {
-                            case GameObject s:
-                                return ft == s.ObjectType;
-                            case Types st:
-                                return ft == st;
-                        }
-                        break;
-                    case double fd:
-                        switch (second)
-                        {
-                            case double sd:
-                                return fd == sd;
-                        }
-                        break;
-                    case ItemTypes fit:
-                        switch (second)
-                        {
-                            case Item si:
-                                return fit == si.ItemType;
-                            case ItemTypes sit:
-                                return fit == sit;
-                        }
-                        break;
-                    case string fs:
-                        switch (second)
-                        {
-                            case string ss:
-                                return fs.Equals(ss);
-                        }
-                        break;
+                    switch (first)
+                    {
+                        case Type ftp:
+                            switch (second)
+                            {
+                                case Item si:
+                                    return typeof(Item).Equals(ftp);
+                                case GameObject so:
+                                    return typeof(GameObject).Equals(ftp);
+                            }
+                            break;
+                        case Item fi:
+                            switch (second)
+                            {
+                                case Item si:
+                                    return fi.ItemType == si.ItemType;
+                                case ItemTypes sit:
+                                    return fi.ItemType == sit;
+                                case string ss:
+                                    return fi.Name.ToString().Equals(ss);
+                                case Type stp:
+                                    return typeof(Item).Equals(stp);
+                            }
+                            break;
+                        case GameObject fo:
+                            switch (second)
+                            {
+                                case GameObject so:
+                                    return fo.ObjectType == so.ObjectType;
+                                case Types st:
+                                    return fo.ObjectType == st;
+                                case Type stp:
+                                    return typeof(GameObject).Equals(stp);
+                            }
+                            break;
+                        case Types ft:
+                            switch (second)
+                            {
+                                case GameObject s:
+                                    return ft == s.ObjectType;
+                                case Types st:
+                                    return ft == st;
+                            }
+                            break;
+                        case double fd:
+                            switch (second)
+                            {
+                                case double sd:
+                                    return fd == sd;
+                            }
+                            break;
+                        case ItemTypes fit:
+                            switch (second)
+                            {
+                                case Item si:
+                                    return fit == si.ItemType;
+                                case ItemTypes sit:
+                                    return fit == sit;
+                                case Items sii:
+                                    return fit.ToString().Equals(sii.ToString());
+                            }
+                            break;
+                        case Items fii:
+                            switch (second)
+                            {
+                                case Items sii:
+                                    return fii == sii;
+                                case ItemTypes sit:
+                                    return fii.ToString().Equals(sit.ToString());
+                            }
+                            break;
+                        case string fs:
+                            switch (second)
+                            {
+                                case string ss:
+                                    return fs.Equals(ss);
+                            }
+                            break;
+                    }
                 }
-            }
 
-            return false;
+                return false;
+            }
         }
         public static bool LessThan(object first, object second) => first is int fd && second is int sd && fd < sd;
         public static bool MoreThan(object first, object second) => first is int fd && second is int sd && fd > sd;
@@ -224,6 +256,7 @@ namespace GameAPI.DSL
 
             var builder = new StringBuilder();
             builder.AppendLine("using GameAPI;");
+            builder.AppendLine("using GameAPI.GameObjects;");
             builder.AppendLine("using System;");
             builder.AppendLine("using System.Collections.Generic;");
             builder.AppendLine("namespace GameAPI.DSL");
@@ -391,7 +424,7 @@ namespace GameAPI.DSL
 
             foreach (var match in IsRegex().Matches(script).Cast<Match>())
             {
-                script = script.Replace(match.Value, $"{nameof(ScriptBuilder)}.Is({match.Groups[1].Value},{match.Groups[2].Value})");
+                script = script.Replace(match.Value, $"{nameof(ScriptBuilder)}.Is({match.Groups[1].Value},{match.Groups[3].Value},{(!string.IsNullOrEmpty(match.Groups[2].Value)).ToString().ToLower()})");
             }
 
             foreach (var match in ForSingleRegex().Matches(script).Cast<Match>())
@@ -434,9 +467,9 @@ namespace GameAPI.DSL
 
         [GeneratedRegex(@"\[([A-Za-z]+)\]", RegexOptions.Compiled)]
         private static partial Regex VariableRegex();
-        [GeneratedRegex("([A-Za-z(),.:'\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\\d]+)", RegexOptions.Compiled)]
+        [GeneratedRegex("([A-Za-z(),.:'\"\\d]+) (LESS_THAN|MORE_THAN|LESS_OR_EQUAL_THAN|MORE_OR_EQUAL_THAN) ([A-Za-z(),.:'\"\\d]+)", RegexOptions.Compiled)]
         private static partial Regex ComparationRegex();
-        [GeneratedRegex(@"\['([\S ]+)'\]", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\['([A-Za-z ]+)'\]", RegexOptions.Compiled)]
         private static partial Regex TextRegex();
         [GeneratedRegex(@"\[((?:\d+(?:,\d+)?)+)\]", RegexOptions.Compiled)]
         private static partial Regex TupleRegex();
@@ -446,7 +479,7 @@ namespace GameAPI.DSL
         private static partial Regex ForSingleRegex();
         [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) SAVE_TO \[([A-Za-z\)\(]+)\]", RegexOptions.Compiled)]
         private static partial Regex SaveToRegex();
-        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) IS ([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled)]
+        [GeneratedRegex(@"([A-Za-z\)\(,\[\].':\d]+) IS (NOT )?([A-Za-z\)\(,\[\]':\d]+)", RegexOptions.Compiled)]
         private static partial Regex IsRegex();
         [GeneratedRegex(@"IF ([\S ]+) THEN", RegexOptions.Compiled)]
         private static partial Regex IfRegex();

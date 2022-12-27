@@ -62,6 +62,7 @@ namespace Game.Graphics.GUI
             [Keyboard.Key.Tab] = '\t',
             [Keyboard.Key.LBracket] = '[',
             [Keyboard.Key.RBracket] = ']',
+            [Keyboard.Key.Quote] = '\'',
         };
         private readonly Dictionary<Keyboard.Key, char> _scriptsCharsShift = new()
         {

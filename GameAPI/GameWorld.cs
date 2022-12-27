@@ -12,6 +12,7 @@ namespace GameAPI
         Ordered = 8,
         OnlyActive = 16,
         AddPlayerItems = 32,
+        RemovePlayer = 64,
     }
 
     public sealed class GameWorld
@@ -64,6 +65,7 @@ namespace GameAPI
             {
                 ItemType = ItemTypes.Ranged,
                 IsActive = true,
+                Name = Items.Bow,
             };
 
             var arrow = new Item(0, 0, Types.Item, Grids.Arrow)
@@ -75,6 +77,7 @@ namespace GameAPI
                     [ObjectsParameters.MovementSpeed] = 20,
                     [ObjectsParameters.ThrustDamage] = (ushort)30,
                 },
+                Name = Items.Arrow,
             };
 
             Player.Items.Add(axe);
@@ -112,7 +115,7 @@ namespace GameAPI
 
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
-            var objects = _gameObjects.ToList();
+            var objects = _gameObjects.Where(go => go.ObjectType != Types.Item).ToList();
             if (options.HasFlag(GetObjectsOptions.FromPlayer))
             {
                 var squaredRadius = Math.Pow(radius ?? Player.ObjectParameters[ObjectsParameters.ScanRadius] as int? ?? 0, 2);
@@ -126,6 +129,11 @@ namespace GameAPI
                         objects.Remove(go);
                     }
                 };
+            }
+
+            if (options.HasFlag(GetObjectsOptions.RemovePlayer))
+            {
+                objects.Remove(Player);
             }
 
             if (options.HasFlag(GetObjectsOptions.AddPlayerItems))

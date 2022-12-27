@@ -20,18 +20,12 @@ namespace GameAPI.DSL
                 _compilations.Clear();
                 foreach (var dllFilePath in Directory.GetFiles(ScriptBuilder.ScriptsFolderPath).Where(f => f.Contains(".dll")))
                 {
-                    var dll = Assembly.Load(File.ReadAllBytes(dllFilePath));
-                    foreach (var position in ScriptBuilder.CallOrder)
+                    var dll = Assembly.Load(File.ReadAllBytes(dllFilePath)).GetExportedTypes().First();
+                    dynamic? instance = Activator.CreateInstance(dll);
+                    if (instance is IPlayerScript playerScript)
                     {
-                        var script = dll.GetExportedTypes().FirstOrDefault(t => t.Name.Equals(position));
-                        if (script != null)
-                        {
-                            dynamic? instance = Activator.CreateInstance(script);
-                            if (instance is IPlayerScript playerScript)
-                            {
-                                _compilations[position] = playerScript;
-                            }
-                        }
+                        _dynamicObjects[$"Scripts.{dll.Name}"] = playerScript;
+                        _compilations[dll.Name] = playerScript;
                     }
                 }
 

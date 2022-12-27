@@ -18,16 +18,7 @@ namespace Game.Graphics.GUI
             [Grids.HealthPotion] = Icons.Potion,
             [Grids.Sword] = Icons.Sword,
         };
-        private readonly Dictionary<Icons, Sprite> _iconsSprites = new()
-        {
-            [Icons.Axe] = new(),
-            [Icons.Pickaxe] = new(),
-            [Icons.Potion] = new(),
-            [Icons.Sword] = new(),
-            [Icons.Arrow] = new(),
-            [Icons.Bow] = new(),
-            [Icons.Fruit] = new(),
-        };
+        private readonly Dictionary<Icons, Sprite> _iconsSprites = new();
         internal ItemsBar()
         {
             var grid = File
@@ -56,7 +47,7 @@ namespace Game.Graphics.GUI
                     .ToArray();
                 if (grid.Length > 0 && grid[0].Length > 0)
                 {
-                    _iconsSprites[(Icons)icon].Texture = new(Engine.CreateImage(grid));
+                    _iconsSprites[(Icons)icon] = new(new Texture(Engine.CreateImage(grid)));
                 }
             }
         }
