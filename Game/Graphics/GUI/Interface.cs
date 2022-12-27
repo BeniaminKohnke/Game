@@ -29,12 +29,19 @@ namespace Game.Graphics.GUI
         OptionsMenu,
         OptionsMenuCursor,
         Position,
+        CraftingMenu,
+        Help,
     }
 
     public enum Icons : byte
     {
         Pickaxe,
         Axe,
+        Fruit,
+        Potion,
+        Sword,
+        Bow,
+        Arrow,
     }
 
     public sealed class Interface
@@ -46,8 +53,10 @@ namespace Game.Graphics.GUI
         private readonly Textures[] _menuPostions =
         {
             Textures.MainMenu,
-            Textures.CodeEditor,
             Textures.EquipmentWindow,
+            Textures.CodeEditor,
+            Textures.CraftingMenu,
+            Textures.Help,
         };
         private readonly Textures[] _inGameInterfacePositions =
         {
@@ -65,6 +74,20 @@ namespace Game.Graphics.GUI
         public bool ShowWeather => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu && mainMenu.ShowWeather;
         public ushort DrawDistance => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.DrawDistance : (ushort)0;
         public byte DifficultyLevel => (byte)(_pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.DifficultyLevel : Difficulty.Medium);
+        public Items ItemName
+        {
+            get
+            {
+                if (_pages.TryGetValue(Textures.CraftingMenu, out var page) && page is CraftingMenu menu)
+                {
+                    var item = menu.ItemName;
+                    menu.ItemName = Items.None;
+                    return item;
+                }
+
+                return Items.None;
+            }
+        }
         public bool IsMenu
         {
             get => _isMenu;
@@ -105,6 +128,8 @@ namespace Game.Graphics.GUI
                 [Textures.HealthBar] = new HealthBar(font),
                 [Textures.EquipmentWindow] = new Equipment(font),
                 [Textures.CodeEditor] = new ScriptEditor(font),
+                [Textures.CraftingMenu] = new CraftingMenu(font),
+                [Textures.Help] = new Help(font),
                 [Textures.ItemsBar] = new ItemsBar(),
                 [Textures.FramesCount] = new FrameCount(font),
                 [Textures.Position] = new Position(font),
@@ -118,6 +143,7 @@ namespace Game.Graphics.GUI
                     {
                         if (_pages.TryGetValue(_currentPage, out var page) && page.HandleInput(e))
                         {
+                            _cursorIndex = 0;
                             return;
                         }
                     }
@@ -125,15 +151,15 @@ namespace Game.Graphics.GUI
                     {
                         if (e.Code == Keyboard.Key.Right)
                         {
-                            _cursorIndex--;
+                            _cursorIndex++;
                         }
 
                         if (e.Code == Keyboard.Key.Left)
                         {
-                            _cursorIndex++;
+                            _cursorIndex--;
                         }
 
-                        if (_cursorIndex > 2)
+                        if (_cursorIndex >= _menuPostions.Length)
                         {
                             _cursorIndex = 0;
                         }
@@ -168,6 +194,7 @@ namespace Game.Graphics.GUI
         {
             if (PerformedAction == MenuOptions.Resume || PerformedAction == MenuOptions.NewGame)
             {
+                _cursorIndex = 0;
                 _isInsidePage = false;
                 IsMenu = false;
                 PerformedAction = MenuOptions.None;

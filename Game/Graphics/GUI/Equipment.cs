@@ -11,6 +11,14 @@ namespace Game.Graphics.GUI
         private readonly Font _font;
         private readonly (int x, int y) _equipmentPosition = (0, 0);
         private readonly (int x, int y) _cursorPosition = (2, 13);
+        private sbyte _itemMenuPosition = 0;
+        private readonly ItemTypes[] _allowedTypes = new[]
+        {
+            ItemTypes.Melee,
+            ItemTypes.Ranged,
+            ItemTypes.Consumable,
+            ItemTypes.Amunition
+        };
         private sbyte _cursorCurrentPosition = 0;
         public sbyte CursorCurrentPosition
         {
@@ -57,26 +65,39 @@ namespace Game.Graphics.GUI
                     var item = group.First();
                     if (i == _cursorCurrentPosition)
                     {
-                        var specification = new Text
+                        window.Draw(new Text
                         {
                             DisplayedString = $"[{item.ItemType}]\n{string.Join("\n", item.ObjectParameters.Select(p => $"{p.Key} : {p.Value}"))}",
                             Position = new(_cursorPosition.x + 35, _cursorPosition.y),
                             Font = _font,
                             CharacterSize = 200,
                             Scale = new(0.01f, 0.01f),
-                        };
-                        window.Draw(specification);
+                        });
+
+                        if (_itemMenuPosition != -1 && _allowedTypes.Contains(item.ItemType))
+                        {
+                            var id = group.Last().Id;
+                            for (var x = 0; x < gameWorld.Player.ItemsMenu.Length; x++)
+                            {
+                                if (gameWorld.Player.ItemsMenu[x] == id)
+                                {
+                                    gameWorld.Player.ItemsMenu[x] = 0;
+                                }
+                            }
+                            gameWorld.Player.ItemsMenu[_itemMenuPosition] = id;
+                            _itemMenuPosition = -1;
+                        }
                     }
 
-                    var text = new Text
+                    window.Draw(new Text
                     {
                         DisplayedString = $"{item.Name} x {group.Count()}",
                         Position = new(_cursorPosition.x + 2, _cursorPosition.y + i * 6 + 3),
                         Font = _font,
                         CharacterSize = 120,
                         Scale = new(0.01f, 0.01f),
-                    };
-                    window.Draw(text);
+                    });
+
                     i++;
                 }
             }
@@ -84,14 +105,44 @@ namespace Game.Graphics.GUI
 
         internal override bool HandleInput(KeyEventArgs args)
         {
-            if (args.Code == Keyboard.Key.Up)
+            switch (args.Code)
             {
-                CursorCurrentPosition--;
-            }
-
-            if (args.Code == Keyboard.Key.Down)
-            {
-                CursorCurrentPosition++;
+                case Keyboard.Key.Up:
+                    CursorCurrentPosition--;
+                    break;
+                case Keyboard.Key.Down:
+                    CursorCurrentPosition++;
+                    break;
+                case Keyboard.Key.Num0:
+                    _itemMenuPosition = 9;
+                    break;
+                case Keyboard.Key.Num1:
+                    _itemMenuPosition = 0;
+                    break;
+                case Keyboard.Key.Num2:
+                    _itemMenuPosition = 1;
+                    break;
+                case Keyboard.Key.Num3:
+                    _itemMenuPosition = 2;
+                    break;
+                case Keyboard.Key.Num4:
+                    _itemMenuPosition = 3;
+                    break;
+                case Keyboard.Key.Num5:
+                    _itemMenuPosition = 4;
+                    break;
+                case Keyboard.Key.Num6:
+                    _itemMenuPosition = 5;
+                    break;
+                case Keyboard.Key.Num7:
+                    _itemMenuPosition = 6;
+                    break;
+                case Keyboard.Key.Num8:
+                    _itemMenuPosition = 7;
+                    break;
+                case Keyboard.Key.Num9:
+                    _itemMenuPosition = 8;
+                    break;
             }
 
             return false;

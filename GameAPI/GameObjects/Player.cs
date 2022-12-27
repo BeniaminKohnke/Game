@@ -20,7 +20,10 @@
             if (item != null)
             {
                 item.Uses++;
-                item.IsActive = true;
+                if (item.ItemType == ItemTypes.Melee || item.ItemType == ItemTypes.Ranged)
+                {
+                    item.IsActive = true;
+                }
             }
         }
 

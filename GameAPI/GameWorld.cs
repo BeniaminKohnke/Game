@@ -27,7 +27,7 @@ namespace GameAPI
 
         public GameWorld(int seed)
         {
-            Player = new(-400, -400)
+            Player = new(0, 0)
             {
                 ObjectParameters = 
                 {
@@ -42,7 +42,7 @@ namespace GameAPI
             var pickaxe = new Item(0, 0, Types.Item, Grids.Pickaxe)
             {
                 ItemType = ItemTypes.Melee,
-                Name = "Pickaxe",
+                Name = Items.Pickaxe,
                 ObjectParameters = new Dictionary<ObjectsParameters, object>
                 {
                     [ObjectsParameters.ThrustDamage] = (ushort)30,
@@ -52,7 +52,7 @@ namespace GameAPI
             var axe = new Item(0, 0, Types.Item, Grids.Axe)
             {
                 ItemType = ItemTypes.Melee,
-                Name = "Axe",
+                Name = Items.Axe,
                 ObjectParameters = new Dictionary<ObjectsParameters, object>
                 {
                     [ObjectsParameters.CuttingDamage] = (ushort)30,
@@ -260,6 +260,10 @@ namespace GameAPI
                             }
                             break;
                         }
+                    case ItemTypes.Ranged:
+                        break;
+                    case ItemTypes.Consumable:
+                        break;
                 }
             }
         }
@@ -286,7 +290,7 @@ namespace GameAPI
                     var distanceY = Math.Abs(y);
                     if (distanceX < EnemyRange && distanceY < EnemyRange)
                     {
-                        if (delay > 0.3f && distanceX < 5 && distanceY < 5)
+                        if (delay > 1f && distanceX < 5 && distanceY < 5)
                         {
                             if (go.ObjectParameters.TryGetValue(ObjectsParameters.CuttingDamage, out value) && value is ushort damage)
                             {

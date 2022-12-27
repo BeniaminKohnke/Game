@@ -5,7 +5,7 @@
         private byte _uses = 0;
         private float _nextStateCounter = 0f;
         private float _animationTime = 1f;
-        public string Name { get; set; } = string.Empty;
+        public Items Name { get; set; } = Items.None;
         public byte Uses
         {
             get => _uses;

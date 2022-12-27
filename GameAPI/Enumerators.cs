@@ -6,6 +6,8 @@
         Player,
         Rock,
         Tree,
+        Bush,
+        Grass,
         Building,
         Item,
         Enemy,
@@ -16,6 +18,9 @@
         None,
         Melee,
         Ranged,
+        Consumable,
+        Material,
+        Amunition,
     }
 
     public enum Grids : byte
@@ -27,12 +32,21 @@
         Tree1,
         Tree2,
         Tree3,
+        Grass1,
+        Bush1,
         Building1,
         Pickaxe,
         Axe,
         Sword,
+        Bow,
+        HealthPotion,
+        Arrow,
         ItemRock,
         ItemWood,
+        ItemFruit,
+        ItemString,
+        ItemStick,
+        ItemFiber,
         Enemy1,
     }
 
@@ -80,5 +94,6 @@
         Loot,
         MeleeRange,
         AttackDelay,
+        Healing,
     }
 }

@@ -12,11 +12,21 @@ namespace Game.Graphics.GUI
         {
             [Grids.Axe] = Icons.Axe,
             [Grids.Pickaxe] = Icons.Pickaxe,
+            [Grids.Bow] = Icons.Bow,
+            [Grids.Arrow] = Icons.Arrow,
+            [Grids.ItemFruit] = Icons.Fruit,
+            [Grids.HealthPotion] = Icons.Potion,
+            [Grids.Sword] = Icons.Sword,
         };
         private readonly Dictionary<Icons, Sprite> _iconsSprites = new()
         {
             [Icons.Axe] = new(),
             [Icons.Pickaxe] = new(),
+            [Icons.Potion] = new(),
+            [Icons.Sword] = new(),
+            [Icons.Arrow] = new(),
+            [Icons.Bow] = new(),
+            [Icons.Fruit] = new(),
         };
         internal ItemsBar()
         {
