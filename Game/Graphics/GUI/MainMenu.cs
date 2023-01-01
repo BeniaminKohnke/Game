@@ -28,12 +28,14 @@ namespace Game.Graphics.GUI
         private readonly Text _drawDistanceText;
         private readonly Text _seedText;
         private readonly Text _difficultyText;
+        private readonly Text _showHealthText;
         private readonly Text[] _menuOptions;
         private sbyte _cursorCurrentPosition = 0;
         private sbyte _optionsCursorCurrentPosition = 0;
         public int Seed { get; private set; }
         public ushort FramesLimit { get; private set; } = 240;
         public bool ShowWeather { get; private set; } = true;
+        public bool ShowHealth { get; private set; } = true;
         public ushort DrawDistance { get; private set; } = 200;
         public Difficulty DifficultyLevel { get; private set; } = Difficulty.Easy;
         public sbyte CursorCurrentPosition
@@ -146,6 +148,13 @@ namespace Game.Graphics.GUI
                 Scale = new(0.01f, 0.01f),
                 Position = new(96, 65),
             };
+            _showHealthText = new()
+            {
+                Font = font,
+                CharacterSize = 200,
+                Scale = new(0.01f, 0.01f),
+                Position = new(96, 69),
+            };
         }
 
         internal override void Draw(RenderWindow window, GameWorld? world)
@@ -180,6 +189,8 @@ namespace Game.Graphics.GUI
                 window.Draw(_showWeatherText);
                 _difficultyText.DisplayedString = $"Difficulty: {DifficultyLevel}";
                 window.Draw(_difficultyText);
+                _showHealthText.DisplayedString = $"Show health: {ShowHealth}";
+                window.Draw(_showHealthText);
             }
         }
 
@@ -360,6 +371,12 @@ namespace Game.Graphics.GUI
                                     {
                                         DifficultyLevel++;
                                     }
+                                }
+                                break;
+                            case 4:
+                                if (value == -2)
+                                {
+                                    ShowHealth = !ShowHealth;
                                 }
                                 break;
                         }

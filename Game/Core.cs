@@ -90,6 +90,7 @@ namespace Game
                     if (_engine != null)
                     {
                         _engine.ShowWeather = _gameInterface.ShowWeather;
+                        _engine.ShowHealth = _gameInterface.ShowHealth;
                     }
                     if (_gameWorld != null)
                     {

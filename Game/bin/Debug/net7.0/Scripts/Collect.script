@@ -4,7 +4,7 @@ DistanceBetween [Player] [storedObject] SAVE TO [stObjDis]
 
 FOR SINGLE [sObject] FROM [scannedObjects] DO
 	DistanceBetween [Player] [sObject] SAVE TO [objDis]
-	IF [objDis] LESS THAN [stObjDis] THEN
+	IF [objDis] LESS THAN [stObjDis] AND [sObject] IS NOT [Item] THEN
 		[sObject] SAVE TO [storedObject]
 		[objDis] SAVE TO [stObjDis]
 

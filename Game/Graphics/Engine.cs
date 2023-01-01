@@ -14,7 +14,8 @@ namespace Game.Graphics
         private readonly Clock _clock = new();
         private readonly Time _changeTime = Time.FromSeconds(10f);
         private Time _lastChange = Time.Zero;
-        public bool ShowWeather = true;
+        public bool ShowWeather { get; set; } = true;
+        public bool ShowHealth { get; set; } = true;
 
         public Engine(GameWorld gameWorld)
         {
@@ -82,7 +83,7 @@ namespace Game.Graphics
                         sprite.Position = new(gameObject.Position.x, gameObject.Position.y);
                     }
 
-                    if (gameObject is not Player && gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
+                    if (ShowHealth && gameObject is not Player && gameObject.ObjectParameters.TryGetValue(ObjectsParameters.Health, out var value) && value is short health)
                     {
                         var text = new Text
                         {

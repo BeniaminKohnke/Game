@@ -72,6 +72,7 @@ namespace Game.Graphics.GUI
         public int Seed => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.Seed : 0;
         public ushort FramesLimit => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.FramesLimit : (ushort)0;
         public bool ShowWeather => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu && mainMenu.ShowWeather;
+        public bool ShowHealth => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu && mainMenu.ShowHealth;
         public ushort DrawDistance => _pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.DrawDistance : (ushort)0;
         public byte DifficultyLevel => (byte)(_pages.TryGetValue(Textures.MainMenu, out var page) && page is MainMenu mainMenu ? mainMenu.DifficultyLevel : Difficulty.Medium);
         public Items ItemName
