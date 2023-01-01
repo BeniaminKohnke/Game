@@ -1,0 +1,23 @@
+ScanArea SAVE TO [scannedObjects]
+[None] SAVE TO [storedObject]
+DistanceBetween [Player] [storedObject] SAVE TO [stObjDis]
+
+FOR SINGLE [sObject] FROM [scannedObjects] DO
+	DistanceBetween [Player] [sObject] SAVE TO [objDis]
+	IF [objDis] LESS THAN [stObjDis] THEN
+		[sObject] SAVE TO [storedObject]
+		[objDis] SAVE TO [stObjDis]
+
+IF [stObjDis] LESS THAN [5] THEN 
+	IF [storedObject] IS [Rock] THEN
+		FOR SINGLE [item] FROM [Items] DO
+			IF [item] IS ['Pickaxe'] THEN
+				Use [item]
+				FINISH
+	ELSE THEN
+		FOR SINGLE [item] FROM [Items] DO
+			IF [item] IS ['Axe'] THEN
+				Use [item]
+				FINISH
+ELSE THEN
+	GoTo DirectionBetween [Player] [storedObject]

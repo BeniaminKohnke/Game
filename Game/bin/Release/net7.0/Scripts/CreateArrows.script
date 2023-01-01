@@ -1,0 +1,5 @@
+IF CraftItem [Arrow] IS ['Failure'] THEN
+	IF Count [Items] [Rock] LESS THAN [1] OR Count [Items] [Wood] LESS THAN [1] THEN
+		CallScript ['Collect']
+	IF Count [Items] [Stick] LESS THAN [1] THEN
+		CraftItem [Stick]

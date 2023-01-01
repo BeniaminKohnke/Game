@@ -29,7 +29,7 @@ namespace Game
             _window.SetView(_view);
 
             _window.KeyPressed += _gameInterface.InterfaceHandler;
-            _window.KeyPressed += new EventHandler<KeyEventArgs>((sender, e) =>
+            _window.KeyPressed += new((sender, e) =>
             {
                 if (!_gameInterface.IsMenu)
                 {
@@ -37,10 +37,12 @@ namespace Game
                 }
             });
 
-            _window.KeyReleased += new EventHandler<KeyEventArgs>((sender, e) =>
+            _window.KeyReleased += new((sender, e) =>
             {
                 _pressedKey = Keyboard.Key.Unknown;
             });
+
+            _window.Closed += new((sender, e) => Exit());
         }
 
         public void Run()
@@ -95,14 +97,19 @@ namespace Game
                     }
                     break;
                 case MenuOptions.Exit:
-                    if (_gameWorld != null)
-                    {
-                        _handler.IsActive = false;
-                        _gameWorld.IsActive = false;
-                    }
-                    _window.Close();
+                    Exit();
                     break;
             }
+        }
+
+        private void Exit()
+        {
+            if (_gameWorld != null)
+            {
+                _handler.IsActive = false;
+                _gameWorld.IsActive = false;
+            }
+            _window.Close();
         }
 
         private void HandleLogic()
