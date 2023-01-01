@@ -65,8 +65,6 @@ namespace GameAPI
             _gameObjects.Add(item);
         }
 
-        public static Dictionary<Grids, Dictionary<States, ReadOnlyCollection<ReadOnlyCollection<byte>>>> GetGrids() => GridLoader.GetGrids();
-
         public List<GameObject> GetObjects(GetObjectsOptions options = GetObjectsOptions.None, int? radius = null)
         {
             var objects = _gameObjects.Where(go => !Player.Items.Contains(go)).ToList();

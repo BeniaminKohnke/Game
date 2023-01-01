@@ -19,7 +19,7 @@ namespace Game.Graphics
 
         public Engine(GameWorld gameWorld)
         {
-            foreach (var type in GameWorld.GetGrids())
+            foreach (var type in GridLoader.GetGrids())
             {
                 _textures[type.Key] = new();
                 foreach (var pair in type.Value)
