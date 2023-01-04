@@ -59,7 +59,14 @@ namespace GameTest
                 }
             }
 
-            CollectionAssert.AreEquivalent(firstRun, secondRun);
+            Assert.AreEqual(firstRun.Count, secondRun.Count);
+            for (var i = 0; i < firstRun.Count; i++)
+            {
+                Assert.AreEqual(firstRun[i].State, secondRun[i].State);
+                Assert.AreEqual(firstRun[i].ObjectType, secondRun[i].ObjectType);
+                Assert.AreEqual(firstRun[i].Grid, secondRun[i].Grid);
+                Assert.AreEqual(firstRun[i].Position, secondRun[i].Position);
+            }
         }
     }
 }
