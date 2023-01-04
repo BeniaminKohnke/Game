@@ -49,7 +49,7 @@ namespace GameTest
         [TestMethod]
         public void PrepareScriptToCompilationTest()
         {
-            Assert.AreEqual("[None] SAVE TO [myObject]", _prepareScriptToCompilation?.Invoke("[None] SAVE_TO [myObject]"));
+            Assert.AreEqual("[None] SAVE_TO [myObject]", _prepareScriptToCompilation?.Invoke("[None] SAVE TO [myObject]"));
         }
 
         [TestMethod]

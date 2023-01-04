@@ -18,13 +18,7 @@ namespace GameTest
         public NoiseTest()
         {
             _window.SetView(new(new(0, 0), new(SIZE, SIZE)));
-            _window.KeyPressed += new EventHandler<KeyEventArgs>((sender, e) =>
-            {
-                if (e.Code == Keyboard.Key.Escape)
-                {
-                    _window.Close();
-                }
-            });
+            _window.Closed += new((o, args) => _window.Close());
         }
 
         [TestMethod]
